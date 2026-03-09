@@ -60,15 +60,20 @@
   "dependencies": {
     "@adonisjs/auth": "^10.0.0",
     "@adonisjs/core": "^7.0.0",
-    "@adonisjs/lucid": "^22.0.0",
+    "@adonisjs/drive": "^4.0.0",
+    "@adonisjs/hash": "^10.0.0",
+    "@adonisjs/lucid": "^22.1.0",
+    "@adonisjs/mail": "^10.0.0",
     "@adonisjs/session": "^8.0.0",
     "@adonisjs/shield": "^9.0.0",
     "@adonisjs/static": "^2.0.0",
     "@adonisjs/vite": "^5.1.0",
     "@vinejs/vine": "^4.3.0",
     "better-sqlite3": "^12.6.2",
+    "dotenv": "^17.3.1",
     "edge.js": "^6.5.0",
     "luxon": "^3.7.2",
+    "pg": "^8.20.0",
     "reflect-metadata": "^0.2.2"
   },
   "hotHook": {
