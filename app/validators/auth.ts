@@ -1,0 +1,12 @@
+// Import vine
+import vine from '@vinejs/vine'
+
+// Validator OTP
+export const verifyOtpValidator = vine.compile(
+  vine.object({
+    token: vine
+      .string() // code OTP
+      .fixedLength(6) // exactement 6 caractères
+      .regex(/^[0-9]+$/), // seulement chiffres
+  })
+)

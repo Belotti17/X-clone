@@ -1,18 +1,34 @@
+// Import vine validator
 import vine from '@vinejs/vine'
 
-/**
- * Shared rules for email and password.
- */
-const email = () => vine.string().email().maxLength(254)
-const password = () => vine.string().minLength(8).maxLength(32)
+// Validator pour l'inscription
+export const signupValidator = vine.compile(
+  vine.object({
+    name: vine.string().trim().minLength(3), // nom obligatoire
 
-/**
- * Validator to use when performing self-signup
- */
-export const signupValidator = vine.create({
-  fullName: vine.string().nullable(),
-  email: email().unique({ table: 'users', column: 'email' }),
-  password: password().confirmed({
-    confirmationField: 'passwordConfirmation',
-  }),
-})
+    username: vine
+      .string()
+      .trim()
+      .minLength(3) // username minimum 3 caractères
+      .unique(async (db, value) => {
+        // vérifie unicité
+        const user = await db.from('users').where('username', value).first()
+        return !user
+      }),
+
+    email: vine
+      .string()
+      .trim()
+      .toLowerCase()
+      .email() // email valide
+      .unique(async (db, value) => {
+        const user = await db.from('users').where('email', value).first()
+        return !user
+      }),
+
+    password: vine
+      .string()
+      .minLength(6) // password min 6 caractères
+      .confirmed({ confirmationField: 'passwordConfirmation' }), // confirmation password
+  })
+)
