@@ -1,0 +1,32 @@
+@!layout('layouts/main')
+
+<h1>Vérification email</h1>
+
+<p>Code envoyé à : <strong>{{ email }}</strong></p>
+
+{{-- Formulaire vérification OTP --}}
+@form({ route: 'verify.otp', method: 'POST' })
+
+  <input
+    type="text"
+    name="token"
+    placeholder="Code OTP"
+    maxlength="6"
+    required
+  />
+
+  <button type="submit">
+    Vérifier
+  </button>
+
+@end
+
+
+{{-- Formulaire renvoi OTP --}}
+@form({ route: 'otp.resend', method: 'POST' })
+
+  <button type="submit">
+    Renvoyer OTP
+  </button>
+
+@end

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="resources/css/style.css" />
+  </head>
+  <body>
+    <main class="login-container">
+      <!-- formulaire de login -->
+      <div class="content">
+        <div class="logo">
+          <img src="icon/logo X.png" alt="log-X" />
+        </div>
+        <div class="compte">
+          <h1 class="title">Ça se passe <br />maintenant</h1>
+          <h2>Inscrivez-vous.</h2>
+
+          <!-- Carte connexion rapide -->
+          <button class="btn-login">
+            <img src="icon/google-removebg-preview.png" alt="logo google" />
+            S'inscrire avec google
+          </button>
+
+          <button class="btn-icon" id="btn-inscription" type="button">
+            <img src="icon/aplle-removebg-preview.png" alt="icone" />
+            S'inscrire avec Apple
+          </button>
+
+          <span class="ou-separat">OU</span>
+
+          <button class="creat" id="Crée-compte" type="button">
+            Créer un compte
+          </button>
+
+          <!-- Overlay création de compte -->
+          <div class="overlay" id="overlay" aria-hidden="true">
+            <aside
+              class="modal"
+              role="dialog"
+              aria-labelledby="modal-title"
+              aria-modal="true"
+            >
+              <!-- Bouton fermer (id unique) -->
+              <button class="close" id="close-create" aria-label="Fermer">
+                ✕
+              </button>
+
+              <!-- Top logo (X) -->
+              <div class="modal-logo">
+                <img src="icon/logo X.png" alt="logo x" />
+              </div>
+
+              <!-- FORMulaire inscription (champs email + password ajoutés) -->
+              <form class="modal-body" id="signup-form" autocomplete="off">
+                <div class="modal-header">
+                  <h1 id="modal-title">Créer votre compte</h1>
+                </div>
+                <div class="field">
+                  <input
+                    id="nom-prenom"
+                    name="name"
+                    type="text"
+                    placeholder="Nom et prénom"
+                    required
+                  />
+                </div>
+
+                <div class="field">
+                  <input
+                    id="telephone"
+                    name="phone"
+                    type="tel"
+                    placeholder="Téléphone"
+                  />
+                </div>
+
+                <div class="field">
+                  <input
+                    id="email-signup"
+                    name="email"
+                    type="email"
+                    placeholder="Email"
+                    required
+                  />
+                </div>
+
+                <div class="field">
+                  <input
+                    id="password-signup"
+                    name="password"
+                    type="password"
+                    placeholder="Mot de passe"
+                    required
+                    minlength="6"
+                  />
+                </div>
+
+                <div class="dob">
+                  <strong class="date-ns">Date de naissance</strong>
+                  <p class="hint">
+                    Cette information ne sera pas affichée publiquement.
+                    Confirmez votre âge, même si ce compte est pour une
+                    entreprise, un animal de compagnie ou autre chose.
+                  </p>
+
+                  <div class="dob-selects">
+                    <select aria-label="Mois" name="month">
+                      <option value="">Mois</option>
+                      Voici la liste des mois dans l'ordre chronologique, en
+                      conservant votre formatage :
+
+                      <option>Janvier</option>
+                      <option>Février</option>
+                      <option>Mars</option>
+                      <option>Avril</option>
+                      <option>Mai</option>
+                      <option>Juin</option>
+                      <option>Juillet</option>
+                      <option>Août</option>
+                      <option>Septembre</option>
+                      <option>Octobre</option>
+                      <option>Novembre</option>
+                      <option>Décembre</option>
+                    </select>
+                    <select aria-label="Jour" name="day">
+                      <option value="">Jour</option>
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                      <option>6</option>
+                      <option>7</option>
+                      <option>8</option>
+                      <option>9</option>
+                      <option>10</option>
+                      <option>11</option>
+                      <option>12</option>
+                      <option>13</option>
+                      <option>14</option>
+                      <option>15</option>
+                      <option>16</option>
+                      <option>17</option>
+                      <option>18</option>
+                      <option>19</option>
+                      <option>20</option>
+                      <option>21</option>
+                      <option>22</option>
+                      <option>23</option>
+                      <option>24</option>
+                      <option>25</option>
+                      <option>26</option>
+                      <option>27</option>
+                      <option>28</option>
+                      <option>29</option>
+                      <option>30</option>
+                      <option>31</option>
+                    </select>
+                    <select aria-label="Année" name="year">
+                      <option value="">Année</option>
+                      <option>1980</option>
+                      <option>1981</option>
+                      <option>1982</option>
+                      <option>1983</option>
+                      <option>1984</option>
+                      <option>1985</option>
+                      <option>1986</option>
+                      <option>1987</option>
+                      <option>1988</option>
+                      <option>1989</option>
+                      <option>1990</option>
+                      <option>1991</option>
+                      <option>1992</option>
+                      <option>1993</option>
+                      <option>1994</option>
+                      <option>1995</option>
+                      <option>1996</option>
+                      <option>1997</option>
+                      <option>1998</option>
+                      <option>1999</option>
+                      <option>2000</option>
+                      <option>2001</option>
+                      <option>2002</option>
+                      <option>2003</option>
+                      <option>2004</option>
+                      <option>2005</option>
+                      <option>2006</option>
+                      <option>2007</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Spacer to simulate long content and scrollbar -->
+                <div class="spacer"></div>
+
+                <div class="actions">
+                  <button id="btn-suivant" class="primary" type="submit">
+                    Suivant
+                  </button>
+                </div>
+              </form>
+            </aside>
+          </div>
+
+          <p class="cookies">
+            En vous inscrivant, vous acceptez les
+            <a href="#">Conditions d'utilisation</a> et la
+            <a href="#">politique de confidentialité</a>, notamment l'
+            <a href="#">Utilisation de cookies</a>.
+          </p>
+          <div class="connecter">
+            <span>Vous avez déjà un compte ?</span>
+            <button id="conect" type="button">Se connecter</button>
+            <button id="grok" type="button">Télécharger Grok</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- POPUP X (caché par défaut) -->
+      <div id="popup-x" class="overlay-x" aria-hidden="true">
+        <div
+          class="popup-content-x"
+          role="dialog"
+          aria-labelledby="title-x"
+          aria-modal="true"
+        >
+          <!-- Bouton fermeture (id unique pour popup-x) -->
+          <button id="close-x" class="close-x" aria-label="Fermer">X</button>
+
+          <!-- Logo X -->
+          <div class="logo-x"><img src="icon/logo X.png" alt="logo x" /></div>
+
+          <h2 id="title-x" class="title-x">Connectez-vous à X</h2>
+
+          <!-- Bouton Google -->
+          <button
+            class="btn-x google-x"
+            type="button"
+            aria-label="Se connecter avec Google"
+          >
+            <img src="icon/google-removebg-preview.png" alt="logo google" />
+            <div>
+              <span>Se connecter avec Google</span>
+            </div>
+          </button>
+
+          <!-- Bouton Apple -->
+          <button
+            class="btn-x apple-x"
+            type="button"
+            aria-label="Se connecter avec Apple"
+          >
+            <img src="icon/aplle-removebg-preview.png" alt="icon apple" />
+            Se connecter avec Apple
+          </button>
+
+          <!-- ou -->
+          <div class="or-x"><span></span> ou <span></span></div>
+
+          <!-- Champ de connexion (identifiant) -->
+          <input
+            type="text"
+            id="input-login"
+            class="input-x"
+            placeholder="Numéro de téléphone, adresse email…"
+            aria-label="Identifiant (email, username ou téléphone)"
+          />
+
+          <!-- Suivant (id ajouté pour JS) -->
+          <button id="btn-login-next" class="btn-black-x" type="button">
+            Suivant
+          </button>
+
+          <!-- Mot de passe oublié -->
+          <button class="btn-border-x" type="button">
+            Mot de passe oublié ?
+          </button>
+
+          <!-- Ligne finale -->
+          <p class="footer-x">
+            Vous n’avez pas de compte ?
+            <a href="#" id="link-open-signup">Inscrivez-vous</a>
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <!-- liens, copyright -->
+      <div class="footer-container">
+        <span>
+          À propos | Téléchargez l'application X | Grok | Centre d'assistance |
+          Conditions d’utilisation | Politique de Confidentialité | Politique
+          relative aux cookies | Accessibilité | Informations sur les publicités
+          | Blog | Carrières | Ressources de la marque | Publicité | Marketing |
+          X pour les professionnels | Développeurs | Actualités | Paramètres | ©
+          2025 X Corp.
+        </span>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

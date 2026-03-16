@@ -1,50 +1,152 @@
-@layout()
-  <div class="form-container">
-    <div>
-      <h1> Signup </h1>
-      <p>
-        Enter your details below to create your account
+@!layout('layouts/main')
+
+<main class="login-container">
+
+  <div class="content">
+
+    <!-- Logo X -->
+    <div class="logo">
+      <img src="/icon/logo X.png" alt="log-X" />
+    </div>
+
+    <div class="compte">
+
+      <h1 class="title">Ça se passe <br />maintenant</h1>
+      <h2>Inscrivez-vous.</h2>
+
+      <!-- Bouton Google (placeholder) -->
+      <button class="btn-login">
+        <img src="/icon/google-removebg-preview.png" alt="logo google" />
+        S'inscrire avec Google
+      </button>
+
+      <!-- Bouton Apple -->
+      <button class="btn-icon">
+        <img src="/icon/aplle-removebg-preview.png" alt="icone" />
+        S'inscrire avec Apple
+      </button>
+
+      <span class="ou-separat">OU</span>
+
+      <!-- Ouvrir modal signup -->
+      <button class="creat" onclick="openSignup()">
+        Créer un compte
+      </button>
+
+      <!-- MODAL SIGNUP -->
+      <div class="overlay" id="overlay">
+
+        <aside class="modal">
+
+          <button class="close" onclick="closeSignup()">✕</button>
+
+          <div class="modal-logo">
+            <img src="/icon/logo X.png" alt="logo x" />
+          </div>
+
+          <!-- FORMULAIRE ADONIS -->
+          @form({ route: 'new_account.store', method: 'POST', class:'modal-body' })
+
+            <div class="modal-header">
+              <h1>Créer votre compte</h1>
+            </div>
+
+            <!-- NOM -->
+            <div class="field">
+              <input
+                type="text"
+                name="name"
+                placeholder="Nom et prénom"
+                required
+              />
+            </div>
+
+            <!-- USERNAME -->
+            <div class="field">
+              <input
+                type="text"
+                name="username"
+                placeholder="Nom d'utilisateur"
+                required
+              />
+            </div>
+
+            <!-- EMAIL -->
+            <div class="field">
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                required
+              />
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="field">
+              <input
+                type="password"
+                name="password"
+                placeholder="Mot de passe"
+                required
+                minlength="6"
+              />
+            </div>
+
+            <!-- PASSWORD CONFIRM -->
+            <div class="field">
+              <input
+                type="password"
+                name="passwordConfirmation"
+                placeholder="Confirmer mot de passe"
+                required
+              />
+            </div>
+
+            <div class="actions">
+              <button class="primary" type="submit">
+                Suivant
+              </button>
+            </div>
+
+          @end
+
+        </aside>
+
+      </div>
+
+      <!-- FOOTER -->
+      <p class="cookies">
+        En vous inscrivant, vous acceptez les
+        <a href="#">Conditions d'utilisation</a>
+        et la
+        <a href="#">politique de confidentialité</a>.
       </p>
+
+      <div class="connecter">
+
+        <span>Vous avez déjà un compte ?</span>
+
+        <a href="{{ route('session.create') }}">
+          <button type="button">Se connecter</button>
+        </a>
+
+      </div>
+
     </div>
 
-    <div>
-      @form({ route: 'new_account.store', method: 'POST' })
-        <div>
-          @field.root({ name: 'fullName' })
-            @!field.label({ text: 'Full name' })
-            @!input.control()
-            @!field.error()
-          @end
-        </div>
-
-        <div>
-          @field.root({ name: 'email' })
-            @!field.label({ text: 'Email' })
-            @!input.control({ type: 'email', autocomplete: 'email' })
-            @!field.error()
-          @end
-        </div>
-
-        <div>
-          @field.root({ name: 'password' })
-            @!field.label({ text: 'Password' })
-            @!input.control({ type: 'password', autocomplete: 'new-password' })
-            @!field.error()
-          @end
-        </div>
-
-        <div>
-          @field.root({ name: 'passwordConfirmation' })
-            @!field.label({ text: 'Confirm password' })
-            @!input.control({ type: 'password', autocomplete: 'new-password' })
-            @!field.error()
-          @end
-        </div>
-
-        <div>
-          @!button({ text: 'Sign up', type: 'submit' })
-        </div>
-      @end
-    </div>
   </div>
-@end
+
+</main>
+
+
+<script>
+
+function openSignup(){
+  document.getElementById("overlay").style.display = "flex"
+}
+
+function closeSignup(){
+  document.getElementById("overlay").style.display = "none"
+}
+
+</script>
