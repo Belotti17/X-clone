@@ -7,19 +7,135 @@
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
-export class UserSchema extends BaseModel {
-  static $columns = ['id', 'fullName', 'email', 'password', 'createdAt', 'updatedAt'] as const
-  $columns = UserSchema.$columns
+export class EmailVerificationTokenSchema extends BaseModel {
+  static $columns = ['createdAt', 'expiresAt', 'id', 'token', 'updatedAt', 'userId'] as const
+  $columns = EmailVerificationTokenSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column.dateTime()
+  declare expiresAt: DateTime
   @column({ isPrimary: true })
   declare id: number
   @column()
-  declare fullName: string | null
-  @column()
-  declare email: string
-  @column({ serializeAs: null })
-  declare password: string
-  @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare token: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+  @column()
+  declare userId: number | null
+}
+
+export class FollowSchema extends BaseModel {
+  static $columns = ['createdAt', 'followerId', 'followingId', 'id', 'updatedAt'] as const
+  $columns = FollowSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column()
+  declare followerId: number | null
+  @column()
+  declare followingId: number | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
+export class LikeSchema extends BaseModel {
+  static $columns = ['createdAt', 'id', 'tweetId', 'updatedAt', 'userId'] as const
+  $columns = LikeSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare tweetId: number | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number | null
+}
+
+export class PasswordResetTokenSchema extends BaseModel {
+  static $columns = ['createdAt', 'expiresAt', 'id', 'token', 'updatedAt', 'userId'] as const
+  $columns = PasswordResetTokenSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column.dateTime()
+  declare expiresAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare token: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number | null
+}
+
+export class RetweetSchema extends BaseModel {
+  static $columns = ['createdAt', 'id', 'tweetId', 'updatedAt', 'userId'] as const
+  $columns = RetweetSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare tweetId: number | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number | null
+}
+
+export class TweetSchema extends BaseModel {
+  static $columns = ['content', 'createdAt', 'id', 'likesCount', 'media', 'repliesCount', 'retweetsCount', 'updatedAt', 'userId'] as const
+  $columns = TweetSchema.$columns
+  @column()
+  declare content: string
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare likesCount: number | null
+  @column()
+  declare media: string | null
+  @column()
+  declare repliesCount: number | null
+  @column()
+  declare retweetsCount: number | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number | null
+}
+
+export class UserSchema extends BaseModel {
+  static $columns = ['bio', 'createdAt', 'email', 'followers', 'following', 'id', 'isPrivate', 'isVerified', 'name', 'password', 'profilePicture', 'updatedAt', 'username'] as const
+  $columns = UserSchema.$columns
+  @column()
+  declare bio: string | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare email: string
+  @column()
+  declare followers: number | null
+  @column()
+  declare following: number | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare isPrivate: boolean | null
+  @column()
+  declare isVerified: boolean | null
+  @column()
+  declare name: string
+  @column({ serializeAs: null })
+  declare password: string
+  @column()
+  declare profilePicture: string | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare username: string
 }
