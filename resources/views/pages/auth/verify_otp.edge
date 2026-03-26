@@ -1,32 +1,57 @@
-@!layout('layouts/main')
+@component('layouts/main')
+  @slot('main')
+    <main class="login-container">
+      <div class="overlay" style="display:flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.8); position: fixed; inset: 0; z-index: 999;">
+        <aside class="modal" style="background: black; padding: 20px; border-radius: 15px; width: 100%; max-width: 400px; border: 1px solid #333;">
 
-<h1>Vérification email</h1>
+          <div class="modal-logo" style="text-align: center; margin-bottom: 20px;">
+            <img src="/assets/icon/logo X.png" style="width: 40px;" />
+          </div>
 
-<p>Code envoyé à : <strong>{{ email }}</strong></p>
+          <div class="modal-header" style="text-align: center; color: white;">
+            <h1>Vérification email</h1>
+            <p style="color:#6b7280; margin: 10px 0 20px;">Code envoyé à : <strong>{{ email }}</strong></p>
+          </div>
 
-{{-- Formulaire vérification OTP --}}
-@form({ route: 'verify.otp', method: 'POST' })
+          @if (flashMessages.has('errors'))
+            <div style="background: rgba(255,0,0,0.1); color:#ff4444; padding: 10px; border-radius: 5px; text-align: center; margin-bottom: 15px; font-size: 14px;">
+              {{ flashMessages.get('errors') }}
+            </div>
+          @endif
 
-  <input
-    type="text"
-    name="token"
-    placeholder="Code OTP"
-    maxlength="6"
-    required
-  />
+          @if (flashMessages.has('success'))
+            <div style="background: rgba(0,255,0,0.1); color:#00ba7c; padding: 10px; border-radius: 5px; text-align: center; margin-bottom: 15px; font-size: 14px;">
+              {{ flashMessages.get('success') }}
+            </div>
+          @endif
 
-  <button type="submit">
-    Vérifier
-  </button>
+          <form action="{{ route('verify.otp') }}" method="POST" class="modal-body">
+            {{ csrfField() }}
+            <div class="field" style="margin-bottom: 20px;">
+              <input
+                type="text"
+                name="token"
+                placeholder="Code OTP"
+                maxlength="6"
+                required
+                style="width: 92%; padding: 12px; background: #000; border: 1px solid #333; color: white; border-radius: 5px; font-size: 18px; text-align: center; letter-spacing: 4px;"
+              />
+            </div>
 
-@end
+            <button class="primary" type="submit" style="width: 100%; padding: 12px; background: white; color: black; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; margin-bottom: 20px;">
+              Vérifier
+            </button>
+          </form>
 
+          <form action="{{ route('otp.resend') }}" method="POST">
+            {{ csrfField() }}
+            <button type="submit" style="width: 100%; background: transparent; color: #1d9bf0; border: none; cursor: pointer; text-decoration: none; font-size: 14px;">
+              Renvoyer le code OTP
+            </button>
+          </form>
 
-{{-- Formulaire renvoi OTP --}}
-@form({ route: 'otp.resend', method: 'POST' })
-
-  <button type="submit">
-    Renvoyer OTP
-  </button>
-
+        </aside>
+      </div>
+    </main>
+  @end
 @end
