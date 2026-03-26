@@ -1,34 +1,13 @@
-@layout()
-  <div class="form-container">
-    <div>
-      <h1> Login </h1>
-      <p>
-        Enter your email and password below to log in
-      </p>
-    </div>
+@!layout('layouts/main')
 
-    <div>
-      @form({ route: 'session.store', method: 'POST' })
-        <div>
-          @field.root({ name: 'email' })
-            @!field.label({ text: 'Email' })
-            @!input.control({ type: 'email' })
-            @!field.error()
-          @end
-        </div>
+<h1>Connexion</h1>
 
-        <div>
-          @field.root({ name: 'password' })
-            @!field.label({ text: 'Password' })
-            @!input.control({ type: 'password' })
-            @!field.error()
-          @end
-        </div>
+@form({ route: 'session.store', method: 'POST' })
 
-        <div>
-          @!button({ text: 'Login', type: 'submit' })
-        </div>
-      @end
-    </div>
-  </div>
+  <input type="email" name="email" placeholder="Email" required />
+
+  <input type="password" name="password" placeholder="Mot de passe" required />
+
+  <button type="submit">Se connecter</button>
+
 @end
