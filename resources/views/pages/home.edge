@@ -1,23 +1,819 @@
-@layout()
-  <div class="hero">
-    <h1>It works — welcome to the simplicity of a Hypermedia app</h1>
-    <p>A lightweight foundation for building modern web interfaces — straightforward, flexible, and true to the web's core simplicity.</p>
+@!layout('layouts/main')
+
+<main class="login-container">
+
+  <div class="content">
+
+    <!-- Logo X -->
+    <div class="logo">
+      <img src="/icon/logo X.png" alt="log-X" />
+    </div>
+
+    <div class="compte">
+
+      <h1 class="title">Ça se passe <br />maintenant</h1>
+      <h2>Inscrivez-vous.</h2>
+
+      <!-- Bouton Google (placeholder) -->
+      <button class="btn-login">
+        <img src="/icon/google-removebg-preview.png" alt="logo google" />
+        S'inscrire avec Google
+      </button>
+
+      <!-- Bouton Apple -->
+      <button class="btn-icon">
+        <img src="/icon/aplle-removebg-preview.png" alt="icone" />
+        S'inscrire avec Apple
+      </button>
+
+      <span class="ou-separat">OU</span>
+
+      <!-- Ouvrir modal signup -->
+      <button class="creat" onclick="openSignup()">
+        Créer un compte
+      </button>
+
+      <!-- MODAL SIGNUP -->
+      <div class="overlay" id="overlay">
+
+        <aside class="modal">
+
+          <button class="close" onclick="closeSignup()">✕</button>
+
+          <div class="modal-logo">
+            <img src="/icon/logo X.png" alt="logo x" />
+          </div>
+
+          <!-- FORMULAIRE ADONIS -->
+          @form({ route: 'new_account.store', method: 'POST', class:'modal-body' })
+
+            <div class="modal-header">
+              <h1>Créer votre compte</h1>
+            </div>
+
+            <!-- NOM -->
+            <div class="field">
+              <input
+                type="text"
+                name="name"
+                placeholder="Nom et prénom"
+                required
+              />
+            </div>
+
+            <!-- USERNAME -->
+            <div class="field">
+              <input
+                type="text"
+                name="username"
+                placeholder="Nom d'utilisateur"
+                required
+              />
+            </div>
+
+            <!-- EMAIL -->
+            <div class="field">
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                required
+              />
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="field">
+              <input
+                type="password"
+                name="password"
+                placeholder="Mot de passe"
+                required
+                minlength="6"
+              />
+            </div>
+
+            <!-- PASSWORD CONFIRM -->
+            <div class="field">
+              <input
+                type="password"
+                name="passwordConfirmation"
+                placeholder="Confirmer mot de passe"
+                required
+              />
+            </div>
+
+            <div class="actions">
+              <button class="primary" type="submit">
+                Suivant
+              </button>
+            </div>
+
+          @end
+
+        </aside>
+
+      </div>
+
+      <!-- FOOTER -->
+      <p class="cookies">
+        En vous inscrivant, vous acceptez les
+        <a href="#">Conditions d'utilisation</a>
+        et la
+        <a href="#">politique de confidentialité</a>.
+      </p>
+
+      <div class="connecter">
+
+        <span>Vous avez déjà un compte ?</span>
+
+        <a href="{{ route('session.create') }}">
+          <button type="button">Se connecter</button>
+        </a>
+
+      </div>
+
+    </div>
+
   </div>
 
-  <div class="cards">
-    <a href="https://insiders.adonisjs.com/docs/v7-alpha/introduction" target="_blank">
-      <h3>Official Docs &nbsp;›</h3>
-      <p>Comprehensive reference for building with AdonisJS</p>
-    </a>
+</main>
 
-    <a href="https://adocasts.com/" target="_blank">
-      <h3>Adocasts &nbsp;›</h3>
-      <p>Guided video tutorials for everyday development</p>
-    </a>
 
-    <a href="https://discord.gg/vDcEjq6" target="_blank">
-      <h3>Discord &nbsp;›</h3>
-      <p>Connect with developers building with AdonisJS every day</p>
-    </a>
-  </div>
-@end
+<script>
+
+function openSignup(){
+  document.getElementById("overlay").style.display = "flex"
+}
+
+function closeSignup(){
+  document.getElementById("overlay").style.display = "none"
+}
+
+</script>
+
+
+<style>
+  * {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  height: 100vh;
+  background-color: black;
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+}
+
+h1 {
+  color: hwb(0 100% 0% / 0.705);
+  font-size: 500%;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Open Sans',
+    'Helvetica Neue',
+    sans-serif;
+}
+
+h2 {
+  color: hwb(0 100% 0% / 0.705);
+  font-size: 2rem;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Open Sans',
+    'Helvetica Neue',
+    sans-serif;
+  padding: 30px 0px;
+}
+span {
+  color: white;
+}
+
+.logo img {
+  width: 100%;
+  height: auto;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+}
+
+.btn-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: large;
+  gap: 5px;
+  background-color: white;
+  border-radius: 40px 40px;
+  width: 20rem;
+  height: 50px;
+  border: none;
+}
+
+.btn-login:hover {
+  background-color: whitesmoke;
+}
+
+.btn-login a {
+  color: black;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.btn-login p {
+  color: rgb(36, 39, 39);
+}
+
+.btn-login img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.btn-icon {
+  display: flex;
+  font-size: large;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: none;
+  background-color: white;
+  border-radius: 40px 40px;
+  width: 20rem;
+  height: 50px;
+}
+
+.btn-icon img {
+  width: 30px;
+  height: 30px;
+  border: none;
+  cursor: pointer;
+}
+
+.compte {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.compte span {
+  text-align: center;
+}
+
+.creat {
+  font-weight: bold;
+  font-size: large;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background-color: white;
+  border-radius: 40px 40px;
+  width: 20rem;
+  height: 50px;
+}
+
+.cookies {
+  color: white;
+  width: 20rem;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Open Sans',
+    'Helvetica Neue',
+    sans-serif;
+  padding-top: 10px;
+  font-size: 15px;
+}
+
+.cookies a {
+  text-decoration: none;
+}
+
+.connecter {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.connecter button {
+  background-color: transparent;
+  color: white;
+  border: 1px solid rgb(65, 63, 63);
+  border-radius: 40px 40px;
+  width: 20rem;
+  height: 50px;
+  font-weight: bold;
+  font-size: large;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Open Sans',
+    'Helvetica Neue',
+    sans-serif;
+}
+
+.connecter span {
+  color: white;
+  font-size: 1.5rem;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Open Sans',
+    'Helvetica Neue',
+    sans-serif;
+}
+
+#conect:hover,
+#grok:hover {
+  background-color: #ffffff1c;
+}
+
+:root {
+  --bg-overlay: rgba(0, 0, 0, 0.55);
+  --modal-bg: #fff;
+  --muted: #6b7280;
+  --input-border: #e6eef2;
+  --primary: #6b7280; /* grey button like in image */
+  --radius: 18px;
+  --shadow: 0 12px 30px rgba(2, 6, 23, 0.25);
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial;
+}
+
+/* overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-overlay);
+  padding: 24px;
+  display: none;
+}
+
+/* modal sheet */
+.modal {
+  width: 720px;
+  max-width: 96%;
+  max-height: 88vh;
+  background: black;
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* close top-left */
+.close {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  border: 0;
+  background: transparent;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  color: white;
+}
+
+/* logo at top center overlapping */
+.modal-logo {
+  display: flex;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+.modal-logo img {
+  width: 55px;
+  height: 55px;
+}
+
+/* header */
+.modal-header h1 {
+  margin: 14px 0 18px 0;
+  font-size: 28px;
+  letter-spacing: -0.3px;
+  color: #ffffffbd;
+}
+
+/* body: scrolling area */
+.modal-body {
+  padding: 0 48px 24px;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+/* fields */
+.field {
+  margin-bottom: 18px;
+  position: relative;
+}
+.field input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--input-border);
+  background: black;
+  font-size: 15px;
+  color: white;
+  outline: none;
+}
+
+.field input:focus {
+  border: 1px solid #1d9bf0;
+}
+
+.field input::placeholder {
+  color: #9aa4ab;
+}
+
+/* "Utiliser un email" link aligned to right of second field */
+.field .use-email {
+  position: absolute;
+  right: 6px;
+  top: 10px;
+  font-size: 13px;
+  color: #1d9bf0;
+  text-decoration: none;
+}
+
+/* date of birth section */
+.dob {
+  margin-top: 6px;
+  margin-bottom: 14px;
+  font-size: 14px;
+  color: #111827;
+}
+.dob .hint {
+  margin: 8px 0 12px 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+  max-width: 540px;
+}
+
+/* selects horizontally */
+.dob-selects {
+  display: flex;
+  gap: 12px;
+}
+.dob-selects select {
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--input-border);
+  background: black;
+  font-size: 14px;
+  color: white;
+}
+
+.dob-selects select:focus {
+  border: 1px solid #1d9bf0;
+}
+
+/* simulate long content so modal gets internal scroll and right scrollbar */
+.spacer {
+  height: 40px;
+}
+
+/* actions at bottom fixed-looking */
+.actions {
+  display: flex;
+  justify-content: center;
+  padding: 16px 48px 28px;
+  /* keep visible at bottom of modal body area */
+  margin-top: auto;
+}
+
+.date-ns {
+  color: white;
+}
+
+.primary {
+  width: 85%;
+  max-width: 520px;
+  padding: 16px 22px;
+  border-radius: 32px;
+  border: 0;
+  background: rgb(239, 243, 244);
+  color: black;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05) inset;
+}
+
+/* --- OVERLAY --- */
+/* OVERLAY corrigé : caché par défaut, centré quand actif */
+/* overlay du deuxième pop-up */
+.overlay-x {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: none; /* cacher par défaut */
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+/* Classe à ajouter via JS pour afficher */
+.overlay-x.active {
+  display: flex; /* active flexbox pour centrer */
+}
+
+/* Contenu du popup */
+.popup-content-x {
+  background: black;
+  width: 450px;
+  max-width: 100%;
+  padding: 30px;
+  border-radius: 18px;
+  position: relative;
+  margin: 0; /* annule tout décalage */
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 12px 30px rgba(2, 6, 23, 0.25);
+}
+
+.close-x {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  cursor: pointer;
+  color: white;
+}
+
+.logo-x {
+  font-size: 40px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.logo-x img {
+  width: 55px;
+  height: 55px;
+}
+
+.title-x {
+  text-align: center;
+  font-size: 26px;
+  margin: 15px 0 25px 0;
+  font-weight: 700;
+}
+
+/* --- BOUTONS --- */
+.btn-x {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid black;
+  background: white;
+  border-radius: 25px;
+  cursor: pointer;
+  margin-bottom: 12px;
+  display: flex;
+  font-size: 16px;
+  font-weight: bold;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-x img {
+  width: 24px;
+}
+
+.apple-x img {
+  width: 20px;
+}
+
+.google-x div strong {
+  font-size: 14px;
+}
+
+.google-x div span {
+  font-size: 16px;
+  color: black;
+  font-weight: bold;
+}
+
+/* --- OU --- */
+.or-x {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+  color: white;
+  font-size: 14px;
+}
+
+.or-x span {
+  flex: 1;
+  height: 1px;
+  background: #ccc;
+}
+
+/* --- INPUTS --- */
+.input-x {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--input-border);
+  background: black;
+  font-size: 15px;
+  color: white;
+  outline: none;
+  margin-bottom: 12px;
+}
+
+.input-x:focus {
+  border: 1px solid #1d9bf0;
+}
+/* --- Bouton noir --- */
+.btn-black-x {
+  width: 100%;
+  padding: 14px;
+  background: white;
+  color: black;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+/* --- Bouton bordure --- */
+.btn-border-x {
+  width: 100%;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 14px;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 25px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+/* Texte bas */
+.footer-x {
+  text-align: center;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.footer-x a {
+  color: #1d9bf0;
+  text-decoration: none;
+}
+
+.footer-container {
+  color: #ccc;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  padding: 30px 30px;
+}
+
+.footer-container span {
+  color: #9aa4ab;
+  font-size: 11px;
+  text-align: center;
+}
+
+.btn-full {
+  width: 100%;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 14px;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 25px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+/* small responsive tweaks */
+@media (max-width: 1000px) {
+  .logo img {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .content {
+    flex-direction: column;
+  }
+}
+@media (max-width: 768px) {
+  .compte {
+    align-items: center;
+  }
+}
+@media (max-width: 420px) {
+  h1 {
+    font-size: 3rem;
+  }
+
+  .modal {
+    border-radius: 12px;
+    padding: 0;
+  }
+  .modal-header h1 {
+    font-size: 22px;
+    padding: 0 14px;
+  }
+  .modal-body {
+    padding: 0 14px 20px;
+  }
+  .actions {
+    padding: 12px 14px 20px;
+  }
+  .primary {
+    width: 100%;
+  }
+}
+
+@media (max-width: 320px) {
+  .btn-login {
+    width: 15rem;
+  }
+  .btn-icon {
+    width: 15rem;
+  }
+  .creat {
+    width: 15rem;
+  }
+  .cookies {
+    width: 15rem;
+  }
+  .connecter span {
+    font-size: 15px;
+  }
+  .connecter button {
+    width: 15rem;
+  }
+}
+
+</style>
