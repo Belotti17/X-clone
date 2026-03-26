@@ -1,35 +1,42 @@
-import User from '#models/user'
-import type { HttpContext } from '@adonisjs/core/http'
+import User from '#models/user' // modèle utilisateur
+import type { HttpContext } from '@adonisjs/core/http' // contexte HTTP
 
 /**
- * SessionController handles user authentication and session management.
- * It provides methods for displaying the login page, authenticating users,
- * and logging out.
+ * Controller de gestion des sessions
  */
 export default class SessionController {
   /**
-   * Display the login page
+   * Affichage page login (optionnel)
    */
   async create({ view }: HttpContext) {
-    return view.render('pages/auth/login')
+    return view.render('pages/auth/login') // affiche login
   }
 
   /**
-   * Authenticate user credentials and create a new session
+   * Connexion utilisateur
    */
   async store({ request, auth, response }: HttpContext) {
+    // Récupération des champs envoyés
     const { email, password } = request.all()
+
+    // Vérification des identifiants
     const user = await User.verifyCredentials(email, password)
 
+    // Connexion de l'utilisateur avec le guard "web"
     await auth.use('web').login(user)
-    response.redirect().toRoute('new_account.create')
+
+    // REDIRECTION IMPORTANTE
+    return response.redirect().toRoute('timeline') // aller vers timeline
   }
 
   /**
-   * Log out the current user and destroy their session
+   * Déconnexion utilisateur
    */
   async destroy({ auth, response }: HttpContext) {
+    // Déconnexion utilisateur
     await auth.use('web').logout()
-    response.redirect().toRoute('session.create')
+
+    // Redirection vers signup
+    return response.redirect().toRoute('new_account.create')
   }
 }
