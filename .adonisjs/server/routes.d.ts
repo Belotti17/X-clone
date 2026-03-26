@@ -4,40 +4,77 @@ type ParamValue = string | number | bigint | boolean
 
 export type ScannedRoutes = {
   ALL: {
-    'home': { paramsTuple?: []; params?: {} }
+    'login': { paramsTuple?: []; params?: {} }
     'new_account.create': { paramsTuple?: []; params?: {} }
     'new_account.store': { paramsTuple?: []; params?: {} }
+    'session.store': { paramsTuple?: []; params?: {} }
     'otp.create': { paramsTuple?: []; params?: {} }
     'verify.otp': { paramsTuple?: []; params?: {} }
     'otp.resend': { paramsTuple?: []; params?: {} }
-    'session.create': { paramsTuple?: []; params?: {} }
-    'session.store': { paramsTuple?: []; params?: {} }
-    'session.destroy': { paramsTuple?: []; params?: {} }
-    'profile': { paramsTuple?: []; params?: {} }
     'timeline': { paramsTuple?: []; params?: {} }
+    'timeline.following': { paramsTuple?: []; params?: {} }
+    'tweets.store': { paramsTuple?: []; params?: {} }
+    'tweets.delete': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'tweets.like': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'tweets.retweet': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'tweets.reply': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'profile.show': { paramsTuple?: [ParamValue?]; params?: {'username'?: ParamValue} }
+    'profile.update': { paramsTuple?: []; params?: {} }
+    'profile.followers': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
+    'profile.following': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
+    'follow.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'follow.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'search': { paramsTuple?: []; params?: {} }
+    'search.hashtag': { paramsTuple: [ParamValue]; params: {'tag': ParamValue} }
+    'hashtag.show': { paramsTuple: [ParamValue]; params: {'tag': ParamValue} }
+    'account.togglePrivate': { paramsTuple?: []; params?: {} }
+    'session.destroy': { paramsTuple?: []; params?: {} }
   }
   GET: {
-    'home': { paramsTuple?: []; params?: {} }
+    'login': { paramsTuple?: []; params?: {} }
     'new_account.create': { paramsTuple?: []; params?: {} }
     'otp.create': { paramsTuple?: []; params?: {} }
-    'session.create': { paramsTuple?: []; params?: {} }
-    'profile': { paramsTuple?: []; params?: {} }
     'timeline': { paramsTuple?: []; params?: {} }
+    'timeline.following': { paramsTuple?: []; params?: {} }
+    'profile.show': { paramsTuple?: [ParamValue?]; params?: {'username'?: ParamValue} }
+    'profile.followers': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
+    'profile.following': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
+    'search': { paramsTuple?: []; params?: {} }
+    'search.hashtag': { paramsTuple: [ParamValue]; params: {'tag': ParamValue} }
+    'hashtag.show': { paramsTuple: [ParamValue]; params: {'tag': ParamValue} }
   }
   HEAD: {
-    'home': { paramsTuple?: []; params?: {} }
+    'login': { paramsTuple?: []; params?: {} }
     'new_account.create': { paramsTuple?: []; params?: {} }
     'otp.create': { paramsTuple?: []; params?: {} }
-    'session.create': { paramsTuple?: []; params?: {} }
-    'profile': { paramsTuple?: []; params?: {} }
     'timeline': { paramsTuple?: []; params?: {} }
+    'timeline.following': { paramsTuple?: []; params?: {} }
+    'profile.show': { paramsTuple?: [ParamValue?]; params?: {'username'?: ParamValue} }
+    'profile.followers': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
+    'profile.following': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
+    'search': { paramsTuple?: []; params?: {} }
+    'search.hashtag': { paramsTuple: [ParamValue]; params: {'tag': ParamValue} }
+    'hashtag.show': { paramsTuple: [ParamValue]; params: {'tag': ParamValue} }
   }
   POST: {
     'new_account.store': { paramsTuple?: []; params?: {} }
+    'session.store': { paramsTuple?: []; params?: {} }
     'verify.otp': { paramsTuple?: []; params?: {} }
     'otp.resend': { paramsTuple?: []; params?: {} }
-    'session.store': { paramsTuple?: []; params?: {} }
+    'tweets.store': { paramsTuple?: []; params?: {} }
+    'tweets.delete': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'tweets.like': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'tweets.retweet': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'tweets.reply': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'follow.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'account.togglePrivate': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }
+  }
+  PUT: {
+    'profile.update': { paramsTuple?: []; params?: {} }
+  }
+  DELETE: {
+    'follow.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
 }
 declare module '@adonisjs/core/types/http' {
