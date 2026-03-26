@@ -1,152 +1,120 @@
-@!layout('layouts/main')
+@component('layouts/main', { title: 'S\'inscrire sur X' })
+  @slot('assets')
+    @vite(['resources/css/signup.css', 'resources/js/signup.js'])
+  @end
 
-<main class="login-container">
+  @slot('main')
+    <main class="login-container">
+      <div class="content">
+        <div class="logo">
+          <img src="/assets/icon/logo X.png" alt="Logo X" />
+        </div>
+        <div class="compte">
+          <h1 class="title">Ça se passe <br />maintenant</h1>
+          <h2>Inscrivez-vous.</h2>
 
-  <div class="content">
+          <button class="btn-login" type="button">
+            <img src="/assets/icon/google-removebg-preview.png" />
+            S'inscrire avec Google
+          </button>
 
-    <!-- Logo X -->
-    <div class="logo">
-      <img src="/icon/logo X.png" alt="log-X" />
-    </div>
+          <button class="btn-icon" type="button">
+            <img src="/assets/icon/aplle-removebg-preview.png" />
+            S'inscrire avec Apple
+          </button>
 
-    <div class="compte">
+          <span class="ou-separat">OU</span>
 
-      <h1 class="title">Ça se passe <br />maintenant</h1>
-      <h2>Inscrivez-vous.</h2>
+          <button class="creat" type="button" onclick="openSignup()">
+            Créer un compte
+          </button>
 
-      <!-- Bouton Google (placeholder) -->
-      <button class="btn-login">
-        <img src="/icon/google-removebg-preview.png" alt="logo google" />
-        S'inscrire avec Google
-      </button>
+          <div class="overlay" id="overlay">
+            <aside class="modal">
+              <button class="close" type="button" onclick="closeSignup()">✕</button>
+              <div class="modal-logo">
+                <img src="/assets/icon/logo X.png" />
+              </div>
 
-      <!-- Bouton Apple -->
-      <button class="btn-icon">
-        <img src="/icon/aplle-removebg-preview.png" alt="icone" />
-        S'inscrire avec Apple
-      </button>
+              @form({ route: 'new_account.store', method: 'POST', class:'modal-body' })
+                @if (flashMessages.has('errors'))
+                  <div style="color:red; margin-bottom:10px;">
+                    @each(error in flashMessages.get('errors'))
+                      <p>{{ error.message }}</p>
+                    @end
+                  </div>
+                @endif
 
-      <span class="ou-separat">OU</span>
+                <div class="modal-header">
+                  <h1>Créer votre compte</h1>
+                </div>
 
-      <!-- Ouvrir modal signup -->
-      <button class="creat" onclick="openSignup()">
-        Créer un compte
-      </button>
+                <div class="field">
+                  <input name="name" placeholder="Nom et prénom" required />
+                </div>
 
-      <!-- MODAL SIGNUP -->
-      <div class="overlay" id="overlay">
+                <div class="field">
+                  <input name="username" placeholder="Nom d'utilisateur" required />
+                </div>
 
-        <aside class="modal">
+                <div class="field">
+                  <input type="email" name="email" placeholder="Email" required />
+                </div>
 
-          <button class="close" onclick="closeSignup()">✕</button>
+                <div class="field">
+                  <input type="password" name="password" placeholder="Mot de passe" required />
+                </div>
 
-          <div class="modal-logo">
-            <img src="/icon/logo X.png" alt="logo x" />
+                <div class="field">
+                  <input type="password" name="passwordConfirmation" placeholder="Confirmer" required />
+                </div>
+
+                <div class="actions">
+                  <button class="primary" type="submit">Suivant</button>
+                </div>
+              @end
+            </aside>
           </div>
 
-          <!-- FORMULAIRE ADONIS -->
-          @form({ route: 'new_account.store', method: 'POST', class:'modal-body' })
+          <p class="cookies">
+            En vous inscrivant, vous acceptez les <a href="#">Conditions d'utilisation</a>.
+          </p>
 
-            <div class="modal-header">
-              <h1>Créer votre compte</h1>
-            </div>
+          <div class="connecter">
+            <span>Vous avez déjà un compte ?</span>
+            <button type="button" onclick="openLogin()">Se connecter</button>
+          </div>
+        </div>
+      </div>
 
-            <!-- NOM -->
-            <div class="field">
-              <input
-                type="text"
-                name="name"
-                placeholder="Nom et prénom"
-                required
-              />
-            </div>
-
-            <!-- USERNAME -->
-            <div class="field">
-              <input
-                type="text"
-                name="username"
-                placeholder="Nom d'utilisateur"
-                required
-              />
-            </div>
-
-            <!-- EMAIL -->
-            <div class="field">
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                required
-              />
-            </div>
-
-            <!-- PASSWORD -->
-            <div class="field">
-              <input
-                type="password"
-                name="password"
-                placeholder="Mot de passe"
-                required
-                minlength="6"
-              />
-            </div>
-
-            <!-- PASSWORD CONFIRM -->
-            <div class="field">
-              <input
-                type="password"
-                name="passwordConfirmation"
-                placeholder="Confirmer mot de passe"
-                required
-              />
-            </div>
-
-            <div class="actions">
-              <button class="primary" type="submit">
-                Suivant
-              </button>
-            </div>
-
+      <div id="popup-x" class="overlay-x">
+        <div class="popup-content-x">
+          <button class="close-x" type="button" onclick="closeLogin()">X</button>
+          <div class="logo-x"><img src="/assets/icon/logo X.png" /></div>
+          <h2 class="title-x">Connectez-vous à X</h2>
+          @form({ route: 'session.store', method: 'POST' })
+            <input class="input-x" name="email" placeholder="Email" required />
+            <input class="input-x" type="password" name="password" placeholder="Mot de passe" required />
+            <button class="btn-black-x" type="submit">Se connecter</button>
           @end
-
-        </aside>
-
+        </div>
       </div>
 
-      <!-- FOOTER -->
-      <p class="cookies">
-        En vous inscrivant, vous acceptez les
-        <a href="#">Conditions d'utilisation</a>
-        et la
-        <a href="#">politique de confidentialité</a>.
-      </p>
+      <footer>
+        <div class="footer-container">
+          <span>
+            À propos | Téléchargez l'application X | Grok | Centre d'assistance |
+            Conditions d'utilisation | Politique de Confidentialité | © 2026 X Corp.
+          </span>
+        </div>
+      </footer>
+    </main>
 
-      <div class="connecter">
-
-        <span>Vous avez déjà un compte ?</span>
-
-        <a href="{{ route('session.create') }}">
-          <button type="button">Se connecter</button>
-        </a>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</main>
-
-
-<script>
-
-function openSignup(){
-  document.getElementById("overlay").style.display = "flex"
-}
-
-function closeSignup(){
-  document.getElementById("overlay").style.display = "none"
-}
-
-</script>
+    <script>
+      function openSignup(){ document.getElementById("overlay").style.display = "flex" }
+      function closeSignup(){ document.getElementById("overlay").style.display = "none" }
+      function openLogin(){ document.getElementById("popup-x").classList.add("active") }
+      function closeLogin(){ document.getElementById("popup-x").classList.remove("active") }
+    </script>
+  @end
+@end
