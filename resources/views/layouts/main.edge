@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-  <meta charset="UTF-8" />
-  <link rel="stylesheet" href="/resources/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title || 'Clone X' }}</title>
 
-  <!-- Responsive mobile -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {{-- Assets globaux --}}
+    @vite(['resources/css/style.css', 'resources/js/signup.js'])
 
-  <title>X Clone</title>
+    {{-- Emplacement pour les CSS/JS spécifiques --}}
+    @if ($slots.assets)
+        {{{ await $slots.assets() }}}
+    @endif
 </head>
-
 <body>
 
-  <!-- Edge injecte ici le contenu des pages -->
-  {{{ await $slots.main() }}}
+    <main>
+        {{-- Emplacement pour le contenu de tes pages --}}
+        {{{ await $slots.main() }}}
+    </main>
 
 </body>
-
 </html>
