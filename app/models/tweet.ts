@@ -1,49 +1,73 @@
-import { TweetSchema } from '#database/schema'
-import User from './user.ts'
-import Like from './like.ts'
-import Retweet from './retweet.ts'
-
-import { belongsTo, hasMany } from '@adonisjs/lucid/orm'
+// app/models/tweet.ts
+import { DateTime } from 'luxon'
+import { BaseModel, column, belongsTo, hasMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
+import User from './user.js'
+import Like from './like.js'
 
-/**
- * Modèle Tweet
- * -------------
- * Représente un tweet posté par un utilisateur.
- * Gère les relations avec les likes, retweets et réponses.
- */
-export default class Tweet extends TweetSchema {
-  /**
-   * L'utilisateur qui a posté le tweet
-   */
-  @belongsTo(() => User, {
-    foreignKey: 'user_id',
-  })
+export default class Tweet extends BaseModel {
+  @column({ isPrimary: true })
+  declare id: number
+
+  @column()
+  declare content: string | null
+
+  @column()
+  declare userId: number
+
+  @column()
+  declare originalTweetId: number | null
+
+  @column()
+  declare parentTweetId: number | null
+
+  @column()
+  declare isRetweet: boolean
+
+  @column()
+  declare isReply: boolean
+
+  @column()
+  declare image: string | null
+
+  @column()
+  declare video: string | null // ← AJOUTER CETTE LIGNE
+
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
+
+  // Relation avec l'utilisateur
+  @belongsTo(() => User)
   declare user: BelongsTo<typeof User>
 
-  /**
-   * Tous les likes liés à ce tweet
-   */
-  @hasMany(() => Like, {
-    foreignKey: 'tweet_id',
+  // Relation avec le tweet original (pour les retweets)
+  @belongsTo(() => Tweet, {
+    foreignKey: 'originalTweetId',
   })
-  declare likes: HasMany<typeof Like>
+  declare originalTweet: BelongsTo<typeof Tweet>
 
-  /**
-   * Tous les retweets liés à ce tweet
-   */
-  @hasMany(() => Retweet, {
-    foreignKey: 'tweet_id',
+  // Relation avec le tweet parent (pour les réponses)
+  @belongsTo(() => Tweet, {
+    foreignKey: 'parentTweetId',
   })
-  declare retweets: HasMany<typeof Retweet>
+  declare parentTweet: BelongsTo<typeof Tweet>
 
-  /**
-   * Toutes les réponses à ce tweet
-   * Ici on se base sur le même modèle Tweet pour les réponses
-   * La colonne `parent_id` doit être ajoutée dans la migration si tu veux gérer les réponses
-   */
+  // Relation pour les réponses à ce tweet
   @hasMany(() => Tweet, {
-    foreignKey: 'parent_id',
+    foreignKey: 'parentTweetId',
   })
   declare replies: HasMany<typeof Tweet>
+
+  // Relation pour les retweets de ce tweet
+  @hasMany(() => Tweet, {
+    foreignKey: 'originalTweetId',
+  })
+  declare retweets: HasMany<typeof Tweet>
+
+  // Relation pour les likes
+  @hasMany(() => Like)
+  declare likes: HasMany<typeof Like>
 }
