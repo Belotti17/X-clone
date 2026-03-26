@@ -87,18 +87,28 @@ export class RetweetSchema extends BaseModel {
 }
 
 export class TweetSchema extends BaseModel {
-  static $columns = ['content', 'createdAt', 'id', 'likesCount', 'media', 'repliesCount', 'retweetsCount', 'updatedAt', 'userId'] as const
+  static $columns = ['content', 'createdAt', 'id', 'image', 'isReply', 'isRetweet', 'likesCount', 'media', 'originalTweetId', 'parentTweetId', 'repliesCount', 'retweetsCount', 'updatedAt', 'userId', 'video'] as const
   $columns = TweetSchema.$columns
   @column()
-  declare content: string
+  declare content: string | null
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime | null
   @column({ isPrimary: true })
   declare id: number
   @column()
+  declare image: string | null
+  @column()
+  declare isReply: boolean | null
+  @column()
+  declare isRetweet: boolean | null
+  @column()
   declare likesCount: number | null
   @column()
   declare media: string | null
+  @column()
+  declare originalTweetId: number | null
+  @column()
+  declare parentTweetId: number | null
   @column()
   declare repliesCount: number | null
   @column()
@@ -107,6 +117,8 @@ export class TweetSchema extends BaseModel {
   declare updatedAt: DateTime | null
   @column()
   declare userId: number | null
+  @column()
+  declare video: string | null
 }
 
 export class UserSchema extends BaseModel {
