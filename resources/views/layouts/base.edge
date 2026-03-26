@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title || 'X-clone' }}</title>
+
+    @vite(['resources/css/index.css'])
+    @vite(['resources/js/index.js'])
+
+    @if ($slots.assets)
+        {{{ await $slots.assets() }}}
+    @endif
+</head>
+<body>
+
+    {{{ await $slots.main() }}}
+
+
+</body>
+</html>
