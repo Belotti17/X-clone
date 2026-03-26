@@ -1,17 +1,18 @@
-import vine from '@vinejs/vine'
+import vine from '@vinejs/vine' // import du validateur VineJS
 
 /*
-|--------------------------------------------------------------------------
-| Validator pour créer un tweet
-|--------------------------------------------------------------------------
-| Ce validator vérifie le contenu du tweet envoyé par l'utilisateur
+ Validator pour créer un tweet
+ Vérifie et sécurise les données envoyées par l'utilisateur
+ Empêche les tweets vides ou trop longs
 */
 
 export const tweetValidator = vine.compile(
   vine.object({
     // contenu du tweet
-    // trim() supprime les espaces inutiles
-    // maxLength(280) limite Twitter
-    content: vine.string().trim().minLength(1).maxLength(280),
+    content: vine
+      .string() // doit être une chaîne de caractères
+      .trim() // supprime les espaces avant/après
+      .minLength(1) // empêche contenu vide
+      .maxLength(280), // limite type Twitter
   })
 )
