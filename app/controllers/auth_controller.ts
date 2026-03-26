@@ -1,72 +1,95 @@
-import User from '#models/user' // modèle user
-import EmailVerificationToken from '#models/email_verification_token' // modèle OTP
-import mail from '@adonisjs/mail/services/main' // service email
-import type { HttpContext } from '@adonisjs/core/http' // context HTTP
-import { DateTime } from 'luxon' // gestion date
-import { verifyOtpValidator } from '#validators/auth' // validator OTP
+import User from '#models/user'
+import EmailVerificationToken from '#models/email_verification_token'
+import mail from '@adonisjs/mail/services/main'
+import type { HttpContext } from '@adonisjs/core/http'
+import { DateTime } from 'luxon'
+import { verifyOtpValidator } from '#validators/auth'
 
 export default class AuthController {
-  // vérifie le OTP
-  public async verifyOtp({ request, response, session }: HttpContext) {
-    const email = session.get('otpEmail') // email stocké session
+  /**
+   * Vérification du code OTP
+   */
+  public async verifyOtp({ request, response, session, auth }: HttpContext) {
+    const email = session.get('otpEmail')
 
     if (!email) {
-      // sécurité session
-      return response.badRequest({ message: 'Session expirée' })
+      session.flash('errors', ['Session expirée, veuillez vous réinscrire.'])
+      return response.redirect().toRoute('new_account.create')
     }
 
-    const { token } = await request.validateUsing(verifyOtpValidator) // validation OTP
-
     try {
-      const user = await User.findByOrFail('email', email) // recherche user
-      const otpRecord = await EmailVerificationToken.query() // démarre une requête Lucid
-        .where('user_id', user.id) // filtre par utilisateur
-        .where('token', token) // filtre par code OTP
-        .where('expires_at', '>', DateTime.now().toJSDate()) // vérifie expiration
-        .firstOrFail() // erreur si aucun token trouvé
+      // Validation via le validator (vérifie que 'token' est présent)
+      const { token } = await request.validateUsing(verifyOtpValidator)
 
-      user.isVerified = true // email vérifié
-      await user.save() // sauvegarde
+      const user = await User.findByOrFail('email', email)
 
-      await otpRecord.delete() // suppression OTP utilisé
+      // Recherche du jeton valide
+      const otpRecord = await EmailVerificationToken.query()
+        .where('user_id', user.id)
+        .where('token', token)
+        .where('expires_at', '>', DateTime.now().toJSDate())
+        .first()
 
-      session.forget('otpEmail') // nettoyage session
+      if (!otpRecord) {
+        session.flash('errors', ['Code OTP invalide ou expiré.'])
+        return response.redirect().back()
+      }
 
-      return response.redirect().toRoute('session.create') // redirection login
-    } catch {
-      return response.badRequest({
-        // OTP invalide
-        message: 'OTP invalide ou expiré',
-      })
+      // Validation réussie
+      user.isVerified = true
+      await user.save()
+
+      await otpRecord.delete()
+      session.forget('otpEmail')
+
+      // Connexion et redirection
+      await auth.use('web').login(user)
+      await session.commit()
+
+      return response.redirect().toRoute('timeline')
+    } catch (error) {
+      session.flash('errors', ['Une erreur est survenue lors de la vérification.'])
+      return response.redirect().back()
     }
   }
 
-  // renvoyer OTP
+  /**
+   * Renvoi du code OTP
+   */
   public async resendOtp({ session, response }: HttpContext) {
-    const email = session.get('otpEmail') // email session
+    const email = session.get('otpEmail')
 
     if (!email) {
-      return response.badRequest({ message: 'Session expirée' })
+      session.flash('errors', ['Session expirée, veuillez recommencer.'])
+      return response.redirect().toRoute('new_account.create')
     }
 
-    const user = await User.findByOrFail('email', email) // recherche user
+    try {
+      const user = await User.findByOrFail('email', email)
 
-    await EmailVerificationToken.query().where('userId', user.id).delete() // supprime anciens OTP
+      // Nettoyage des anciens codes
+      await EmailVerificationToken.query().where('user_id', user.id).delete()
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString() // nouveau OTP
+      const otp = Math.floor(100000 + Math.random() * 900000).toString()
 
-    await EmailVerificationToken.create({
-      // sauvegarde OTP
-      userId: user.id,
-      token: otp,
-      expiresAt: DateTime.now().plus({ minutes: 10 }),
-    })
+      await EmailVerificationToken.create({
+        userId: user.id,
+        token: otp,
+        expiresAt: DateTime.now().plus({ minutes: 10 }),
+      })
 
-    await mail.send((message) => {
-      // envoi email
-      message.to(user.email).subject('Votre nouveau code OTP').text(`Votre code OTP est : ${otp}`)
-    })
+      await mail.send((message) => {
+        message
+          .to(user.email)
+          .subject('Nouveau code de vérification X')
+          .text(`Votre nouveau code est : ${otp}`)
+      })
 
-    return response.redirect().back() // retour page précédente
+      session.flash('success', 'Un nouveau code a été envoyé !')
+      return response.redirect().back()
+    } catch (error) {
+      session.flash('errors', ['Impossible de renvoyer le code.'])
+      return response.redirect().back()
+    }
   }
 }
