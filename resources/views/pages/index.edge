@@ -28,11 +28,7 @@
                             <img class="nav__icon" src="/assets/icon/message-mail-email-letter-envelope-svgrepo-com.svg" />Messages
                         </a>
                     </li>
-                    <li>
-                        <a href="/grok" class="nav__link">
-                            <img class="nav__icon" src="/assets/icon/grok-logo-png_seeklogo-613403.png" />Grok
-                        </a>
-                    </li>
+                    
                     <li>
                         <a href="/communities" class="nav__link">
                             <img class="nav__icon" src="/assets/icon/users-svgrepo-com.svg" />Communities
@@ -53,24 +49,25 @@
                 <div style="margin-top: 20px">
                     <button class="btn--primary" id="openTweetModal">Post</button>
                 </div>
-            </nav>
-
-            <div class="user-line">
+                
+            <div class="user-line" id="userMenu">
                 <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px; margin-right: 12px;">
                     {{ user?.name ? user.name.charAt(0).toUpperCase() : user?.username?.charAt(0).toUpperCase() || 'U' }}
                 </div>
                 <div class="user-info">
                     <div class="user-name">{{ user?.name || user?.username }}</div>
-                    <div class="user-handle">@{{ user?.username }}</div>
+                    <div class="user-handle">{{ user?.username }}</div>
                 </div>
                 <button class="user-menu" aria-label="Menu utilisateur">⋯</button>
                 <div class="popup-menu" hidden>
                     <form method="POST" action="/logout">
                         {{ csrfField() }}
-                        <button type="submit" class="logout">Déconnexion</button>
+                        <button type="submit" class="logout">Déconnexion <br> {{ user?.username }}</button>
                     </form>
                 </div>
             </div>
+            </nav>
+
         </header>
 
         <!-- MAIN GRID -->
@@ -113,9 +110,6 @@
                                             <img src="/assets/icon/gif-svgrepo-com.svg" />
                                         </button>
                                         <button type="button" class="icon-btn">
-                                            <img src="/assets/icon/grok-logo-png_seeklogo-613403.png" />
-                                        </button>
-                                        <button type="button" class="icon-btn">
                                             <img src="/assets/icon/setting-svgrepo-com.svg" />
                                         </button>
                                         <button type="button" class="icon-btn">
@@ -155,14 +149,13 @@
                                             </form>
                                         @endif
                                     </div>
-                                    
                                     <div class="tweet-header">
                                         <div class="avatar-circle" style="width: 48px; height: 48px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px;">
                                             {{ tweet.originalTweet.user?.name ? tweet.originalTweet.user.name.charAt(0).toUpperCase() : tweet.originalTweet.user?.username?.charAt(0).toUpperCase() || 'U' }}
                                         </div>
                                         <div class="tweet-user-info">
                                             <strong>{{ tweet.originalTweet.user?.name || tweet.originalTweet.user?.username }}</strong>
-                                            <span class="username">@{{ tweet.originalTweet.user?.username }}</span>
+                                            <span class="username">{{ tweet.originalTweet.user?.username }}</span>
                                             <span class="time">· {{ tweet.originalTweet.createdAt?.toFormat ? tweet.originalTweet.createdAt.toFormat('dd/MM/yyyy HH:mm') : tweet.originalTweet.createdAt }}</span>
                                         </div>
                                     </div>
@@ -187,14 +180,14 @@
                                                 </div>
                                                 <div>
                                                     <strong>{{ user.name || user.username }}</strong>
-                                                    <span class="username">@{{ user.username }}</span>
+                                                    <span class="username">{{ user.username }}</span>
                                                 </div>
                                             </div>
                                             <p class="retweet-comment-text">{{ tweet.content }}</p>
                                         </div>
                                     @endif
                                     
-                                {{-- SI C'EST UN TWEET NORMAL --}}
+                                {{--Tweet normal--}}
                                 @else
                                     <div class="tweet-header">
                                         <div class="avatar-circle" style="width: 48px; height: 48px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px;">
@@ -202,7 +195,7 @@
                                         </div>
                                         <div class="tweet-user-info">
                                             <strong>{{ tweet.user?.name || tweet.user?.username }}</strong>
-                                            <span class="username">@{{ tweet.user?.username }}</span>
+                                            <span class="username">{{ tweet.user?.username }}</span>
                                             <span class="time">· {{ tweet.createdAt?.toFormat ? tweet.createdAt.toFormat('dd/MM/yyyy HH:mm') : tweet.createdAt }}</span>
                                         </div>
 
@@ -270,7 +263,7 @@
             <div id="rightContainer">
                 <div id="searchWrap">
                     <form action="/search" method="GET">
-                        <input class="search__input" name="q" placeholder="Search" />
+                        <input class="search__input" name="q" placeholder="Search"/>
                     </form>
                 </div>
 
