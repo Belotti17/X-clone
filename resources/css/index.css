@@ -1,7 +1,10 @@
-/* RESET */
+/* ============================================
+   RESET & BASE
+   ============================================ */
 * {
   box-sizing: border-box;
 }
+
 html,
 body {
   height: 100%;
@@ -16,12 +19,15 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
 button {
   font-family: inherit;
   cursor: pointer;
 }
 
-/* SIDEBAR GAUCHE */
+/* ============================================
+   SIDEBAR GAUCHE
+   ============================================ */
 header {
   position: fixed;
   left: 0;
@@ -83,7 +89,9 @@ header {
   width: 100%;
 }
 
-/* MAIN */
+/* ============================================
+   MAIN LAYOUT
+   ============================================ */
 .main {
   margin-left: 280px;
   display: flex;
@@ -93,7 +101,7 @@ header {
   position: relative;
 }
 
-/* CONTAINER CENTRAL */
+/* Container central */
 #centerContainer {
   flex: 2;
   display: flex;
@@ -104,7 +112,18 @@ header {
   border-left: 1px solid #e5e7eb;
 }
 
-/* TABS */
+/* Container droit */
+#rightContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+}
+
+/* ============================================
+   TABS
+   ============================================ */
 .tabs {
   background: #fff;
   position: sticky;
@@ -116,17 +135,17 @@ header {
   list-style: none;
   display: flex;
   justify-content: space-around;
-  padding: 14px 0px;
+  padding: 14px 0;
   margin: 0;
   gap: 10px;
-  border-bottom: 1px solid #e5e7eb; /* ligne sous tous les liens pour séparation visuelle */
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .tabs__link {
   padding: 14px 10px;
   font-weight: 700;
   color: #6b7280;
-  border-bottom: 3px solid transparent; /* pas de ligne si non actif */
+  border-bottom: 3px solid transparent;
 }
 
 .tabs__link.active {
@@ -134,73 +153,88 @@ header {
   border-bottom-color: #1d9bf0;
 }
 
-/* FEED VIDE */
+/* ============================================
+   FEED
+   ============================================ */
 #feedContainer {
   flex: 1;
   padding-top: 10px;
 }
 
-/* LIGNE VERTICALE ENTRE CENTRE ET DROITE */
-#verticalSeparator {
-  width: 3px;
-  background: #e5e7eb;
-  height: 100vh;
+.empty-feed {
+  text-align: center;
+  padding: 48px;
+  color: #6b7280;
 }
 
-/* COLONNE DROITE */
-#rightContainer {
-  flex: 1;
+/* ============================================
+   TWEET ITEM
+   ============================================ */
+.tweet-item {
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  transition: background 0.2s;
+}
+
+.tweet-item:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.tweet-header {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-  overflow-y: auto;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
-#searchWrap {
-  background: #fafafa;
-  padding: 16px;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+.tweet-user-info {
+  flex: 1;
 }
 
-.search__input {
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: 9999px;
-  border: 1px solid #e5e7eb;
-  background: #f3f4f6;
-  font-size: 15px;
-}
-
-#subscribe {
-  background: #fafafa;
-  padding: 16px;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-}
-
-.subscribe__title {
+.tweet-user-info strong {
   font-weight: 700;
-  font-size: 18px;
-  margin-bottom: 6px;
+  margin-right: 8px;
 }
 
-.subscribe__desc {
-  color: black;
-  margin-bottom: 10px;
+.username {
+  color: #6b7280;
   font-size: 14px;
-  line-height: 1.4;
+  margin-right: 8px;
 }
 
-.btn--secondary {
-  background: #1d9bf0;
-  border: 1px solid #e5e7eb;
-  padding: 8px 12px;
-  color: white;
-  font-weight: bold;
-  border-radius: 9999px;
+.time {
+  color: #6b7280;
+  font-size: 12px;
 }
 
+.tweet-content {
+  flex: 1;
+}
+
+.tweet-content textarea {
+  width: 100%;
+  border: none;
+  resize: none;
+  font-size: 16px;
+  outline: none;
+  background: transparent;
+  min-height: 60px;
+}
+
+.tweet-image {
+  max-width: 100%;
+  border-radius: 16px;
+  margin-top: 12px;
+}
+
+.tweet-video {
+  max-width: 100%;
+  border-radius: 16px;
+  margin-top: 8px;
+}
+
+/* ============================================
+   FORMULAIRE DE TWEET
+   ============================================ */
 .addtwets {
   padding: 12px 16px;
   border-bottom: 1px solid #e5e7eb;
@@ -216,20 +250,6 @@ header {
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
-}
-
-.tweet-content {
-  flex: 1;
-}
-
-.tweet-content textarea {
-  width: 100%;
-  border: none;
-  resize: none;
-  font-size: 16px;
-  outline: none;
-  background: transparent;
-  min-height: 60px;
 }
 
 .tweet-actions {
@@ -253,7 +273,9 @@ header {
   border-radius: 9999px;
 }
 
-/* boutons icônes UNIFORMES */
+/* ============================================
+   BOUTONS ICÔNES
+   ============================================ */
 .icon-btn {
   width: 34px;
   height: 34px;
@@ -275,123 +297,9 @@ header {
   height: 18px;
 }
 
-/*avatar connecté*/
-
-.user-line {
-  display: flex;
-  align-items: center;
-  padding: 12px;
-  color: #fff;
-  max-width: 350px;
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto;
-}
-
-.user-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 12px;
-  object-fit: cover;
-}
-
-.user-info {
-  flex: 1;
-}
-
-.user-name {
-  font-weight: 700;
-  font-size: 15px;
-  color: #000;
-}
-
-.user-handle {
-  color: #1d1e1f;
-  font-size: 14px;
-}
-
-/*  Bouton trois points */
-.user-menu {
-  background: transparent;
-  border: none;
-  color: #71767b;
-  font-size: 22px;
-  cursor: pointer;
-  padding: 6px 10px;
-  border-radius: 9999px;
-}
-
-.user-menu:hover {
-  background: rgba(29, 155, 240, 0.15);
-  color: #1d9bf0;
-}
-
-/* Position relative pour le user-line */
-.user-line {
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: 12px;
-  max-width: 350px;
-}
-
-/* Style du popup-menu */
-.popup-menu {
-  position: absolute;
-  bottom: 70px;
-  left: 20px;
-  background: #000000;
-  border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  min-width: 180px;
-  z-index: 1000;
-  border: 1px solid #2f3336;
-  overflow: hidden;
-}
-
-.popup-menu form {
-  margin: 0;
-}
-
-.popup-menu .logout {
-  width: 100%;
-  padding: 12px 16px;
-  background: transparent;
-  border: none;
-  color: #f4212e;
-  font-size: 15px;
-  font-weight: 500;
-  text-align: left;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  font-family: inherit;
-}
-
-.popup-menu .logout:hover {
-  background: rgba(244, 33, 46, 0.1);
-}
-
-.user-menu {
-  background: transparent;
-  border: none;
-  color: #71767b;
-  font-size: 22px;
-  cursor: pointer;
-  padding: 6px 10px;
-  border-radius: 9999px;
-  margin-left: auto;
-}
-
-.user-menu:hover {
-  background: rgba(29, 155, 240, 0.15);
-  color: #1d9bf0;
-}
-
-/* Interactions des tweets */
+/* ============================================
+   INTERACTIONS DES TWEETS
+   ============================================ */
 .tweet-interactions {
   display: flex;
   justify-content: space-between;
@@ -420,7 +328,6 @@ header {
   transition: all 0.2s ease;
 }
 
-/* Bouton Like */
 .like-btn {
   color: #6b7280;
 }
@@ -434,19 +341,215 @@ header {
   color: #f91880;
 }
 
-/* Bouton Reply */
 .reply-btn:hover {
   color: #1d9bf0;
   background-color: rgba(29, 155, 240, 0.1);
 }
 
-/* Bouton Retweet */
 .retweet-btn:hover {
   color: #00ba7c;
   background-color: rgba(0, 186, 124, 0.1);
 }
 
-/* Messages flash */
+/* ============================================
+   RETWEETS
+   ============================================ */
+.retweet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  margin-left: 48px;
+}
+
+.retweet-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.retweet-icon svg {
+  flex-shrink: 0;
+}
+
+.retweet-header .delete-form {
+  margin: 0;
+}
+
+.retweet-header .delete-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 9999px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.retweet-header .delete-btn:hover {
+  opacity: 1;
+}
+
+.retweet-header .delete-btn img {
+  width: 18px;
+  height: 18px;
+}
+
+.retweet-comment {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #2f3336;
+}
+
+.retweet-comment-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.retweet-comment-text {
+  margin-left: 40px;
+  color: #e7e9ea;
+  font-size: 14px;
+}
+
+/* ============================================
+   USER LINE & POPUP MENU
+   ============================================ */
+.user-line {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  max-width: 350px;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-weight: 700;
+  font-size: 15px;
+  color: #000;
+}
+
+.user-handle {
+  color: #1d1e1f;
+  font-size: 14px;
+}
+
+.user-menu {
+  background: transparent;
+  border: none;
+  color: #71767b;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  margin-left: auto;
+}
+
+.user-menu:hover {
+  background: rgba(29, 155, 240, 0.15);
+  color: #1d9bf0;
+}
+
+/* Popup menu */
+.popup-menu {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  margin-bottom: 12px;
+  background: #000000;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  min-width: 200px;
+  z-index: 10000;
+  border: 1px solid #2f3336;
+  overflow: hidden;
+  animation: popupSlide 0.2s ease-out;
+}
+
+.popup-menu::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 20px;
+  width: 14px;
+  height: 14px;
+  background: #000000;
+  border-right: 1px solid #2f3336;
+  border-bottom: 1px solid #2f3336;
+  transform: rotate(45deg);
+}
+
+.popup-menu form {
+  margin: 0;
+  padding: 8px 0;
+  width: 100%;
+}
+
+.popup-menu .logout {
+  width: 100%;
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  color: #f4212e;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.popup-menu .logout:hover {
+  background: rgba(244, 33, 46, 0.1);
+}
+
+@keyframes popupSlide {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   AVATAR CIRCLE
+   ============================================ */
+.avatar-circle {
+  background: #1d9bf0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ============================================
+   MESSAGES FLASH
+   ============================================ */
 .tweet-flash {
   display: flex;
   align-items: center;
@@ -517,6 +620,23 @@ header {
   background: rgba(113, 118, 123, 0.1);
 }
 
+.alert {
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin: 10px 16px;
+  font-size: 14px;
+}
+
+.alert.success {
+  background-color: #1d9bf0;
+  color: white;
+}
+
+.alert.error {
+  background-color: #f4212e;
+  color: white;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -528,87 +648,63 @@ header {
   }
 }
 
-/* Styles pour les retweets */
-.retweet-header {
-  margin-bottom: 8px;
-  margin-left: 48px;
-}
-
-.retweet-icon {
+/* ============================================
+   MODALE DES COMMENTAIRES
+   ============================================ */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: #6b7280;
-  font-size: 13px;
+  justify-content: center;
+  z-index: 1000;
 }
 
-.retweet-icon svg {
-  flex-shrink: 0;
+.modal-content {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
 }
 
-.retweet-comment {
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid #2f3336;
-}
-
-.retweet-comment-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.retweet-comment-text {
-  margin-left: 40px;
-  color: #e7e9ea;
-  font-size: 14px;
-}
-/* Style pour le header du retweet avec bouton suppression */
-.retweet-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  margin-left: 48px;
-}
-
-.retweet-icon {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #6b7280;
-  font-size: 13px;
-}
-
-.retweet-icon svg {
-  flex-shrink: 0;
-}
-
-.retweet-header .delete-form {
-  margin: 0;
-}
-
-.retweet-header .delete-btn {
+.close-modal {
+  position: absolute;
+  top: 16px;
+  right: 16px;
   background: transparent;
   border: none;
+  font-size: 24px;
   cursor: pointer;
-  padding: 4px;
+  color: #6b7280;
+}
+
+.modal-content textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  margin: 16px 0;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.modal-content button[type='submit'] {
+  background: black;
+  color: white;
+  border: none;
+  padding: 10px 20px;
   border-radius: 9999px;
-  opacity: 0.6;
-  transition: opacity 0.2s;
+  cursor: pointer;
+  font-weight: bold;
 }
 
-.retweet-header .delete-btn:hover {
-  opacity: 1;
-}
-
-.retweet-header .delete-btn img {
-  width: 18px;
-  height: 18px;
-}
-
-/* Styles pour la modale des commentaires */
 .modal-replies {
   max-width: 600px !important;
   max-height: 80vh;
@@ -762,62 +858,147 @@ header {
   cursor: not-allowed;
 }
 
-/* RESPONSIVE */
+/* ============================================
+   COLONNE DROITE
+   ============================================ */
+#searchWrap {
+  background: #fafafa;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
 
+.search__input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 9999px;
+  border: 1px solid #e5e7eb;
+  background: #f3f4f6;
+  font-size: 15px;
+}
+
+#subscribe {
+  background: #fafafa;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.subscribe__title {
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.subscribe__desc {
+  color: black;
+  margin-bottom: 10px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.btn--secondary {
+  background: #1d9bf0;
+  border: 1px solid #e5e7eb;
+  padding: 8px 12px;
+  color: white;
+  font-weight: bold;
+  border-radius: 9999px;
+}
+
+/* Suggestions */
+#whoToFollow {
+  background: #fafafa;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+#whoToFollow h3 {
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 8px;
+}
+
+.suggestion-item img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.suggestion-item strong {
+  display: block;
+  font-size: 14px;
+}
+
+.suggestion-item span {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.follow-btn {
+  background: black;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
 @media (max-width: 1000px) {
-  /* Header reste visible */
   header {
     width: 80px;
     padding: 10px;
     align-items: center;
   }
 
-  /* Liste centrée */
   .nav__list {
     align-items: center;
   }
 
-  /* Cache le texte, garde les icônes */
   .nav__link {
     justify-content: center;
-    font-size: 0; /* cache le texte */
+    font-size: 0;
     padding: 10px;
   }
 
-  /* Redonne une taille aux icônes */
   .nav__icon {
     width: 26px;
     height: 26px;
   }
 
-  /* Bouton Post devient rond */
   .btn--primary {
     width: 48px;
     height: 48px;
     padding: 0;
     border-radius: 50%;
-    font-size: 11px;
+    font-size: 0;
   }
 
-  /* Ajuste le main */
   .main {
     margin-left: 40px;
   }
 
-  .user-name {
-    display: none;
-  }
-
-  .user-handle {
-    display: none;
-  }
-
+  .user-name,
+  .user-handle,
   .user-menu {
     display: none;
   }
 
   .user-line {
-    padding: 0px;
+    padding: 0;
   }
 }
 
@@ -829,91 +1010,50 @@ header {
 
 @media (max-width: 430px) {
   .tweet-icons {
-    gap: 0px;
+    gap: 0;
   }
-}
-
-@media (max-width: 360px) {
 }
 
 @media (max-width: 320px) {
   .tabs__list {
-    gap: 0px;
+    gap: 0;
     justify-content: center;
   }
+
   .tweet-avatar {
     display: none;
   }
 }
 
-.avatar-circle {
-  background: #1d9bf0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: bold;
+/* ============================================
+   UTILITAIRES
+   ============================================ */
+.delete-form {
+  margin-left: auto;
 }
 
-/* Messages flash */
-.alert {
-  padding: 12px 16px;
-  border-radius: 12px;
-  margin: 10px 16px;
-  font-size: 14px;
+.delete-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 9999px;
 }
 
-.alert.success {
-  background-color: #1d9bf0;
-  color: white;
+.delete-btn img {
+  width: 18px;
+  height: 18px;
+  opacity: 0.6;
 }
 
-.alert.error {
-  background-color: #f4212e;
-  color: white;
+.delete-btn:hover img {
+  opacity: 1;
 }
 
-/* Tweet item */
-.tweet-item {
-  padding: 16px;
-  border-bottom: 1px solid #e5e7eb;
-  transition: background 0.2s;
-}
-
-.tweet-item:hover {
-  background: rgba(0, 0, 0, 0.02);
-}
-
-.tweet-header {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.tweet-user-info {
-  flex: 1;
-}
-
-.tweet-user-info strong {
-  font-weight: 700;
-  margin-right: 8px;
-}
-
-.username {
-  color: #6b7280;
-  font-size: 14px;
-  margin-right: 8px;
-}
-
-.time {
-  color: #6b7280;
-  font-size: 12px;
-}
-
-.tweet-image {
-  max-width: 100%;
-  border-radius: 16px;
-  margin-top: 12px;
+#verticalSeparator {
+  width: 3px;
+  background: #e5e7eb;
+  height: 100vh;
 }
 
 .tweet-stats {
@@ -951,143 +1091,4 @@ header {
 .action-btn img {
   width: 18px;
   height: 18px;
-}
-
-.like-btn.liked {
-  color: #f91880;
-}
-
-.delete-form {
-  margin-left: auto;
-}
-
-.delete-btn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 9999px;
-}
-
-.delete-btn img {
-  width: 18px;
-  height: 18px;
-  opacity: 0.6;
-}
-
-.delete-btn:hover img {
-  opacity: 1;
-}
-
-/* Suggestions */
-#whoToFollow {
-  background: #fafafa;
-  padding: 16px;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-}
-
-#whoToFollow h3 {
-  margin-bottom: 16px;
-  font-size: 18px;
-}
-
-.suggestion-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-  padding: 8px;
-}
-
-.suggestion-item img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-}
-
-.suggestion-item div {
-  flex: 1;
-}
-
-.suggestion-item strong {
-  display: block;
-  font-size: 14px;
-}
-
-.suggestion-item span {
-  font-size: 12px;
-  color: #6b7280;
-}
-
-.follow-btn {
-  background: black;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 9999px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-/* Modales */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: white;
-  border-radius: 20px;
-  padding: 24px;
-  width: 90%;
-  max-width: 500px;
-  position: relative;
-}
-
-.close-modal {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: transparent;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: #6b7280;
-}
-
-.modal-content textarea {
-  width: 100%;
-  min-height: 100px;
-  padding: 12px;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  margin: 16px 0;
-  resize: vertical;
-  font-family: inherit;
-}
-
-.modal-content button[type='submit'] {
-  background: black;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 9999px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.empty-feed {
-  text-align: center;
-  padding: 48px;
-  color: #6b7280;
 }
