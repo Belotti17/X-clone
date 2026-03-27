@@ -12,17 +12,18 @@ export default class TweetsController {
       extnames: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'mp4', 'mov', 'avi', 'mkv', 'webm'],
     })
 
-    // Vérifier que le contenu n'est pas vide
-    if (!content || content.trim().length === 0) {
-      session.flash('error', 'Le tweet ne peut pas être vide')
+    const hasContent = content && content.trim().length > 0
+    const hasMedia = media && media.isValid
+
+    if (!hasContent && !hasMedia) {
+      session.flash('error', 'Veuillez ajouter du texte ou un média')
       return response.redirect().back()
     }
 
     let mediaPath = null
     let mediaType = null
 
-    // Gérer l'upload du média (image ou vidéo)
-    if (media && media.isValid) {
+    if (hasMedia && media.isValid) {
       const fileExt = media.extname
       const fileName = `${randomUUID()}.${fileExt}`
       await media.move(path.join(process.cwd(), 'public/uploads'), {
@@ -30,23 +31,20 @@ export default class TweetsController {
       })
       mediaPath = `/uploads/${fileName}`
 
-      // Déterminer le type de média
       if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(fileExt || '')) {
         mediaType = 'image'
       } else if (['mp4', 'mov', 'avi', 'mkv', 'webm'].includes(fileExt || '')) {
         mediaType = 'video'
       }
     } else if (media && !media.isValid) {
-      // Récupérer le message d'erreur du premier élément du tableau
       const errorMessage =
         media.errors && media.errors[0] ? media.errors[0].message : 'Format de fichier non supporté'
       session.flash('error', errorMessage)
       return response.redirect().back()
     }
 
-    // Création du tweet
     await Tweet.create({
-      content: content.trim(),
+      content: hasContent ? content.trim() : null,
       userId: user.id,
       image: mediaType === 'image' ? mediaPath : null,
       video: mediaType === 'video' ? mediaPath : null,
@@ -68,7 +66,7 @@ export default class TweetsController {
     }
 
     await tweet.delete()
-    session.flash('success', 'Tweet supprimé')
+    session.flash('success', tweet.isRetweet ? 'Retweet supprimé' : 'Tweet supprimé')
     return response.redirect().back()
   }
 
@@ -91,7 +89,8 @@ export default class TweetsController {
 
   async retweet({ params, request, response, auth, session }: HttpContext) {
     const user = auth.use('web').user!
-    const originalTweet = await Tweet.findOrFail(params.id)
+    const originalTweet = await Tweet.query().where('id', params.id).preload('user').firstOrFail()
+
     const content = request.input('content')
 
     const existingRetweet = await Tweet.query()
@@ -137,6 +136,21 @@ export default class TweetsController {
 
     session.flash('success', 'Réponse publiée !')
     return response.redirect().back()
+  }
+
+  async getReplies({ params, response }: HttpContext) {
+    try {
+      const tweet = await Tweet.query()
+        .where('id', params.id)
+        .preload('replies', (query) => {
+          query.preload('user').orderBy('createdAt', 'asc')
+        })
+        .firstOrFail()
+
+      return response.json({ replies: tweet.replies })
+    } catch (error) {
+      return response.json({ replies: [] })
+    }
   }
 
   async show({ params, view, auth }: HttpContext) {
