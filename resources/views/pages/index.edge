@@ -83,20 +83,36 @@
                     </ul>
                 </div>
 
-                {{-- Messages flash --}}
+                {{-- Messages flash stylisés --}}
                 @if (flashMessages.has('success'))
-                    <div class="alert success">
-                        @each(message in flashMessages.get('success'))
-                            <p>{{ message }}</p>
-                        @end
+                    <div class="toast-message success">
+                        <div class="toast-icon">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                            </svg>
+                        </div>
+                        <div class="toast-content">
+                            @each(message in flashMessages.get('success'))
+                                <p>{{ message }}</p>
+                            @end
+                        </div>
+                        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
                     </div>
                 @endif
 
                 @if (flashMessages.has('error'))
-                    <div class="alert error">
-                        @each(message in flashMessages.get('error'))
-                            <p>{{ message }}</p>
-                        @end
+                    <div class="toast-message error">
+                        <div class="toast-icon">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                            </svg>
+                        </div>
+                        <div class="toast-content">
+                            @each(message in flashMessages.get('error'))
+                                <p>{{ message }}</p>
+                            @end
+                        </div>
+                        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
                     </div>
                 @endif
 
@@ -439,6 +455,106 @@
     .tweet-stats {
         display: none;
     }
+
+    /* ==================== STYLE DES MESSAGES FLASH (TOAST) ==================== */
+    .toast-message {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        background: #1d1f23;
+        color: white;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 10000;
+        min-width: 280px;
+        max-width: 90%;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        animation: slideDown 0.3s ease forwards;
+        backdrop-filter: blur(8px);
+    }
+
+    .toast-message.success {
+        background: rgba(0, 186, 124, 0.95);
+        border-left: 4px solid #00ba7c;
+    }
+
+    .toast-message.error {
+        background: rgba(244, 33, 46, 0.95);
+        border-left: 4px solid #f4212e;
+    }
+
+    .toast-icon {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .toast-icon svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .toast-content {
+        flex: 1;
+        text-align: left;
+    }
+
+    .toast-content p {
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    .toast-close {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 0 4px;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+    }
+
+    .toast-close:hover {
+        opacity: 1;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-20px);
+        }
+    }
+
+    .toast-message.hide {
+        animation: slideUp 0.3s ease forwards;
+    }
 </style>
 
 <script>
@@ -769,7 +885,6 @@
                 
                 const btn = form.querySelector('.interaction-btn');
                 const countSpan = btn.querySelector('.interaction-count');
-                const svg = btn.querySelector('svg');
                 
                 try {
                     const csrfToken = document.querySelector('input[name="_csrf"]');
@@ -800,26 +915,43 @@
             });
         });
         
-        // ==================== FONCTION POUR AFFICHER LES MESSAGES FLASH ====================
+        // ==================== FONCTION POUR AFFICHER LES MESSAGES FLASH (TOAST) ====================
         function showFlashMessage(type, message) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert ${type}`;
-            alertDiv.innerHTML = `<p>${message}</p>`;
+            // Supprimer les anciens toasts
+            const existingToasts = document.querySelectorAll('.toast-message');
+            existingToasts.forEach(toast => toast.remove());
             
-            const centerContainer = document.getElementById('centerContainer');
-            const tabs = document.querySelector('.tabs');
+            const toast = document.createElement('div');
+            toast.className = `toast-message ${type}`;
             
-            if (centerContainer && tabs) {
-                centerContainer.insertBefore(alertDiv, tabs.nextSibling);
+            let iconSvg = '';
+            if (type === 'success') {
+                iconSvg = `<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>`;
             } else {
-                const main = document.querySelector('.main');
-                if (main) {
-                    main.insertBefore(alertDiv, main.firstChild);
-                }
+                iconSvg = `<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>`;
             }
             
+            toast.innerHTML = `
+                <div class="toast-icon">${iconSvg}</div>
+                <div class="toast-content"><p>${message}</p></div>
+                <button class="toast-close">×</button>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // Fermeture manuelle
+            const closeBtn = toast.querySelector('.toast-close');
+            closeBtn.addEventListener('click', () => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 300);
+            });
+            
+            // Auto-fermeture après 3 secondes
             setTimeout(() => {
-                alertDiv.remove();
+                if (toast && document.body.contains(toast)) {
+                    toast.classList.add('hide');
+                    setTimeout(() => toast.remove(), 300);
+                }
             }, 3000);
         }
         
