@@ -285,7 +285,7 @@
                                 </div>
                                 <div>
                                     <strong>{{ suggestion.name || suggestion.username }}</strong>
-                                    <span>@{{ suggestion.username }}</span>
+                                    <span>{{ suggestion.username }}</span>
                                 </div>
                                 <form method="POST" action="/follow/{{ suggestion.id }}">
                                     {{ csrfField() }}
