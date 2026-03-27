@@ -83,36 +83,36 @@
                     </ul>
                 </div>
 
-                {{-- Messages flash stylisés --}}
+                {{-- Messages flash stylisés comme un tweet --}}
                 @if (flashMessages.has('success'))
-                    <div class="toast-message success">
-                        <div class="toast-icon">
+                    <div class="tweet-flash success">
+                        <div class="tweet-flash-icon">
                             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
                             </svg>
                         </div>
-                        <div class="toast-content">
+                        <div class="tweet-flash-content">
                             @each(message in flashMessages.get('success'))
                                 <p>{{ message }}</p>
                             @end
                         </div>
-                        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                        <button class="tweet-flash-close" onclick="this.parentElement.remove()">×</button>
                     </div>
                 @endif
 
                 @if (flashMessages.has('error'))
-                    <div class="toast-message error">
-                        <div class="toast-icon">
+                    <div class="tweet-flash error">
+                        <div class="tweet-flash-icon">
                             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
                             </svg>
                         </div>
-                        <div class="toast-content">
+                        <div class="tweet-flash-content">
                             @each(message in flashMessages.get('error'))
                                 <p>{{ message }}</p>
                             @end
                         </div>
-                        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                        <button class="tweet-flash-close" onclick="this.parentElement.remove()">×</button>
                     </div>
                 @endif
 
@@ -456,104 +456,91 @@
         display: none;
     }
 
-    /* ==================== STYLE DES MESSAGES FLASH (TOAST) ==================== */
-    .toast-message {
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
+    /* ==================== STYLE DES MESSAGES FLASH (COMME UN TWEET) ==================== */
+    .tweet-flash {
         display: flex;
         align-items: center;
         gap: 12px;
         padding: 12px 16px;
-        border-radius: 12px;
-        background: #1d1f23;
-        color: white;
+        margin-bottom: 16px;
+        background: #000000;
+        border-radius: 16px;
+        border: 1px solid #2f3336;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         font-size: 14px;
-        font-weight: 500;
-        z-index: 10000;
-        min-width: 280px;
-        max-width: 90%;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        animation: slideDown 0.3s ease forwards;
-        backdrop-filter: blur(8px);
+        font-weight: 400;
+        color: #e7e9ea;
+        animation: fadeIn 0.3s ease;
     }
 
-    .toast-message.success {
-        background: rgba(0, 186, 124, 0.95);
+    .tweet-flash.success {
         border-left: 4px solid #00ba7c;
     }
 
-    .toast-message.error {
-        background: rgba(244, 33, 46, 0.95);
+    .tweet-flash.error {
         border-left: 4px solid #f4212e;
     }
 
-    .toast-icon {
+    .tweet-flash-icon {
         flex-shrink: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 24px;
-        height: 24px;
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.2);
+        background: #1d9bf0;
     }
 
-    .toast-icon svg {
-        width: 14px;
-        height: 14px;
+    .tweet-flash.success .tweet-flash-icon {
+        background: #00ba7c;
     }
 
-    .toast-content {
+    .tweet-flash.error .tweet-flash-icon {
+        background: #f4212e;
+    }
+
+    .tweet-flash-icon svg {
+        width: 18px;
+        height: 18px;
+        color: white;
+    }
+
+    .tweet-flash-content {
         flex: 1;
         text-align: left;
     }
 
-    .toast-content p {
+    .tweet-flash-content p {
         margin: 0;
         line-height: 1.4;
     }
 
-    .toast-close {
+    .tweet-flash-close {
         background: transparent;
         border: none;
-        color: white;
+        color: #71767b;
         font-size: 20px;
         cursor: pointer;
-        padding: 0 4px;
-        opacity: 0.7;
-        transition: opacity 0.2s;
+        padding: 4px 8px;
+        border-radius: 9999px;
+        transition: all 0.2s;
     }
 
-    .toast-close:hover {
-        opacity: 1;
+    .tweet-flash-close:hover {
+        color: #e7e9ea;
+        background: rgba(113, 118, 123, 0.1);
     }
 
-    @keyframes slideDown {
+    @keyframes fadeIn {
         from {
             opacity: 0;
-            transform: translateX(-50%) translateY(-20px);
+            transform: translateY(-10px);
         }
         to {
             opacity: 1;
-            transform: translateX(-50%) translateY(0);
+            transform: translateY(0);
         }
-    }
-
-    @keyframes slideUp {
-        from {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-        to {
-            opacity: 0;
-            transform: translateX(-50%) translateY(-20px);
-        }
-    }
-
-    .toast-message.hide {
-        animation: slideUp 0.3s ease forwards;
     }
 </style>
 
@@ -915,14 +902,14 @@
             });
         });
         
-        // ==================== FONCTION POUR AFFICHER LES MESSAGES FLASH (TOAST) ====================
+        // ==================== FONCTION POUR AFFICHER LES MESSAGES FLASH ====================
         function showFlashMessage(type, message) {
-            // Supprimer les anciens toasts
-            const existingToasts = document.querySelectorAll('.toast-message');
-            existingToasts.forEach(toast => toast.remove());
+            // Supprimer les anciens messages flash
+            const existingFlashes = document.querySelectorAll('.tweet-flash');
+            existingFlashes.forEach(flash => flash.remove());
             
-            const toast = document.createElement('div');
-            toast.className = `toast-message ${type}`;
+            const flash = document.createElement('div');
+            flash.className = `tweet-flash ${type}`;
             
             let iconSvg = '';
             if (type === 'success') {
@@ -931,26 +918,32 @@
                 iconSvg = `<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>`;
             }
             
-            toast.innerHTML = `
-                <div class="toast-icon">${iconSvg}</div>
-                <div class="toast-content"><p>${message}</p></div>
-                <button class="toast-close">×</button>
+            flash.innerHTML = `
+                <div class="tweet-flash-icon">${iconSvg}</div>
+                <div class="tweet-flash-content"><p>${message}</p></div>
+                <button class="tweet-flash-close">×</button>
             `;
             
-            document.body.appendChild(toast);
+            // Insérer en haut du centerContainer
+            const centerContainer = document.getElementById('centerContainer');
+            const tabs = document.querySelector('.tabs');
+            
+            if (centerContainer && tabs) {
+                centerContainer.insertBefore(flash, tabs.nextSibling);
+            } else {
+                document.body.insertBefore(flash, document.body.firstChild);
+            }
             
             // Fermeture manuelle
-            const closeBtn = toast.querySelector('.toast-close');
+            const closeBtn = flash.querySelector('.tweet-flash-close');
             closeBtn.addEventListener('click', () => {
-                toast.classList.add('hide');
-                setTimeout(() => toast.remove(), 300);
+                flash.remove();
             });
             
             // Auto-fermeture après 3 secondes
             setTimeout(() => {
-                if (toast && document.body.contains(toast)) {
-                    toast.classList.add('hide');
-                    setTimeout(() => toast.remove(), 300);
+                if (flash && document.body.contains(flash)) {
+                    flash.remove();
                 }
             }, 3000);
         }
