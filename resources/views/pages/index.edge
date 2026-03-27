@@ -49,7 +49,6 @@
                 <div style="margin-top: 20px">
                     <button class="btn--primary" id="openTweetModal">Post</button>
                 </div>
-                
             <div class="user-line" id="userMenu">
                 <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px; margin-right: 12px;">
                     {{ user?.name ? user.name.charAt(0).toUpperCase() : user?.username?.charAt(0).toUpperCase() || 'U' }}
@@ -74,11 +73,19 @@
         <main class="main">
             <div id="centerContainer">
                 <div class="tabs">
-                    <ul class="tabs__list">
-                        <li><a href="/timeline" class="tabs__link active">For you</a></li>
-                        <li><a href="/following" class="tabs__link">Following</a></li>
-                    </ul>
-                </div>
+    <ul class="tabs__list">
+        <li>
+            <a href="/timeline" class="tabs__link {{ request.url().startsWith('/timeline') || request.url() === '/' ? 'active' : '' }}">
+                For you
+            </a>
+        </li>
+        <li>
+            <a href="/following" class="tabs__link {{ request.url().startsWith('/following') ? 'active' : '' }}">
+                Following
+            </a>
+        </li> 
+    </ul>
+</div>
 
                 {{-- Messages flash --}}
                 <div id="flashContainer"></div>
