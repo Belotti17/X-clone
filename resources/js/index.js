@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // ==================== MENU UTILISATEUR ====================
-  const menuBtn = document.querySelector('.user-menu')
+  const menuBtn = document.getElementById('userMenu')
   const popupMenu = document.querySelector('.popup-menu')
 
   if (menuBtn && popupMenu) {
