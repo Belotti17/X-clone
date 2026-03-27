@@ -17,17 +17,16 @@ export default class TimelineController {
     const followingIds = follows.map((f) => f.followingId)
     followingIds.push(user.id)
 
-    // IMPORTANT: NE PAS précharger les replies sur la timeline
+    // IMPORTANT: Exclure les réponses (isReply = false) de la timeline
     const tweets = await Tweet.query()
       .whereIn('userId', followingIds)
+      .where('isReply', false) // ← AJOUTEZ CETTE LIGNE pour exclure les réponses
       .preload('user')
       .preload('originalTweet', (query) => {
         query.preload('user').preload('likes').preload('retweets')
-        // NE PAS précharger les replies ici
       })
       .preload('likes')
       .preload('retweets')
-      // NE PAS inclure .preload('replies')
       .orderBy('createdAt', 'desc')
       .limit(50)
 
@@ -38,7 +37,10 @@ export default class TimelineController {
       // Compter les retweets
       tweet.$extras.retweetsCount = tweet.retweets.length
       // Compter les réponses (sans charger les objets complets)
-      const repliesCount = await Tweet.query().where('parentTweetId', tweet.id).count('* as total')
+      const repliesCount = await Tweet.query()
+        .where('parentTweetId', tweet.id)
+        .where('isReply', true)
+        .count('* as total')
       tweet.$extras.repliesCount = Number(repliesCount[0].$extras.total)
 
       // Vérifier si l'utilisateur a liké ce tweet
@@ -51,6 +53,7 @@ export default class TimelineController {
         tweet.originalTweet.$extras.retweetsCount = tweet.originalTweet.retweets.length
         const originalRepliesCount = await Tweet.query()
           .where('parentTweetId', tweet.originalTweet.id)
+          .where('isReply', true)
           .count('* as total')
         tweet.originalTweet.$extras.repliesCount = Number(originalRepliesCount[0].$extras.total)
         const hasLikedOriginal = tweet.originalTweet.likes.some((like) => like.userId === user.id)
@@ -80,6 +83,7 @@ export default class TimelineController {
 
     const tweets = await Tweet.query()
       .whereIn('userId', followingIds)
+      .where('isReply', false) // ← AJOUTEZ CETTE LIGNE
       .preload('user')
       .preload('originalTweet', (query) => {
         query.preload('user').preload('likes').preload('retweets')
@@ -92,7 +96,10 @@ export default class TimelineController {
     for (const tweet of tweets) {
       tweet.$extras.likesCount = tweet.likes.length
       tweet.$extras.retweetsCount = tweet.retweets.length
-      const repliesCount = await Tweet.query().where('parentTweetId', tweet.id).count('* as total')
+      const repliesCount = await Tweet.query()
+        .where('parentTweetId', tweet.id)
+        .where('isReply', true)
+        .count('* as total')
       tweet.$extras.repliesCount = Number(repliesCount[0].$extras.total)
 
       const hasLiked = tweet.likes.some((like) => like.userId === user.id)
@@ -103,6 +110,7 @@ export default class TimelineController {
         tweet.originalTweet.$extras.retweetsCount = tweet.originalTweet.retweets.length
         const originalRepliesCount = await Tweet.query()
           .where('parentTweetId', tweet.originalTweet.id)
+          .where('isReply', true)
           .count('* as total')
         tweet.originalTweet.$extras.repliesCount = Number(originalRepliesCount[0].$extras.total)
         const hasLikedOriginal = tweet.originalTweet.likes.some((like) => like.userId === user.id)
@@ -121,6 +129,7 @@ export default class TimelineController {
   async explore({ view, auth }: HttpContext) {
     const user = await auth.use('web').user
     const tweets = await Tweet.query()
+      .where('isReply', false) // ← AJOUTEZ CETTE LIGNE
       .preload('user')
       .preload('originalTweet', (query) => {
         query.preload('user').preload('likes').preload('retweets')
@@ -133,7 +142,10 @@ export default class TimelineController {
     for (const tweet of tweets) {
       tweet.$extras.likesCount = tweet.likes.length
       tweet.$extras.retweetsCount = tweet.retweets.length
-      const repliesCount = await Tweet.query().where('parentTweetId', tweet.id).count('* as total')
+      const repliesCount = await Tweet.query()
+        .where('parentTweetId', tweet.id)
+        .where('isReply', true)
+        .count('* as total')
       tweet.$extras.repliesCount = Number(repliesCount[0].$extras.total)
 
       if (tweet.isRetweet && tweet.originalTweet) {
@@ -141,6 +153,7 @@ export default class TimelineController {
         tweet.originalTweet.$extras.retweetsCount = tweet.originalTweet.retweets.length
         const originalRepliesCount = await Tweet.query()
           .where('parentTweetId', tweet.originalTweet.id)
+          .where('isReply', true)
           .count('* as total')
         tweet.originalTweet.$extras.repliesCount = Number(originalRepliesCount[0].$extras.total)
       }
