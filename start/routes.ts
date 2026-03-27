@@ -63,6 +63,7 @@ router
     router.post('/tweets/:id/like', [TweetsController, 'like']).as('tweets.like')
     router.post('/tweets/:id/retweet', [TweetsController, 'retweet']).as('tweets.retweet')
     router.post('/tweets/:id/reply', [TweetsController, 'reply']).as('tweets.reply')
+    router.get('/tweets/:id/replies', [TweetsController, 'getReplies']).as('tweets.replies')
 
     // PROFIL
     router.get('/profile/:username?', [ProfileController, 'show']).as('profile.show')
