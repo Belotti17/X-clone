@@ -331,6 +331,439 @@ header {
   color: #1d9bf0;
 }
 
+/* timeline.css - Styles pour la page timeline */
+
+/* Position relative pour le user-line */
+.user-line {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  max-width: 350px;
+}
+
+/* Style du popup-menu comme sur X */
+.popup-menu {
+  position: absolute;
+  bottom: 70px;
+  left: 20px;
+  background: #000000;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  min-width: 180px;
+  z-index: 1000;
+  border: 1px solid #2f3336;
+  overflow: hidden;
+}
+
+.popup-menu form {
+  margin: 0;
+}
+
+.popup-menu .logout {
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  color: #f4212e;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-family: inherit;
+}
+
+.popup-menu .logout:hover {
+  background: rgba(244, 33, 46, 0.1);
+}
+
+.user-menu {
+  background: transparent;
+  border: none;
+  color: #71767b;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  margin-left: auto;
+}
+
+.user-menu:hover {
+  background: rgba(29, 155, 240, 0.15);
+  color: #1d9bf0;
+}
+
+/* Interactions des tweets */
+.tweet-interactions {
+  display: flex;
+  justify-content: space-between;
+  max-width: 425px;
+  margin-top: 12px;
+}
+
+.interaction-group {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.interaction-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+}
+
+/* Bouton Like */
+.like-btn {
+  color: #6b7280;
+}
+
+.like-btn:hover {
+  color: #f91880;
+  background-color: rgba(249, 24, 128, 0.1);
+}
+
+.like-btn.liked {
+  color: #f91880;
+}
+
+/* Bouton Reply */
+.reply-btn:hover {
+  color: #1d9bf0;
+  background-color: rgba(29, 155, 240, 0.1);
+}
+
+/* Bouton Retweet */
+.retweet-btn:hover {
+  color: #00ba7c;
+  background-color: rgba(0, 186, 124, 0.1);
+}
+
+/* Messages flash */
+.tweet-flash {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  background: #000000;
+  border-radius: 16px;
+  border: 1px solid #2f3336;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  font-weight: 400;
+  color: #e7e9ea;
+  animation: fadeIn 0.3s ease;
+}
+
+.tweet-flash.success {
+  border-left: 4px solid #00ba7c;
+}
+
+.tweet-flash.error {
+  border-left: 4px solid #f4212e;
+}
+
+.tweet-flash-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #1d9bf0;
+}
+
+.tweet-flash.success .tweet-flash-icon {
+  background: #00ba7c;
+}
+
+.tweet-flash.error .tweet-flash-icon {
+  background: #f4212e;
+}
+
+.tweet-flash-icon svg {
+  width: 18px;
+  height: 18px;
+  color: white;
+}
+
+.tweet-flash-content {
+  flex: 1;
+  text-align: left;
+}
+
+.tweet-flash-close {
+  background: transparent;
+  border: none;
+  color: #71767b;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  transition: all 0.2s;
+}
+
+.tweet-flash-close:hover {
+  color: #e7e9ea;
+  background: rgba(113, 118, 123, 0.1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Styles pour les retweets */
+.retweet-header {
+  margin-bottom: 8px;
+  margin-left: 48px;
+}
+
+.retweet-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.retweet-icon svg {
+  flex-shrink: 0;
+}
+
+.retweet-comment {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #2f3336;
+}
+
+.retweet-comment-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.retweet-comment-text {
+  margin-left: 40px;
+  color: #e7e9ea;
+  font-size: 14px;
+}
+/* Style pour le header du retweet avec bouton suppression */
+.retweet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  margin-left: 48px;
+}
+
+.retweet-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.retweet-icon svg {
+  flex-shrink: 0;
+}
+
+.retweet-header .delete-form {
+  margin: 0;
+}
+
+.retweet-header .delete-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 9999px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.retweet-header .delete-btn:hover {
+  opacity: 1;
+}
+
+.retweet-header .delete-btn img {
+  width: 18px;
+  height: 18px;
+}
+
+/* Styles pour la modale des commentaires */
+.modal-replies {
+  max-width: 600px !important;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.original-tweet-preview {
+  padding: 16px;
+  border-bottom: 1px solid #2f3336;
+  margin-bottom: 16px;
+}
+
+.replies-list-modal {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.reply-item-modal {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #2f3336;
+}
+
+.reply-item-modal:last-child {
+  border-bottom: none;
+}
+
+.reply-content-modal {
+  flex: 1;
+}
+
+.reply-content-modal strong {
+  font-size: 14px;
+  color: black;
+}
+
+.reply-content-modal .username {
+  font-size: 12px;
+  color: #6b7280;
+  margin-left: 6px;
+}
+
+.reply-content-modal .time {
+  font-size: 11px;
+  color: #6b7280;
+  margin-left: 6px;
+}
+
+.reply-content-modal p {
+  margin: 6px 0 0 0;
+  font-size: 14px;
+  color: black;
+  line-height: 1.4;
+}
+
+.delete-reply-modal {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 9999px;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  align-self: flex-start;
+}
+
+.delete-reply-modal:hover {
+  opacity: 1;
+}
+
+.delete-reply-modal img {
+  width: 14px;
+  height: 14px;
+}
+
+/* Formulaire de réponse dans la modale */
+.reply-form-modal {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #2f3336;
+}
+
+.reply-input-modal {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.reply-input-modal textarea {
+  flex: 1;
+  background: transparent;
+  border: 1px solid #2f3336;
+  border-radius: 20px;
+  padding: 12px;
+  resize: none;
+  font-size: 14px;
+  color: #000;
+  font-family: inherit;
+  outline: none;
+  min-height: 60px;
+}
+
+.reply-input-modal textarea:focus {
+  border-color: #1d9bf0;
+}
+
+.reply-input-modal textarea::placeholder {
+  color: #6b7280;
+}
+
+.reply-actions-modal {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.cancel-reply-modal {
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.cancel-reply-modal:hover {
+  background: rgba(113, 118, 123, 0.1);
+}
+
+.submit-reply-modal {
+  background: #1d9bf0;
+  border: none;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.submit-reply-modal:hover {
+  background: #1a8cd8;
+}
+
+.submit-reply-modal:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* RESPONSIVE */
 
 @media (max-width: 1000px) {
