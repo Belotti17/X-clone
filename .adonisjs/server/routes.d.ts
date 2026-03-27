@@ -18,6 +18,7 @@ export type ScannedRoutes = {
     'tweets.like': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tweets.retweet': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tweets.reply': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'tweets.replies': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'profile.show': { paramsTuple?: [ParamValue?]; params?: {'username'?: ParamValue} }
     'profile.update': { paramsTuple?: []; params?: {} }
     'profile.followers': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
@@ -36,6 +37,7 @@ export type ScannedRoutes = {
     'otp.create': { paramsTuple?: []; params?: {} }
     'timeline': { paramsTuple?: []; params?: {} }
     'timeline.following': { paramsTuple?: []; params?: {} }
+    'tweets.replies': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'profile.show': { paramsTuple?: [ParamValue?]; params?: {'username'?: ParamValue} }
     'profile.followers': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
     'profile.following': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
@@ -49,6 +51,7 @@ export type ScannedRoutes = {
     'otp.create': { paramsTuple?: []; params?: {} }
     'timeline': { paramsTuple?: []; params?: {} }
     'timeline.following': { paramsTuple?: []; params?: {} }
+    'tweets.replies': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'profile.show': { paramsTuple?: [ParamValue?]; params?: {'username'?: ParamValue} }
     'profile.followers': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
     'profile.following': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
