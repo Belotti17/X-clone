@@ -121,9 +121,7 @@ header {
   overflow-y: auto;
 }
 
-/* ============================================
-   TABS
-   ============================================ */
+/* TABS */
 .tabs {
   background: #fff;
   position: sticky;
@@ -232,9 +230,7 @@ header {
   margin-top: 8px;
 }
 
-/* ============================================
-   FORMULAIRE DE TWEET
-   ============================================ */
+/* FORMULAIRE DE TWEET */
 .addtwets {
   padding: 12px 16px;
   border-bottom: 1px solid #e5e7eb;
