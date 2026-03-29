@@ -27,7 +27,6 @@ export type ScannedRoutes = {
     'follow.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'search': { paramsTuple?: []; params?: {} }
     'search.hashtag': { paramsTuple: [ParamValue]; params: {'tag': ParamValue} }
-    'hashtag.show': { paramsTuple: [ParamValue]; params: {'tag': ParamValue} }
     'session.destroy': { paramsTuple?: []; params?: {} }
   }
   GET: {
@@ -42,7 +41,6 @@ export type ScannedRoutes = {
     'profile.following': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
     'search': { paramsTuple?: []; params?: {} }
     'search.hashtag': { paramsTuple: [ParamValue]; params: {'tag': ParamValue} }
-    'hashtag.show': { paramsTuple: [ParamValue]; params: {'tag': ParamValue} }
   }
   HEAD: {
     'login': { paramsTuple?: []; params?: {} }
@@ -56,7 +54,6 @@ export type ScannedRoutes = {
     'profile.following': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
     'search': { paramsTuple?: []; params?: {} }
     'search.hashtag': { paramsTuple: [ParamValue]; params: {'tag': ParamValue} }
-    'hashtag.show': { paramsTuple: [ParamValue]; params: {'tag': ParamValue} }
   }
   POST: {
     'new_account.store': { paramsTuple?: []; params?: {} }
