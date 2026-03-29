@@ -10,38 +10,38 @@
                 <ul class="nav__list">
                     <li>
                         <a href="/timeline" class="nav__link">
-                            <img class="nav__icon" src="/assets/icon/home-button_7781676.png" />Home
+                            <img class="nav__icon" src="https://www.svgrepo.com/show/535437/home.svg" />Home
                         </a>
                     </li>
                     <li>
                         <a href="/explore" class="nav__link">
-                            <img class="nav__icon" src="/assets/icon/search-svgrepo-com.svg" />Explore
+                            <img class="nav__icon" src="https://www.svgrepo.com/show/486828/search.svg" />Explore
                         </a>
                     </li>
                     <li>
                         <a href="/notifications" class="nav__link">
-                            <img class="nav__icon" src="/assets/icon/notification-bell-on-svgrepo-com.svg" />Notifications
+                            <img class="nav__icon" src="https://www.svgrepo.com/show/512576/notification-bell-1398.svg" />Notifications
                         </a>
                     </li>
                     <li>
                         <a href="/messages" class="nav__link">
-                            <img class="nav__icon" src="/assets/icon/message-mail-email-letter-envelope-svgrepo-com.svg" />Messages
+                            <img class="nav__icon" src="https://www.svgrepo.com/show/522169/mail.svg" />Messages
                         </a>
                     </li>
                     
                     <li>
                         <a href="/communities" class="nav__link">
-                            <img class="nav__icon" src="/assets/icon/users-svgrepo-com.svg" />Communities
+                            <img class="nav__icon" src="https://www.svgrepo.com/show/158210/community.svg" />Communities
                         </a>
                     </li>
                     <li>
                         <a href="/profile/{{ user?.username }}" class="nav__link">
-                            <img class="nav__icon" src="/assets/icon/essential_17219353.png" />Profile
+                            <img class="nav__icon" src="https://www.svgrepo.com/show/512729/profile-round-1342.svg" />Profile
                         </a>
                     </li>
                     <li>
                         <a href="#" class="nav__link">
-                            <img class="nav__icon" src="/assets/icon/more-circle-svgrepo-com.svg" />More
+                            <img class="nav__icon" src="https://www.svgrepo.com/show/521184/more-horizontal.svg" />More
                         </a>
                     </li>
                 </ul>
@@ -111,16 +111,16 @@
                                 <div class="tweet-actions">
                                     <div class="tweet-icons">
                                         <button type="button" class="icon-btn" id="uploadMediaBtn">
-                                            <img src="/assets/icon/image-1-svgrepo-com.svg" />
+                                            <img src="https://www.svgrepo.com/show/535454/image.svg" />
                                         </button>
                                         <button type="button" class="icon-btn">
-                                            <img src="/assets/icon/gif-svgrepo-com.svg" />
+                                            <img src="https://www.svgrepo.com/show/520750/gif.svg" />
                                         </button>
                                         <button type="button" class="icon-btn">
-                                            <img src="/assets/icon/setting-svgrepo-com.svg" />
+                                            <img src="https://www.svgrepo.com/show/520933/setting.svg" />
                                         </button>
                                         <button type="button" class="icon-btn">
-                                            <img src="/assets/icon/emoji-smile-svgrepo-com.svg" />
+                                            <img src="https://www.svgrepo.com/show/521642/emoji-sad.svg" />
                                         </button>
                                     </div>
                                     <button type="submit" id="tweet-post">Post</button>
@@ -151,7 +151,7 @@
                                             <form method="POST" action="/tweets/{{ tweet.id }}/delete" class="delete-form" onsubmit="return confirm('Supprimer ce retweet ?')">
                                                 {{ csrfField() }}
                                                 <button type="submit" class="delete-btn" title="Supprimer le retweet">
-                                                    <img src="assets/icon/delete.svg" alt="Supprimer" />
+                                                    <img src="https://www.svgrepo.com/show/511788/delete-1487.svg" alt="Supprimer" />
                                                 </button>
                                             </form>
                                         @endif
@@ -210,7 +210,7 @@
                                             <form method="POST" action="/tweets/{{ tweet.id }}/delete" class="delete-form" onsubmit="return confirm('Supprimer ce tweet ?')">
                                                 {{ csrfField() }}
                                                 <button type="submit" class="delete-btn" title="Supprimer">
-                                                    <img src="assets/icon/delete.svg" alt="Supprimer" />
+                                                    <img src="https://www.svgrepo.com/show/511788/delete-1487.svg" alt="Supprimer" />
                                                 </button>
                                             </form>
                                         @endif
