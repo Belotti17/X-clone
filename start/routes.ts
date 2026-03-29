@@ -9,10 +9,9 @@ import TweetsController from '#controllers/tweets_controller'
 import ProfileController from '#controllers/profile_controller'
 import FollowController from '#controllers/follows_controller'
 import SearchController from '#controllers/searches_controller'
-import HashtagController from '#controllers/hashtags_controller'
 
-/**
- * ACCUEIL
+/*
+  ACCUEIL
  */
 router.get('/', async ({ auth, response }) => {
   const isAuthenticated = await auth.use('web').check()
@@ -82,14 +81,6 @@ router
     // RECHERCHE
     router.get('/search', [SearchController, 'index']).as('search')
     router.get('/search/hashtag/:tag', [SearchController, 'hashtag']).as('search.hashtag')
-
-    // HASHTAGS
-    router.get('/hashtag/:tag', [HashtagController, 'show']).as('hashtag.show')
-
-    // COMPTE PRIVÉ
-    router
-      .post('/account/toggle-private', [ProfileController, 'togglePrivate'])
-      .as('account.togglePrivate')
 
     // LOGOUT
     router.post('/logout', [SessionController, 'destroy']).as('session.destroy')
