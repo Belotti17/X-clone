@@ -479,7 +479,7 @@ function displayReplies(replies) {
               reply.userId === window.userId
                 ? `
                 <button class="delete-reply-modal" onclick="deleteReply(${reply.id})" title="Supprimer">
-                    <img src="/assets/icon/delete.svg" alt="Supprimer" />
+                    <img src="https://www.svgrepo.com/show/511788/delete-1487.svg" alt="Supprimer" />
                 </button>
             `
                 : ''
