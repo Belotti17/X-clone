@@ -28,7 +28,6 @@ export type ScannedRoutes = {
     'search': { paramsTuple?: []; params?: {} }
     'search.hashtag': { paramsTuple: [ParamValue]; params: {'tag': ParamValue} }
     'hashtag.show': { paramsTuple: [ParamValue]; params: {'tag': ParamValue} }
-    'account.togglePrivate': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }
   }
   GET: {
@@ -70,7 +69,6 @@ export type ScannedRoutes = {
     'tweets.retweet': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tweets.reply': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'follow.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'account.togglePrivate': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }
   }
   PUT: {
