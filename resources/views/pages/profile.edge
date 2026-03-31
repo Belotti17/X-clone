@@ -1,4 +1,4 @@
-@component('layouts/base', { title: `${profileUser.name || profileUser.username} (@${profileUser.username})` })
+@component('layouts/base', { title: `${profileUser.name || profileUser.username} (${profileUser.username})` })
     @slot('main')
         <!-- SIDEBAR GAUCHE -->
         <header>
@@ -49,22 +49,26 @@
                 <div style="margin-top: 20px">
                     <button class="btn--primary" id="openTweetModal">Post</button>
                 </div>
-                <div class="user-line" id="userMenu">
-                    <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px; margin-right: 12px;">
-                        {{ user?.name ? user.name.charAt(0).toUpperCase() : user?.username?.charAt(0).toUpperCase() || 'U' }}
-                    </div>
-                    <div class="user-info">
-                        <div class="user-name">{{ user?.name || user?.username }}</div>
-                        <div class="user-handle">{{ user?.username }}</div>
-                    </div>
-                    <button class="user-menu" aria-label="Menu utilisateur">⋯</button>
-                    <div class="popup-menu" hidden>
-                        <form method="POST" action="/logout">
-                            {{ csrfField() }}
-                            <button type="submit" class="logout">Déconnexion <br> {{ user?.username }}</button>
-                        </form>
-                    </div>
-                </div>
+               <div class="user-line" id="userMenu">
+    @if(currentUser?.profile_picture)
+        <img src="{{ currentUser.profile_picture }}" class="avatar-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px;">
+    @else
+        <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px; margin-right: 12px;">
+            {{ currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : currentUser?.username?.charAt(0).toUpperCase() || 'U' }}
+        </div>
+    @endif
+    <div class="user-info">
+        <div class="user-name">{{ currentUser?.name || currentUser?.username }}</div>
+        <div class="user-handle">{{ currentUser?.username }}</div>
+    </div>
+    <button class="user-menu" aria-label="Menu utilisateur">⋯</button>
+    <div class="popup-menu" hidden>
+        <form method="POST" action="/logout">
+            {{ csrfField() }}
+            <button type="submit" class="logout">Déconnexion</button>
+        </form>
+    </div>
+</div>
             </nav>
         </header>
 
@@ -111,9 +115,9 @@
                         @if(currentUser && currentUser.id === profileUser.id)
                             <button onclick="openEditProfileModal()" class="btn-edit-profile">Modifier le profil</button>
                         @else
-                            <form method="POST" action="/follow/{{ profileUser.id }}">
+                            <form id="follow-form-{{ profileUser.id }}" class="follow-form" data-user-id="{{ profileUser.id }}" data-following="{{ isFollowing ? 'true' : 'false' }}">
                                 {{ csrfField() }}
-                                <button type="submit" class="btn-follow-profile {{ isFollowing ? 'following' : '' }}">
+                                <button type="button" class="btn-follow-profile {{ isFollowing ? 'following' : '' }}">
                                     {{ isFollowing ? 'Abonné' : 'Suivre' }}
                                 </button>
                             </form>
@@ -169,9 +173,13 @@
                         @each(tweet in tweets)
                             <div class="tweet-item">
                                 <div class="tweet-header">
-                                    <div class="avatar-circle" style="width: 48px; height: 48px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px;">
-                                        {{ tweet.user?.name ? tweet.user.name.charAt(0).toUpperCase() : tweet.user?.username?.charAt(0).toUpperCase() || 'U' }}
-                                    </div>
+                                    @if(tweet.user?.profile_picture)
+                                        <img src="{{ tweet.user.profile_picture }}" class="avatar-img" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;">
+                                    @else
+                                        <div class="avatar-circle" style="width: 48px; height: 48px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px;">
+                                            {{ tweet.user?.name ? tweet.user.name.charAt(0).toUpperCase() : tweet.user?.username?.charAt(0).toUpperCase() || 'U' }}
+                                        </div>
+                                    @endif
                                     <div class="tweet-user-info">
                                         <div class="tweet-user-name">
                                             <strong>{{ tweet.user?.name || tweet.user?.username }}</strong>
@@ -257,30 +265,33 @@
                     <button class="btn--secondary">Subscribe</button>
                 </div>
 
-                @if (suggestions && suggestions.length > 0)
-                    <div id="whoToFollow">
-                        <h3>Qui suivre</h3>
-                        @each(suggestion in suggestions)
-                            <div class="suggestion-item">
-                                <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
-                                    {{ suggestion.name ? suggestion.name.charAt(0).toUpperCase() : suggestion.username?.charAt(0).toUpperCase() || 'U' }}
-                                </div>
-                                <div>
-                                    <strong>{{ suggestion.name || suggestion.username }}</strong>
-                                    <span>{{ suggestion.username }}</span>
-                                </div>
-                                <form method="POST" action="/follow/{{ suggestion.id }}">
-                                    {{ csrfField() }}
-                                    <button type="submit" class="follow-btn">Suivre</button>
-                                </form>
-                            </div>
-                        @end
+                <div id="trending">
+                    <h3>Trends for you</h3>
+                    <div class="trending-item">
+                        <span class="trending-category">Trending in Congo - Kinshasa</span>
+                        <span class="trending-name">Distraction</span>
+                        <span class="trending-posts">2,351 posts</span>
                     </div>
-                @endif
+                    <div class="trending-item">
+                        <span class="trending-category">Trending in Congo - Kinshasa</span>
+                        <span class="trending-name">Allons-y</span>
+                        <span class="trending-posts">1,892 posts</span>
+                    </div>
+                    <div class="trending-item">
+                        <span class="trending-category">Trending in Congo - Kinshasa</span>
+                        <span class="trending-name">Grave</span>
+                        <span class="trending-posts">1,234 posts</span>
+                    </div>
+                    <div class="trending-item">
+                        <span class="trending-category">Trending in Congo - Kinshasa</span>
+                        <span class="trending-name">Aventurier</span>
+                        <span class="trending-posts">987 posts</span>
+                    </div>
+                </div>
             </div>
         </main>
 
-        <!-- Modale d'édition du profil avec upload d'images -->
+        <!-- Modales -->
         <div id="editProfileModal" class="modal" style="display:none">
             <div class="modal-content">
                 <button class="close-modal" onclick="closeModal('editProfileModal')">&times;</button>
@@ -342,7 +353,7 @@
 @end
 
 <style>
-/* ========== STYLES PROFIL - FOND BLANC ========== */
+/* ========== PROFIL STYLES ========== */
 
 /* En-tête fixe */
 .profile-header-sticky {
@@ -425,7 +436,6 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-top: -60px;
     margin-bottom: 12px;
     position: relative;
     z-index: 2;
@@ -439,7 +449,6 @@
     background: white;
     overflow: hidden;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
-    position: relative;
 }
 
 .profile-avatar-img {
@@ -459,6 +468,13 @@
     color: white;
     font-weight: bold;
     font-size: 42px;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 .btn-edit-profile {
@@ -607,72 +623,6 @@
     padding-bottom: 20px;
 }
 
-/* Menu tweet */
-.tweet-menu {
-    position: relative;
-}
-
-.tweet-menu button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 9999px;
-    color: #6b7280;
-}
-
-.tweet-menu button:hover {
-    background: rgba(29, 155, 240, 0.1);
-    color: #1d9bf0;
-}
-
-.tweet-menu-dropdown {
-    position: absolute;
-    right: 0;
-    top: 100%;
-    margin-top: 4px;
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-    overflow: hidden;
-}
-
-.tweet-menu-dropdown button {
-    display: block;
-    width: 100%;
-    text-align: left;
-    padding: 10px 16px;
-    color: #f4212e;
-    font-size: 14px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-}
-
-.tweet-menu-dropdown button:hover {
-    background: rgba(244, 33, 46, 0.1);
-}
-
-.hidden {
-    display: none;
-}
-
-/* Empty feed */
-.empty-feed {
-    text-align: center;
-    padding: 48px;
-    color: #6b7280;
-}
-
-/* Scrollbar hide */
-.scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-/* Tweet item styles */
 .tweet-item {
     padding: 16px;
     border-bottom: 1px solid #e5e7eb;
@@ -781,6 +731,108 @@
 
 .like-btn.liked {
     color: #f91880;
+}
+
+/* Menu tweet */
+.tweet-menu {
+    position: relative;
+}
+
+.tweet-menu button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 9999px;
+    color: #6b7280;
+}
+
+.tweet-menu button:hover {
+    background: rgba(29, 155, 240, 0.1);
+    color: #1d9bf0;
+}
+
+.tweet-menu-dropdown {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    margin-top: 4px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    overflow: hidden;
+}
+
+.tweet-menu-dropdown button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 16px;
+    color: #f4212e;
+    font-size: 14px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.tweet-menu-dropdown button:hover {
+    background: rgba(244, 33, 46, 0.1);
+}
+
+.hidden {
+    display: none;
+}
+
+.empty-feed {
+    text-align: center;
+    padding: 48px;
+    color: #6b7280;
+}
+
+/* Colonne droite */
+#trending {
+    background: #fafafa;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 16px;
+}
+
+#trending h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: black;
+}
+
+.trending-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.trending-item:last-child {
+    border-bottom: none;
+}
+
+.trending-category {
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.trending-name {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+    color: black;
+    margin: 4px 0;
+}
+
+.trending-posts {
+    font-size: 12px;
+    color: #6b7280;
 }
 
 /* Modal styles */
@@ -916,30 +968,6 @@
         }
     };
 
-    // Fermeture des modales avec la croix
-    const closeModalBtns = document.querySelectorAll('.close-modal');
-    closeModalBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.style.display = 'none';
-            });
-            document.querySelectorAll('.modal form').forEach(form => {
-                form.reset();
-            });
-        });
-    });
-
-    // Fermer la modale en cliquant à l'extérieur
-    document.querySelectorAll('.modal').forEach(modal => {
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.style.display = 'none';
-                const form = modal.querySelector('form');
-                if (form) form.reset();
-            }
-        });
-    });
-
     // Gestion des likes en AJAX
     document.querySelectorAll('.like-form').forEach(form => {
         form.addEventListener('submit', async (e) => {
@@ -969,6 +997,61 @@
         });
     });
 
+    // Gestion du follow (AJAX sans redirection)
+    async function handleFollow(userId, button, isFollowing) {
+        const url = `/follow/${userId}`;
+        const method = isFollowing ? 'DELETE' : 'POST';
+        
+        try {
+            const csrfToken = document.querySelector('input[name="_csrf"]')?.value;
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken || '',
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                if (isFollowing) {
+                    button.textContent = 'Suivre';
+                    button.classList.remove('following');
+                } else {
+                    button.textContent = 'Abonné';
+                    button.classList.add('following');
+                }
+                button.setAttribute('data-following', (!isFollowing).toString());
+                
+                // Mettre à jour le compteur de followers sur la page
+                const followersSpan = document.querySelector('.profile-stats-link:last-child .profile-stats-number');
+                if (followersSpan) {
+                    let currentCount = parseInt(followersSpan.textContent);
+                    if (isFollowing) {
+                        followersSpan.textContent = currentCount - 1;
+                    } else {
+                        followersSpan.textContent = currentCount + 1;
+                    }
+                }
+                
+                showFlashMessage('success', isFollowing ? 'Désabonné avec succès' : 'Abonné avec succès');
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            showFlashMessage('error', 'Erreur lors de l\'action');
+        }
+    }
+
+    // Écouteurs pour les boutons follow sur le profil
+    document.querySelectorAll('.follow-form').forEach(form => {
+        const button = form.querySelector('button');
+        const userId = form.dataset.userId;
+        const isFollowing = form.dataset.following === 'true';
+        
+        button.addEventListener('click', async () => {
+            await handleFollow(userId, button, isFollowing);
+        });
+    });
+
     // Menu utilisateur
     const menuBtn = document.querySelector('.user-menu');
     const popupMenu = document.querySelector('.popup-menu');
@@ -978,5 +1061,13 @@
             popupMenu.classList.toggle('hidden');
         });
         document.addEventListener('click', () => popupMenu.classList.add('hidden'));
+    }
+
+    function showFlashMessage(type, message) {
+        const flash = document.createElement('div');
+        flash.className = `fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-4 py-2 rounded-full text-white text-sm font-medium ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} shadow-lg`;
+        flash.textContent = message;
+        document.body.appendChild(flash);
+        setTimeout(() => flash.remove(), 3000);
     }
 </script>
