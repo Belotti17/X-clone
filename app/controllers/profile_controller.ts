@@ -106,10 +106,12 @@ export default class ProfileController {
       })
       user.profile_picture = `/uploads/profiles/${fileName}`
     } else if (profilePicture && !profilePicture.isValid) {
-      session.flash(
-        'error',
-        profilePicture.errors?.message || 'Format de photo de profil non supporté'
-      )
+      // CORRECTION : media.errors est un tableau, on prend le premier message
+      const errorMessage =
+        profilePicture.errors && profilePicture.errors[0]
+          ? profilePicture.errors[0].message
+          : 'Format de photo de profil non supporté'
+      session.flash('error', errorMessage)
       return response.redirect().back()
     }
 
@@ -121,10 +123,12 @@ export default class ProfileController {
       })
       user.banner_picture = `/uploads/banners/${fileName}`
     } else if (bannerPicture && !bannerPicture.isValid) {
-      session.flash(
-        'error',
-        bannerPicture.errors?.message || 'Format de photo de couverture non supporté'
-      )
+      // CORRECTION : media.errors est un tableau, on prend le premier message
+      const errorMessage =
+        bannerPicture.errors && bannerPicture.errors[0]
+          ? bannerPicture.errors[0].message
+          : 'Format de photo de couverture non supporté'
+      session.flash('error', errorMessage)
       return response.redirect().back()
     }
 
