@@ -279,40 +279,42 @@
                 @endif
             </div>
         </main>
+
         <!-- Modale d'édition du profil avec upload d'images -->
-<div id="editProfileModal" class="modal" style="display:none">
-    <div class="modal-content">
-        <button class="close-modal" onclick="closeModal('editProfileModal')">&times;</button>
-        <h3>Modifier le profil</h3>
-        <form id="editProfileForm" method="POST" action="/profile/update" enctype="multipart/form-data">
-            {{ csrfField() }}
-            
-            <div class="field">
-                <label class="field-label">Nom</label>
-                <input type="text" name="name" placeholder="Nom" value="{{ profileUser.name || '' }}">
+        <div id="editProfileModal" class="modal" style="display:none">
+            <div class="modal-content">
+                <button class="close-modal" onclick="closeModal('editProfileModal')">&times;</button>
+                <h3>Modifier le profil</h3>
+                <form id="editProfileForm" method="POST" action="/profile/update" enctype="multipart/form-data">
+                    {{ csrfField() }}
+                    
+                    <div class="field">
+                        <label class="field-label">Nom</label>
+                        <input type="text" name="name" placeholder="Nom" value="{{ profileUser.name || '' }}">
+                    </div>
+                    
+                    <div class="field">
+                        <label class="field-label">Bio</label>
+                        <textarea name="bio" placeholder="Bio" rows="3">{{ profileUser.bio || '' }}</textarea>
+                    </div>
+                    
+                    <div class="field">
+                        <label class="field-label">Photo de profil</label>
+                        <input type="file" name="profile_picture" accept="image/*" class="file-input">
+                        <small class="field-help">Formats acceptés : JPG, PNG, GIF (max 5Mo)</small>
+                    </div>
+                    
+                    <div class="field">
+                        <label class="field-label">Photo de couverture</label>
+                        <input type="file" name="banner_picture" accept="image/*" class="file-input">
+                        <small class="field-help">Formats acceptés : JPG, PNG, GIF (max 5Mo)</small>
+                    </div>
+                    
+                    <button type="submit">Enregistrer</button>
+                </form>
             </div>
-            
-            <div class="field">
-                <label class="field-label">Bio</label>
-                <textarea name="bio" placeholder="Bio" rows="3">{{ profileUser.bio || '' }}</textarea>
-            </div>
-            
-            <div class="field">
-                <label class="field-label">Photo de profil</label>
-                <input type="file" name="profile_picture" accept="image/*" class="file-input">
-                <small class="field-help">Formats acceptés : JPG, PNG, GIF (max 5Mo)</small>
-            </div>
-            
-            <div class="field">
-                <label class="field-label">Photo de couverture</label>
-                <input type="file" name="banner_picture" accept="image/*" class="file-input">
-                <small class="field-help">Formats acceptés : JPG, PNG, GIF (max 5Mo)</small>
-            </div>
-            
-            <button type="submit">Enregistrer</button>
-        </form>
-    </div>
-</div>
+        </div>
+
         <div id="replyModal" class="modal" style="display:none">
             <div class="modal-content">
                 <button class="close-modal" onclick="closeModal('replyModal')">&times;</button>
@@ -340,6 +342,7 @@
 @end
 
 <style>
+/* ========== STYLES PROFIL - FOND BLANC ========== */
 
 /* En-tête fixe */
 .profile-header-sticky {
@@ -393,9 +396,9 @@
 .profile-banner {
     height: 200px;
     width: 100%;
+    overflow: hidden;
     position: relative;
     background: linear-gradient(135deg, #1d9bf0, #0a5c8e);
-    overflow: hidden;
 }
 
 .profile-banner-img {
@@ -416,16 +419,16 @@
     left: 0;
 }
 
-/* Avatar - Positionné pour chevaucher la bannière */
+/* Avatar */
 .profile-avatar-section {
     padding: 0 16px;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-top: 20px;
+    margin-top: -60px;
     margin-bottom: 12px;
     position: relative;
-    z-index: 10;
+    z-index: 2;
 }
 
 .profile-avatar-wrapper {
@@ -437,7 +440,6 @@
     overflow: hidden;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
     position: relative;
-    z-index: 5;
 }
 
 .profile-avatar-img {
@@ -506,8 +508,6 @@
 /* Infos utilisateur */
 .profile-info-section {
     padding: 0 16px;
-    position: relative;
-    z-index: 2;
     background: white;
 }
 
