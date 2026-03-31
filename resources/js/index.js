@@ -589,3 +589,109 @@ document.addEventListener('DOMContentLoaded', function () {
 
 window.openRepliesModal = openRepliesModal
 window.deleteReply = deleteReply
+
+let currentRetweetId = null
+let currentReplyId = null
+
+function toggleMenu(tweetId) {
+  const menu = document.getElementById(`menu-${tweetId}`)
+  if (menu) {
+    menu.classList.toggle('hidden')
+  }
+}
+
+function openEditProfileModal() {
+  document.getElementById('editProfileModal').style.display = 'flex'
+}
+
+function closeModal(modalId) {
+  document.getElementById(modalId).style.display = 'none'
+  const replyForm = document.getElementById('replyForm')
+  if (replyForm) replyForm.reset()
+  const retweetForm = document.getElementById('retweetForm')
+  if (retweetForm) retweetForm.reset()
+}
+
+window.openReplyModal = function (tweetId, element) {
+  currentReplyId = tweetId
+  const modal = document.getElementById('replyModal')
+  const form = document.getElementById('replyForm')
+  if (modal && form) {
+    form.action = `/tweets/${tweetId}/reply`
+    modal.style.display = 'flex'
+  }
+}
+
+window.openRetweetModal = function (tweetId) {
+  currentRetweetId = tweetId
+  const modal = document.getElementById('retweetModal')
+  const form = document.getElementById('retweetForm')
+  if (modal && form) {
+    form.action = `/tweets/${tweetId}/retweet`
+    modal.style.display = 'flex'
+  }
+}
+
+// Fermeture des modales avec la croix
+const closeModalBtns = document.querySelectorAll('.close-modal')
+closeModalBtns.forEach((btn) => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.modal').forEach((modal) => {
+      modal.style.display = 'none'
+    })
+    document.querySelectorAll('.modal form').forEach((form) => {
+      form.reset()
+    })
+  })
+})
+
+// Fermer la modale en cliquant à l'extérieur
+document.querySelectorAll('.modal').forEach((modal) => {
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.style.display = 'none'
+      const form = modal.querySelector('form')
+      if (form) form.reset()
+    }
+  })
+})
+
+// Gestion des likes en AJAX
+document.querySelectorAll('.like-form').forEach((form) => {
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const formData = new FormData(form)
+    const btn = form.querySelector('.like-btn')
+    const countSpan = btn.querySelector('span')
+    try {
+      const csrfToken = document.querySelector('input[name="_csrf"]')?.value
+      const response = await fetch(form.action, {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': csrfToken || '' },
+        body: formData,
+      })
+      if (response.ok) {
+        const result = await response.json()
+        if (result.liked) {
+          btn.classList.add('liked')
+        } else {
+          btn.classList.remove('liked')
+        }
+        if (countSpan) countSpan.textContent = result.likesCount
+      }
+    } catch (error) {
+      console.error('Erreur:', error)
+    }
+  })
+})
+
+// Menu utilisateur
+const menuBtn = document.querySelector('.user-menu')
+const popupMenu = document.querySelector('.popup-menu')
+if (menuBtn && popupMenu) {
+  menuBtn.addEventListener('click', (e) => {
+    e.stopPropagation()
+    popupMenu.classList.toggle('hidden')
+  })
+  document.addEventListener('click', () => popupMenu.classList.add('hidden'))
+}
