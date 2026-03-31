@@ -1,30 +1,28 @@
-##  Accès à l’application
+# X Clone - AdonisJS
+
+## Accès à l’application
 
 https://capstone-x-clone-adonis-belotti17.onrender.com
 
-# X Clone - AdonisJS Description
+## Description
 
 Ce projet est un clone simplifié de la plateforme **X (anciennement Twitter)**, développé avec **AdonisJS** en architecture MVC et utilisant **PostgreSQL** comme base de données.
 
 L'application permet aux utilisateurs de publier des tweets, interagir avec du contenu (likes, commentaires, retweets), suivre d'autres utilisateurs et gérer leur authentification avec vérification OTP.
 
----
+## Fonctionnalités
 
-##  Fonctionnalités
-
-###  Authentification & Gestion des utilisateurs
+### Authentification et gestion des utilisateurs
 
 - Inscription avec email
 - Vérification OTP (email avec expiration)
 - Connexion sécurisée avec session
 - Déconnexion
-- Protection des routes avec middleware (`auth`, `guest`)
-- Vérification d’email (`isVerified`)
+- Protection des routes avec middleware (auth, guest)
+- Vérification d’email (isVerified)
 - Gestion de session persistante
 
----
-
-###  Tweets
+### Tweets
 
 - Création de tweets
 - Suppression de tweets (uniquement par l’auteur)
@@ -33,37 +31,29 @@ L'application permet aux utilisateurs de publier des tweets, interagir avec du c
 - Preview avant publication
 - Validation des données côté serveur
 
----
-
-###  Interactions
+### Interactions
 
 - Like / Unlike d’un tweet (AJAX)
 - Commenter un tweet
 - Retweet (avec ou sans commentaire)
 - Compteurs dynamiques (likes, retweets, réponses)
 
----
-
-###  Follows
+### Follows
 
 - Suivre / Se désabonner d’un utilisateur
-- Relations via table pivot (`follows`)
+- Relations via table pivot (follows)
 - Timeline dynamique basée sur les abonnements
 - Suggestions de comptes à suivre
 
----
+### Interface utilisateur
 
-###  Interface utilisateur
-
-- Interface inspirée de X (Twitter)
+- Interface inspirée de X
 - Sidebar + Timeline + Suggestions
 - Modales dynamiques (tweet, reply, retweet)
 - Feedback utilisateur (flash messages)
 - UI interactive avec JavaScript (fetch API)
 
----
-
-##  Technologies utilisées
+## Technologies utilisées
 
 - **Backend** : AdonisJS (MVC)
 - **Frontend** : Edge Templates + CSS
@@ -125,7 +115,6 @@ npm install
 
 Créer un fichier `.env` :
 
-```env
 PORT=3333
 HOST=0.0.0.0
 
@@ -146,7 +135,6 @@ MAIL_USERNAME=your_username
 MAIL_PASSWORD=your_password
 MAIL_FROM_ADDRESS=no-reply@xclone.com
 MAIL_FROM_NAME="X Clone"
-```
 
 ---
 
