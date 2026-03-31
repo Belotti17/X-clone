@@ -9,6 +9,7 @@ import TweetsController from '#controllers/tweets_controller'
 import ProfileController from '#controllers/profile_controller'
 import FollowController from '#controllers/follows_controller'
 import SearchController from '#controllers/searches_controller'
+import CommunitiesController from '#controllers/communities_controller'
 
 /*
   ACCUEIL
@@ -55,6 +56,7 @@ router
     // TIMELINE
     router.get('/timeline', [TimelineController, 'index']).as('timeline')
     router.get('/following', [TimelineController, 'following']).as('timeline.following')
+    router.get('/communities', [CommunitiesController, 'index']).as('communities')
 
     // TWEETS
     router.post('/tweets', [TweetsController, 'store']).as('tweets.store')
