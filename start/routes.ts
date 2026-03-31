@@ -67,6 +67,7 @@ router
     // PROFIL
     router.get('/profile/:username?', [ProfileController, 'show']).as('profile.show')
     router.put('/profile', [ProfileController, 'update']).as('profile.update')
+    router.post('/profile/update', [ProfileController, 'update']).as('profile.update.post')
     router
       .get('/profile/:username/followers', [ProfileController, 'followers'])
       .as('profile.followers')
