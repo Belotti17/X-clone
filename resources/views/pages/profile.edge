@@ -271,43 +271,41 @@
                 @endif
             </div>
         </main>
-
         <!-- Modale d'édition du profil avec upload d'images -->
-        <div id="editProfileModal" class="modal" style="display:none">
-            <div class="modal-content">
-                <button class="close-modal" onclick="closeModal('editProfileModal')">&times;</button>
-                <h3>Modifier le profil</h3>
-                <form id="editProfileForm" method="POST" action="/profile" enctype="multipart/form-data">
-                    {{ csrfField() }}
-                    <input type="hidden" name="_method" value="PUT">
-                    
-                    <div class="field">
-                        <label class="field-label">Nom</label>
-                        <input type="text" name="name" placeholder="Nom" value="{{ profileUser.name || '' }}">
-                    </div>
-                    
-                    <div class="field">
-                        <label class="field-label">Bio</label>
-                        <textarea name="bio" placeholder="Bio" rows="3">{{ profileUser.bio || '' }}</textarea>
-                    </div>
-                    
-                    <div class="field">
-                        <label class="field-label">Photo de profil</label>
-                        <input type="file" name="profile_picture" accept="image/*" class="file-input">
-                        <small class="field-help">Formats acceptés : JPG, PNG, GIF (max 5Mo)</small>
-                    </div>
-                    
-                    <div class="field">
-                        <label class="field-label">Photo de couverture</label>
-                        <input type="file" name="banner_picture" accept="image/*" class="file-input">
-                        <small class="field-help">Formats acceptés : JPG, PNG, GIF (max 5Mo)</small>
-                    </div>
-                    
-                    <button type="submit">Enregistrer</button>
-                </form>
+<div id="editProfileModal" class="modal" style="display:none">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeModal('editProfileModal')">&times;</button>
+        <h3>Modifier le profil</h3>
+        <form id="editProfileForm" method="POST" action="/profile" enctype="multipart/form-data">
+            {{ csrfField() }}
+            <input type="hidden" name="_method" value="PUT">
+            
+            <div class="field">
+                <label class="field-label">Nom</label>
+                <input type="text" name="name" placeholder="Nom" value="{{ profileUser.name || '' }}">
             </div>
-        </div>
-
+            
+            <div class="field">
+                <label class="field-label">Bio</label>
+                <textarea name="bio" placeholder="Bio" rows="3">{{ profileUser.bio || '' }}</textarea>
+            </div>
+            
+            <div class="field">
+                <label class="field-label">Photo de profil</label>
+                <input type="file" name="profile_picture" accept="image/*" class="file-input">
+                <small class="field-help">Formats acceptés : JPG, PNG, GIF (max 5Mo)</small>
+            </div>
+            
+            <div class="field">
+                <label class="field-label">Photo de couverture</label>
+                <input type="file" name="banner_picture" accept="image/*" class="file-input">
+                <small class="field-help">Formats acceptés : JPG, PNG, GIF (max 5Mo)</small>
+            </div>
+            
+            <button type="submit">Enregistrer</button>
+        </form>
+    </div>
+</div>
         <div id="replyModal" class="modal" style="display:none">
             <div class="modal-content">
                 <button class="close-modal" onclick="closeModal('replyModal')">&times;</button>
