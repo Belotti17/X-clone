@@ -239,10 +239,6 @@
 
                                         @if (tweet.userId === user?.id)
                                             <div class="tweet-menu">
-                                                <button onclick="toggleMenu({{ tweet.id }})">
-                                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
-                                                    </svg>
                                                 </button>
                                                 <div id="menu-{{ tweet.id }}" class="tweet-menu-dropdown hidden">
                                                     <form method="POST" action="/tweets/{{ tweet.id }}/delete" onsubmit="return confirm('Supprimer ce tweet ?')">
