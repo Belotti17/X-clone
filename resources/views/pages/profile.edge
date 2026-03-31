@@ -392,7 +392,10 @@
 /* Bannière */
 .profile-banner {
     height: 200px;
+    width: 100%;
     overflow: hidden;
+    position: relative;
+    background: linear-gradient(135deg, #1d9bf0, #0a5c8e);
 }
 
 .profile-banner-img {
@@ -407,7 +410,7 @@
     background: linear-gradient(135deg, #1d9bf0, #0a5c8e);
 }
 
-/* Avatar */
+/* Avatar - Positionné pour chevaucher la bannière */
 .profile-avatar-section {
     padding: 0 16px;
     display: flex;
@@ -415,6 +418,8 @@
     align-items: flex-end;
     margin-top: -60px;
     margin-bottom: 12px;
+    position: relative;
+    z-index: 2;
 }
 
 .profile-avatar-wrapper {
@@ -424,6 +429,7 @@
     border: 4px solid white;
     background: white;
     overflow: hidden;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
 .profile-avatar-img {
