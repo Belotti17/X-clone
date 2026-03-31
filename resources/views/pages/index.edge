@@ -247,7 +247,9 @@
                                                 <div id="menu-{{ tweet.id }}" class="tweet-menu-dropdown hidden">
                                                     <form method="POST" action="/tweets/{{ tweet.id }}/delete" onsubmit="return confirm('Supprimer ce tweet ?')">
                                                         {{ csrfField() }}
-                                                        <button type="submit">Supprimer</button>
+                                                        <button type="submit" class="delete-btn" title="Supprimer">
+                                                            <img src="https://www.svgrepo.com/show/511788/delete-1487.svg" alt="Supprimer" />
+                                                        </button>
                                                     </form>
                                                 </div>
                                             </div>
