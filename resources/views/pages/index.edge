@@ -49,52 +49,59 @@
                 <div style="margin-top: 20px">
                     <button class="btn--primary" id="openTweetModal">Post</button>
                 </div>
-            <div class="user-line" id="userMenu">
-                <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px; margin-right: 12px;">
-                    {{ user?.name ? user.name.charAt(0).toUpperCase() : user?.username?.charAt(0).toUpperCase() || 'U' }}
+                <div class="user-line" id="userMenu">
+                    @if(user?.profile_picture)
+                        <img src="{{ user.profile_picture }}" class="avatar-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px;">
+                    @else
+                        <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px; margin-right: 12px;">
+                            {{ user?.name ? user.name.charAt(0).toUpperCase() : user?.username?.charAt(0).toUpperCase() || 'U' }}
+                        </div>
+                    @endif
+                    <div class="user-info">
+                        <div class="user-name">{{ user?.name || user?.username }}</div>
+                        <div class="user-handle">{{ user?.username }}</div>
+                    </div>
+                    <button class="user-menu" aria-label="Menu utilisateur">⋯</button>
+                    <div class="popup-menu" hidden>
+                        <form method="POST" action="/logout">
+                            {{ csrfField() }}
+                            <button type="submit" class="logout">Déconnexion</button>
+                        </form>
+                    </div>
                 </div>
-                <div class="user-info">
-                    <div class="user-name">{{ user?.name || user?.username }}</div>
-                    <div class="user-handle">{{ user?.username }}</div>
-                </div>
-                <button class="user-menu" aria-label="Menu utilisateur">⋯</button>
-                <div class="popup-menu" hidden>
-                    <form method="POST" action="/logout">
-                        {{ csrfField() }}
-                        <button type="submit" class="logout">Déconnexion <br> {{ user?.username }}</button>
-                    </form>
-                </div>
-            </div>
             </nav>
-
         </header>
 
         <!-- MAIN GRID -->
         <main class="main">
             <div id="centerContainer">
                 <div class="tabs">
-    <ul class="tabs__list">
-        <li>
-            <a href="/timeline" class="tabs__link {{ request.url().startsWith('/timeline') || request.url() === '/' ? 'active' : '' }}">
-                For you
-            </a>
-        </li>
-        <li>
-            <a href="/following" class="tabs__link {{ request.url().startsWith('/following') ? 'active' : '' }}">
-                Following
-            </a>
-        </li> 
-    </ul>
-</div>
+                    <ul class="tabs__list">
+                        <li>
+                            <a href="/timeline" class="tabs__link {{ request.url().startsWith('/timeline') || request.url() === '/' ? 'active' : '' }}">
+                                For you
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/following" class="tabs__link {{ request.url().startsWith('/following') ? 'active' : '' }}">
+                                Following
+                            </a>
+                        </li> 
+                    </ul>
+                </div>
 
                 {{-- Messages flash --}}
                 <div id="flashContainer"></div>
 
                 <div class="addtwets">
                     <div class="tweet-box">
-                        <div class="avatar-circle-tw">
-                            {{ user?.name ? user.name.charAt(0).toUpperCase() : user?.username?.charAt(0).toUpperCase() || 'U' }}
-                        </div>
+                        @if(user?.profile_picture)
+                            <img src="{{ user.profile_picture }}" class="avatar-img" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;">
+                        @else
+                            <div class="avatar-circle" style="width: 48px; height: 48px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 20px;">
+                                {{ user?.name ? user.name.charAt(0).toUpperCase() : user?.username?.charAt(0).toUpperCase() || 'U' }}
+                            </div>
+                        @endif
                         <div class="tweet-content">
                             <form id="tweetForm" method="POST" action="/tweets" enctype="multipart/form-data">
                                 {{ csrfField() }}
@@ -157,11 +164,19 @@
                                         @endif
                                     </div>
                                     <div class="tweet-header">
-                                        <div class="avatar-circle" style="width: 48px; height: 48px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px;">
-                                            {{ tweet.originalTweet.user?.name ? tweet.originalTweet.user.name.charAt(0).toUpperCase() : tweet.originalTweet.user?.username?.charAt(0).toUpperCase() || 'U' }}
-                                        </div>
+                                        <a href="/profile/{{ tweet.originalTweet.user?.username }}" class="profile-link">
+                                            @if(tweet.originalTweet.user?.profile_picture)
+                                                <img src="{{ tweet.originalTweet.user.profile_picture }}" class="avatar-img" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;">
+                                            @else
+                                                <div class="avatar-circle" style="width: 48px; height: 48px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px;">
+                                                    {{ tweet.originalTweet.user?.name ? tweet.originalTweet.user.name.charAt(0).toUpperCase() : tweet.originalTweet.user?.username?.charAt(0).toUpperCase() || 'U' }}
+                                                </div>
+                                            @endif
+                                        </a>
                                         <div class="tweet-user-info">
-                                            <strong>{{ tweet.originalTweet.user?.name || tweet.originalTweet.user?.username }}</strong>
+                                            <a href="/profile/{{ tweet.originalTweet.user?.username }}" class="profile-link username-link">
+                                                <strong>{{ tweet.originalTweet.user?.name || tweet.originalTweet.user?.username }}</strong>
+                                            </a>
                                             <span class="username">{{ tweet.originalTweet.user?.username }}</span>
                                             <span class="time">· {{ tweet.originalTweet.createdAt?.toFormat ? tweet.originalTweet.createdAt.toFormat('dd/MM/yyyy HH:mm') : tweet.originalTweet.createdAt }}</span>
                                         </div>
@@ -182,11 +197,19 @@
                                     @if (tweet.content)
                                         <div class="retweet-comment">
                                             <div class="retweet-comment-header">
-                                                <div class="avatar-circle" style="width: 32px; height: 32px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px;">
-                                                    {{ user?.name ? user.name.charAt(0).toUpperCase() : user?.username?.charAt(0).toUpperCase() || 'U' }}
-                                                </div>
+                                                <a href="/profile/{{ user?.username }}" class="profile-link">
+                                                    @if(user?.profile_picture)
+                                                        <img src="{{ user.profile_picture }}" class="avatar-img" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                                                    @else
+                                                        <div class="avatar-circle" style="width: 32px; height: 32px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px;">
+                                                            {{ user?.name ? user.name.charAt(0).toUpperCase() : user?.username?.charAt(0).toUpperCase() || 'U' }}
+                                                        </div>
+                                                    @endif
+                                                </a>
                                                 <div>
-                                                    <strong>{{ user.name || user.username }}</strong>
+                                                    <a href="/profile/{{ user?.username }}" class="profile-link">
+                                                        <strong>{{ user.name || user.username }}</strong>
+                                                    </a>
                                                     <span class="username">{{ user.username }}</span>
                                                 </div>
                                             </div>
@@ -197,22 +220,37 @@
                                 {{--Tweet normal--}}
                                 @else
                                     <div class="tweet-header">
-                                        <div class="avatar-circle" style="width: 48px; height: 48px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px;">
-                                            {{ tweet.user?.name ? tweet.user.name.charAt(0).toUpperCase() : tweet.user?.username?.charAt(0).toUpperCase() || 'U' }}
-                                        </div>
+                                        <a href="/profile/{{ tweet.user?.username }}" class="profile-link">
+                                            @if(tweet.user?.profile_picture)
+                                                <img src="{{ tweet.user.profile_picture }}" class="avatar-img" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;">
+                                            @else
+                                                <div class="avatar-circle" style="width: 48px; height: 48px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px;">
+                                                    {{ tweet.user?.name ? tweet.user.name.charAt(0).toUpperCase() : tweet.user?.username?.charAt(0).toUpperCase() || 'U' }}
+                                                </div>
+                                            @endif
+                                        </a>
                                         <div class="tweet-user-info">
-                                            <strong>{{ tweet.user?.name || tweet.user?.username }}</strong>
+                                            <a href="/profile/{{ tweet.user?.username }}" class="profile-link username-link">
+                                                <strong>{{ tweet.user?.name || tweet.user?.username }}</strong>
+                                            </a>
                                             <span class="username">{{ tweet.user?.username }}</span>
                                             <span class="time">· {{ tweet.createdAt?.toFormat ? tweet.createdAt.toFormat('dd/MM/yyyy HH:mm') : tweet.createdAt }}</span>
                                         </div>
 
                                         @if (tweet.userId === user?.id)
-                                            <form method="POST" action="/tweets/{{ tweet.id }}/delete" class="delete-form" onsubmit="return confirm('Supprimer ce tweet ?')">
-                                                {{ csrfField() }}
-                                                <button type="submit" class="delete-btn" title="Supprimer">
-                                                    <img src="https://www.svgrepo.com/show/511788/delete-1487.svg" alt="Supprimer" />
+                                            <div class="tweet-menu">
+                                                <button onclick="toggleMenu({{ tweet.id }})">
+                                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
+                                                    </svg>
                                                 </button>
-                                            </form>
+                                                <div id="menu-{{ tweet.id }}" class="tweet-menu-dropdown hidden">
+                                                    <form method="POST" action="/tweets/{{ tweet.id }}/delete" onsubmit="return confirm('Supprimer ce tweet ?')">
+                                                        {{ csrfField() }}
+                                                        <button type="submit">Supprimer</button>
+                                                    </form>
+                                                </div>
+                                            </div>
                                         @endif
                                     </div>
 
@@ -287,11 +325,19 @@
                         <h3>Qui suivre</h3>
                         @each(suggestion in suggestions)
                             <div class="suggestion-item">
-                                <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
-                                    {{ suggestion.name ? suggestion.name.charAt(0).toUpperCase() : suggestion.username?.charAt(0).toUpperCase() || 'U' }}
-                                </div>
+                                <a href="/profile/{{ suggestion.username }}" class="suggestion-link">
+                                    @if(suggestion.profile_picture)
+                                        <img src="{{ suggestion.profile_picture }}" class="avatar-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                                    @else
+                                        <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                            {{ suggestion.name ? suggestion.name.charAt(0).toUpperCase() : suggestion.username?.charAt(0).toUpperCase() || 'U' }}
+                                        </div>
+                                    @endif
+                                </a>
                                 <div>
-                                    <strong>{{ suggestion.name || suggestion.username }}</strong>
+                                    <a href="/profile/{{ suggestion.username }}" class="suggestion-link">
+                                        <strong>{{ suggestion.name || suggestion.username }}</strong>
+                                    </a>
                                     <span>{{ suggestion.username }}</span>
                                 </div>
                                 <form method="POST" action="/follow/{{ suggestion.id }}">
@@ -333,9 +379,15 @@
                 {{-- Formulaire pour commenter --}}
                 <div class="reply-form-modal">
                     <div class="reply-input-modal">
-                        <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px;">
-                            {{ user?.name ? user.name.charAt(0).toUpperCase() : user?.username?.charAt(0).toUpperCase() || 'U' }}
-                        </div>
+                        <a href="/profile/{{ user?.username }}" class="profile-link">
+                            @if(user?.profile_picture)
+                                <img src="{{ user.profile_picture }}" class="avatar-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                            @else
+                                <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px;">
+                                    {{ user?.name ? user.name.charAt(0).toUpperCase() : user?.username?.charAt(0).toUpperCase() || 'U' }}
+                                </div>
+                            @endif
+                        </a>
                         <textarea id="replyContent" placeholder="Écrire une réponse..." maxlength="280"></textarea>
                     </div>
                     <div class="reply-actions-modal">
@@ -360,7 +412,6 @@
         </div>
     @end
 @end
-
 <script>
     window.userId = {{ user?.id }};
 </script>
