@@ -122,8 +122,10 @@ export class TweetSchema extends BaseModel {
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = ['bio', 'createdAt', 'email', 'followers', 'following', 'id', 'isPrivate', 'isVerified', 'name', 'password', 'profilePicture', 'updatedAt', 'username'] as const
+  static $columns = ['bannerPicture', 'bio', 'createdAt', 'email', 'followers', 'following', 'id', 'isPrivate', 'isVerified', 'name', 'password', 'profilePicture', 'updatedAt', 'username'] as const
   $columns = UserSchema.$columns
+  @column()
+  declare bannerPicture: string | null
   @column()
   declare bio: string | null
   @column.dateTime({ autoCreate: true })
