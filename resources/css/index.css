@@ -964,6 +964,49 @@ header {
   font-weight: bold;
 }
 
+/* Styles supplémentaires pour les liens de profil */
+.profile-link {
+  text-decoration: none;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+}
+
+.username-link {
+  display: inline-block;
+}
+
+.suggestion-link {
+  text-decoration: none;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+}
+
+.suggestion-link strong {
+  color: black;
+}
+
+.suggestion-item a {
+  text-decoration: none;
+}
+
+.tweet-user-info .profile-link strong {
+  color: black;
+}
+
+.tweet-user-info .profile-link:hover strong {
+  text-decoration: underline;
+}
+
+.retweet-comment-header .profile-link strong {
+  color: black;
+}
+
+.retweet-comment-header .profile-link:hover strong {
+  text-decoration: underline;
+}
+
 /* ============================================
    RESPONSIVE
    ============================================ */
