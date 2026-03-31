@@ -21,6 +21,7 @@ export type ScannedRoutes = {
     'tweets.replies': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'profile.show': { paramsTuple?: [ParamValue?]; params?: {'username'?: ParamValue} }
     'profile.update': { paramsTuple?: []; params?: {} }
+    'profile.update.post': { paramsTuple?: []; params?: {} }
     'profile.followers': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
     'profile.following': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
     'follow.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -65,6 +66,7 @@ export type ScannedRoutes = {
     'tweets.like': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tweets.retweet': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tweets.reply': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'profile.update.post': { paramsTuple?: []; params?: {} }
     'follow.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'session.destroy': { paramsTuple?: []; params?: {} }
   }
