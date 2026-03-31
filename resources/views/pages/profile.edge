@@ -276,9 +276,8 @@
     <div class="modal-content">
         <button class="close-modal" onclick="closeModal('editProfileModal')">&times;</button>
         <h3>Modifier le profil</h3>
-        <form id="editProfileForm" method="POST" action="/profile" enctype="multipart/form-data">
+        <form id="editProfileForm" method="POST" action="/profile/update" enctype="multipart/form-data">
             {{ csrfField() }}
-            <input type="hidden" name="_method" value="PUT">
             
             <div class="field">
                 <label class="field-label">Nom</label>
