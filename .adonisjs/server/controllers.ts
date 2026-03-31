@@ -13,4 +13,5 @@ export const controllers = {
   Session: () => import('#controllers/session_controller'),
   Timeline: () => import('#controllers/timeline_controller'),
   Tweets: () => import('#controllers/tweets_controller'),
+  Communities: () => import('#controllers/communities_controller'),
 }
