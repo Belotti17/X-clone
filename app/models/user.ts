@@ -62,6 +62,15 @@ export default class User extends compose(UserSchema, withAuthFinder(hash)) {
   @column({ columnName: 'is_verified' })
   declare isVerified: boolean
 
+  @column()
+  declare bio: string | null
+
+  @column()
+  declare profile_picture: string | null
+
+  @column()
+  declare banner_picture: string | null
+
   // ================= Sécurité =================
 
   protected $hidden = ['password', 'rememberMeToken'] // champs cachés JSON
