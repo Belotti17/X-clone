@@ -1,0 +1,190 @@
+@component('layouts/base', { title: 'Abonnements' })
+    @slot('main')
+        <!-- SIDEBAR GAUCHE (identique à timeline) -->
+        <header>
+            <div class="nav__logo">
+                <a href="/timeline"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAJQAqwMBIgACEQEDEQH/xAAcAAEAAgMBAQEAAAAAAAAAAAAABwgBBQYEAwL/xABMEAABAwICBgMLCQQHCQAAAAABAAIDBAUGEQhMUFRYRJxoRMUIjJSgZGxweHwFRYkM0NilNHxF0JVciM0RVNjssIlNURkdIKEk6L/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8AmzX+XNa6uv1ot9QaauudHTzgB3c5pQ12R2HIlbE6xuPtXE6U8Dx4xs2dM1jbrTAuppDq6fFh5HsOSDffOzDv8ct5/wDIb+afOzDv8bt/4lv5qns8MkE0kUzDHJG4texwyLSNoIXzQXG+dmHf45bvPUN/NPnZh0/25btf/MN/NU5RBcb514d/jdv/ABDdfatlRVlNX07aiiqIqiB2YbJE4OacuYVKFIeh/HTsLXfvGvk/2RWvAkz+xfsDxy3Hlr3ILNosNc1zQ5hDmkZgg6iOKyPgoCJ8e5Pjr5ICJ2+1PjrQPgL8yPbG1z5HBrWtJcScgAOPJfpQJpn0kd/Plw3Yp86VhLayoZ9qd8bT5PE7zy2hMXzsw6f7ct2X/UN/NPnXh3+OW78Q381TpfqKN0sjWRtc97iGta0Zkk7AAguPT4ksdTMyCnu9FLNIeiyOOdpLjwAW1Ub6I9HjcL0bbpdYmm8Tt8XPPvdh/dH3uJ8ykj49yAmfN3oT49yZoHx1pt5+1PjrTbzz470EMaccBd8RyYotEWcrB9OiYPGaPtAOI1Z8te5QQRkFd0gOBDgHAjIgjbyVZ9L+Ajha59/22I/JFW49DL7B+9h5cEHJ4RpbLW3uClxFUVNNRTHod3py0GNx2E5g+Dnt4bVNo0D4bdlldbqc9nhx6/8A4VeVPug/H/f9OzDN4nBq4m5UUjtsrAPEJ4gDVy6kHG6UNF4wjSQXK1Tz1VuJDJ3TEdOJxOo6gBkdnWo1OrMK61fSU9wo5qOsibNBOwskjcMw5p3FVV0jYNnwbfnUpzfQz9J9HMdrmb2n7wzAPmO9BJWgzHvfEUeF7rIO6xNyoJHHx2jbGeY3ctW5TP61SWCaWnnjmhkcyWJwex4OtrgcwQrS6LcbRYxsY7uWtulKA2qYP3uDxyOXmKDtURED460+OtFGel7SI3DVI+02mUOvE7PCeNfezCNp+9w9KDU6Z9I5oopsOWGb6U8dGtqGn6ppHiNPlHed3XsgNfuR7pHOfI8ve5xLnOOZJO8r8IG9T7oX0cG3sjxFfYCKx4zo6d/2TT++4bncOAPHZpdDGjjv+SHEd8h+iNPSo6d4+tcP33DyeHH1z1t86DO5P0REBYz5n0LKZ8ygJ29afHWnb1oHxrXgvloo77a6i23KIS01Q3oublrHAjgQdYXvT41oKgY1wtWYTv01tqwXMHhQS5apY89TvzWmpqialqYqimkdFNE4Oje05FpGwq1mkbBtPjGxOpfBZXw5vpJiPFdvB5HZ6Cqq19HUW+snpKyF0NTC8skjcNbXA7EFo9GONocY2QOkLW3OmDWVcQ1ZnLU8cj61tca4Xo8W2KW21g6Lz4UEwGuKQbD1ceIVWMJYjrsMXuC50DvCjOUkZ8WVh2tKtjhq+UWI7NTXS3vLoZ259E5ZsO9ruYQVDvdorLHdKm23CMx1FO/ouG48COII1r1YTxDW4YvdPdKB3hxnJ8Z2SsO1p61YDTDgMYotfyhbo87tRtPQA1GePaW9Y15e9VpcCxxaQWkHIgjWEFycN3yixFZqa6W9/ShnbmWnxmO3tdzBWzVXdFGOZMIXgRVTibVWOAqG5/VnYJAOW/iOpTxjrG1vwnYhXue2onnb9DhafrjlqP8AKM8yUHh0oY9gwfbO505bLdqhpFPEdjBs6buQ3cVWGtrJ66qmqqyV81RM4ukkedbid69F8u1be7pPcblOZqmd3Se7cOAHADcFr96ABmpM0QaOziarbdbvERaIHeC3Z3w8Hxf5Rv8AQtToxwHUYyuvSmD47VTkGomGrpHyG8z2BWhoaSnoKSKko4mQ08LQyKNgyDQNyD6xxsjY1kbQ1jQA1oGQAG5frt609CfGtAREQEz+8fQidLJA+OtOvWntTbzzQPjrTt9qbfPqTb50BRPptwCbzROxBaIelcKZn0iNg1zxjf8AzN7R5lLG3zodY459qCkORG1d3omxw/CF57lVuJtNY4NqG5n+jO54Hr4jqC3GmrAPyFXuvtqiIttU/OZjRqglP+k7uB1cFFuzVtQXailjmiZLC9r2PaHMc05hwOwhQPpxwCaKd+JrPD9GmOddE37N5/fA4Hfz1716NB+Pu5Ojwvd5fAd/u+V52H+7J4cPRwU3VMENZTy09VG2WGVhZJG8ZhwI1goKTnbrX3qq2pq44GVNRJM2njEcQe4noM8kZ7Aus0oYIlwffOjC1zrZVEupZDry4sPMZ+cZLikGQM10uBMIV2MLwyipWllOwh1TUZaomZ+s7gtfhewV+JbzBa7ZGHTSnwnHZGze88grXYPwvb8KWWO225uY2yyuHhTP3ud8agg9dhs9FYbXT222QiKlgbk1u9x3kneTxWwTb502epARE2+dAT49yfon6ICecp+iZ8+xATjlr9qJ28+KAiIgLB3/ABms9vtTt9qDzXGhpbjQz0VbE2amnYWSMcPGBVU9IWD6rB1+fSSBz6OXN9JMftGcDzGeR96tr2rnsc4Uo8X2KW3VWTJR4dPPlrikGw9W48kFRY5Hse17HuY5pza4HIg7iFZrRFjtuK7R3jXyD5Wo2AS5/bt3PHt59arfebVWWW5VFvuMRiqad/Qe0+scQdoK/eH7xWWC7U9zt0pjqIHhwy2OG9p4g70FtcWYdo8U2Se1148CQZskA8KN42OHV+aqbiOx1mHbvUWu4xlk8Dss8tT27nDkQrX4MxNRYssUFyoXAFw6M0ROuKQbWn2HeMlzulvAzMWWbvmjYPlejaXQHUO7DfGfZwPWgrhh681mH7tT3O3Slk8Ds8tz272u4g7CrZ4RxJR4pscF0oHeDIOjJEdsTxtafz4Kn0rHxSOjkY5j2Etc1wyII2grr9GONpcG3xskrnPttSQyri2gDPxwPKHaNSC1iL5UlRDV00VRTStmhlaHxyNOYe07CvqgIibOaAiIgJnzPoRM0D27+KdqfHWm3n7UDt9qdufam3n7U+OtA7c+1E7fanb7UBcvpAxjRYNsz6qfoy1coLaamz1yO4ng0byvfivElvwtZZrncZPAZqjjb40r9zQFVPFuJLhim8zXK5SHpOOUcQJ6MTNzR8a0HjvN2rL1cqi4XGYy1NQ8ue4nZwA4AbAF4UXso7ZW1lNVVNLSyyw0jA+okY3MRNJyBKDo9G2MqjB18bOSX2+fJlXCN7fKH3hn6xvVqaKrp7hSQ1dHK2annYHxvadTmkalSkqWtCWPvkqsZh27TfQKh/0WR7tUMhPi8mnsPWg2enPAORkxTaIjkf6/EwbP8QD/ADenioS2Hzq7U0Uc0T4po2vjkaWPa4ZhwO0EcFWDSvgZ+EbyZqRhNqrHE07v7t20sPVu5IOn0H4+7xqGYZu8471mdlRSvP1byfq8+BOzn1qe81SNjnMd0gSCNYPAqymh7HjcTWoWy5TD5Xo2ayds8Y1B3WNWfpQSRz7UQ7U7UBP09yIgfp7ln/u7FhM+aAm3n170Tt60DtT460RA+OteK83Sis1tqLhcpmw0sLek97uwdZOoBeiqqIaWnkqKmVsUMTS573nIADaSqx6U8fz4uuJpqN747RTuIiZrHdj5bh6huCDWaQsaVmMryaqfpRUcRLaWmJ+rbxP3jqzXKk5lCc167Tbau73CCgt8Dpqqd/RjYN/u3oPZhfDtfiW8QW22M6Ushzc/dG3e48grUYVwna8N2AWelgZJC5pFS6RoJqCRkS7j+S8WjzBNHg2ziBgbLXTgGqqMtbz5I4NG4eddYgq3pVwNJhC890pmudaqtxdTvy+rO0xnq3cR51wo1K5OJrDRYks1Ta7gwGKZuQcNrHbnDmCqm4qw9W4YvNRa7gwiWJ3gPA8GVm5w5FBO2hbH3zgofkS6y53OlZ/RSPOuojH+ob+O3iu9xLYqPElmqLXcGB0UzcmuyGcbtzhzCp9bK+ptdfT11DK6Kpp5A+N7TsI9itbo+xfTYxsEdbH0WVbPAqoAfq38eo7QgrBivD9bhi9VFquDcpYj4LwMmysOxw5H15heWy3asslzp7jbpTFUwPDmkHUeR4g7CFZzSngiLGNkPcGsbdKUF9NIdXS4sJ4HsKq1UwS0tRJBPG6OWNxa9jhkWuGogoLd4JxTR4usUNypC1rz4E8OeuKTe08t45Lf9qqZo6xjUYNvzKtvSkopso6uDPxmZ+MB5Q3ecb1ayhrKe40cNZRytmpp2B8cjTmHNKD7oiICZ8yiecoHx1onPj2oNaAsEgDMnVtJPBZ1E5bc1COmnSP0O7YasM+vxa2qY7Z/htPrPm4oNJpi0jC/VD7HZZj8lwuynlaf6y8H/KCPOdfBRUdupCeSyGkkAAknYAg+lLTy1NRHBBG6SaVwaxjBmXE7AArNaKdH8WErcKyuYH3ipYO6uIB7g0/uD2neRyWn0O6N22WCO/XyEG5ytzp4Xj+rNI2n7xHoUr9aAgTnxTagLitKGCIsYWR3cWtZdKYF1LIdXS4sJ4HsK7VNoQUnqqealqJKeeN0c0Tix7HDItcNoK3mBsV1eEL7FcKbN8RyZUwZ6pY89Y6+BUs6cMAishkxPaIR3xE3OuiYNcjB9p1gbeXUoE3oLo2a6Ud6tdPcrbKJqWoZ0mPG/iDwIOojiFE2nHAXfMT8T2eEd2jH06Jg8doH1nWN/LqXIaHcfHDVzFruUp+Sat4ALjqp5Dsd1Hf6VZB0kEsZaXxvY8ZEEghw/JBSffnuUsaEceC0VrcPXSbK31L86eR7jlDIf3eTXevrWo0u4IGF7t37bQ02isce5hp+pftMfVqJHo3KPQdqC73Wnx7lF2hbHvzgt4st1lzulKzwHvdrqIhv6xv47VKP6ICZ/wAyfomf3igwnVrWVq8SyXiO0zDDsEM1xcOjEZ39FjM/3jxy4IOA0xaRRYIH2Oyy53WZv9NK3/hmH/UezbwVdXOc4kuJJJzJO8qS6nQ5jerqJKiqdSTTyuLnyPqsy4neTkvl+xTGHkUH4j3II3U3aF9G/SMGJb/BmNT6GmeNR4SOHqHnX5wJoYrKe9Mq8WCmdSweEymjf0xM7733Rty3qcmgNAAAAAyy2BBk8d6J19qICdWtEHPtQEREGHgOaQ4BzSMiDv5Hkq1aYcA/Ni5G5WyH/ZNW85NaNVPJ5HUdZHoVll4bzaqS9Wypt1wiEtNUMLHg7eRHAjaCgpevuKyqGypm/wDYVJFw0JYnjrZmULqOalDz3KV8vRLm7iRlqK8/7FMYeRQfiPcgjySomlb0ZZpHt25OeSF8lJH7FMYf3dD+I9yfsUxh5FB+I9yDgrXX1NrroK6hmdDUwPD43t2g/G7erX4BxdS4wsUddBkypZ4FVBnrjfl6juKg39imMPIoPxHuXS4CwDjrB9/juEEVE+B/gVMHfWQlZ6No2goJyTP7x9CwNgWc+tA3lN+W5EQNx6kI2oiARuREQNu1OKwiDO9Nu1EQEO/qREBNvn2oiBu1oNiIgIRqWEQZyT8lhEGVnLmURB//2Q==" alt="logo X" /></a>
+            </div>
+
+            <nav class="nav">
+                <ul class="nav__list">
+                    <li><a href="/timeline" class="nav__link"><img class="nav__icon" src="https://www.svgrepo.com/show/535437/home.svg" />Home</a></li>
+                    <li><a href="#" class="nav__link"><img class="nav__icon" src="https://www.svgrepo.com/show/486828/search.svg" />Explore</a></li>
+                    <li><a href="#" class="nav__link"><img class="nav__icon" src="https://www.svgrepo.com/show/512576/notification-bell-1398.svg" />Notifications</a></li>
+                    <li><a href="#" class="nav__link"><img class="nav__icon" src="https://www.svgrepo.com/show/522169/mail.svg" />Messages</a></li>
+                    <li><a href="/communities" class="nav__link"><img class="nav__icon" src="https://www.svgrepo.com/show/158210/community.svg" />Communities</a></li>
+                    <li><a href="/profile/{{ user?.username }}" class="nav__link"><img class="nav__icon" src="https://www.svgrepo.com/show/512729/profile-round-1342.svg" />Profile</a></li>
+                    <li><a href="#" class="nav__link"><img class="nav__icon" src="https://www.svgrepo.com/show/521184/more-horizontal.svg" />More</a></li>
+                </ul>
+                <div style="margin-top: 20px">
+                    <button class="btn--primary" id="openTweetModal">Post</button>
+                </div>
+                <div class="user-line" id="userMenu">
+                    @if(user?.profile_picture)
+                        <img src="{{ user.profile_picture }}" class="avatar-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px;">
+                    @else
+                        <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px; margin-right: 12px;">
+                            {{ user?.name ? user.name.charAt(0).toUpperCase() : user?.username?.charAt(0).toUpperCase() || 'U' }}
+                        </div>
+                    @endif
+                    <div class="user-info">
+                        <div class="user-name">{{ user?.name || user?.username }}</div>
+                        <div class="user-handle">{{ user?.username }}</div>
+                    </div>
+                    <button class="user-menu" aria-label="Menu utilisateur">⋯</button>
+                    <div class="popup-menu" hidden>
+                        <form method="POST" action="/logout">
+                            {{ csrfField() }}
+                            <button type="submit" class="logout">Déconnexion</button>
+                        </form>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <!-- MAIN GRID -->
+        <main class="main">
+            <div id="centerContainer">
+                <div class="following-header">
+                    <h1>Abonnements</h1>
+                    <p>Liste des personnes que vous suivez</p>
+                </div>
+
+                <div class="following-list">
+                    @if(followingUsers && followingUsers.length > 0)
+                        @each(followed in followingUsers)
+                            <div class="following-item">
+                                <a href="/profile/{{ followed.username }}" class="following-link">
+                                    <div class="following-avatar">
+                                        @if(followed.profile_picture)
+                                            <img src="{{ followed.profile_picture }}" alt="Avatar">
+                                        @else
+                                            <div class="avatar-circle" style="width: 50px; height: 50px; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 20px;">
+                                                {{ followed.name ? followed.name.charAt(0).toUpperCase() : followed.username.charAt(0).toUpperCase() }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="following-info">
+                                        <strong>{{ followed.name || followed.username }}</strong>
+                                        <span class="username">@{{ followed.username }}</span>
+                                        <p class="bio">{{ followed.bio ? followed.bio : 'Aucune bio' }}</p>
+                                    </div>
+                                </a>
+                                <div class="following-action">
+                                    <form method="POST" action="/follow/{{ followed.id }}">
+                                        {{ csrfField() }}
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button type="submit" class="unfollow-btn">Ne plus suivre</button>
+                                    </form>
+                                </div>
+                            </div>
+                        @end
+                    @else
+                        <div class="empty-feed">
+                            <p>Vous ne suivez personne pour le moment.</p>
+                            <a href="/communities" class="btn--secondary">Découvrir des comptes</a>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- COLONNE DROITE (identique) -->
+            <div id="rightContainer">
+                <!-- ... même contenu que timeline ... -->
+            </div>
+        </main>
+    @end
+@end
+
+<style>
+    .following-header {
+        padding: 20px 16px;
+        border-bottom: 1px solid #e5e7eb;
+        background: white;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    .following-header h1 {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+    .following-header p {
+        color: #6b7280;
+        font-size: 14px;
+    }
+    .following-list {
+        padding: 0;
+    }
+    .following-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px;
+        border-bottom: 1px solid #e5e7eb;
+        transition: background 0.2s;
+    }
+    .following-item:hover {
+        background: #f9f9f9;
+    }
+    .following-link {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        text-decoration: none;
+        color: inherit;
+        flex: 1;
+    }
+    .following-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+    .following-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .following-info {
+        flex: 1;
+    }
+    .following-info strong {
+        font-size: 16px;
+        display: block;
+    }
+    .following-info .username {
+        color: #6b7280;
+        font-size: 14px;
+    }
+    .following-info .bio {
+        color: #4b5563;
+        font-size: 13px;
+        margin-top: 4px;
+    }
+    .unfollow-btn {
+        background: transparent;
+        border: 1px solid #e5e7eb;
+        border-radius: 9999px;
+        padding: 6px 16px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .unfollow-btn:hover {
+        background: #fee2e2;
+        border-color: #f4212e;
+        color: #f4212e;
+    }
+    @media (max-width: 768px) {
+        .following-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .following-action {
+            align-self: flex-end;
+        }
+    }
+</style>
