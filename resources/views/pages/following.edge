@@ -148,35 +148,6 @@
                     <p class="subscribe__desc">Subscribe to unlock new features and if eligible, receive a share of revenue.</p>
                     <button class="btn--secondary">Subscribe</button>
                 </div>
-
-                @if (suggestions && suggestions.length > 0)
-                    <div id="whoToFollow">
-                        <h3>Qui suivre</h3>
-                        @each(suggestion in suggestions.slice(0, 5))
-                            <div class="suggestion-item">
-                                <a href="/profile/{{ suggestion.username }}" class="suggestion-link">
-                                    @if(suggestion.profile_picture)
-                                        <img src="{{ suggestion.profile_picture }}" class="avatar-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-                                    @else
-                                        <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
-                                            {{ suggestion.name ? suggestion.name.charAt(0).toUpperCase() : suggestion.username.charAt(0).toUpperCase() }}
-                                        </div>
-                                    @endif
-                                </a>
-                                <div>
-                                    <a href="/profile/{{ suggestion.username }}" class="suggestion-link">
-                                        <strong>{{ suggestion.name || suggestion.username }}</strong>
-                                    </a>
-                                    <span>{{ suggestion.username }}</span>
-                                </div>
-                                <form method="POST" action="/follow/{{ suggestion.id }}">
-                                    {{ csrfField() }}
-                                    <button type="submit" class="follow-btn">Suivre</button>
-                                </form>
-                            </div>
-                        @end
-                    </div>
-                @endif
             </div>
         </main>
     @end
