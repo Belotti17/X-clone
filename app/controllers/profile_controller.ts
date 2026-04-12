@@ -74,12 +74,9 @@ export default class ProfileController {
 
   async update({ request, response, auth, session }: HttpContext) {
     const user = auth.use('web').user!
-
-    // Récupérer les champs texte
     const name = request.input('name')
     const bio = request.input('bio')
 
-    // Récupérer les fichiers
     const profilePicture = request.file('profile_picture', {
       size: '5mb',
       extnames: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
@@ -90,7 +87,6 @@ export default class ProfileController {
       extnames: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
     })
 
-    // Mettre à jour le nom et la bio
     if (name) {
       user.name = name
     }
@@ -98,7 +94,6 @@ export default class ProfileController {
       user.bio = bio
     }
 
-    // Gérer l'upload de la photo de profil
     if (profilePicture && profilePicture.isValid) {
       const fileName = `${randomUUID()}.${profilePicture.extname}`
       await profilePicture.move(path.join(process.cwd(), 'public/uploads/profiles'), {
@@ -106,7 +101,6 @@ export default class ProfileController {
       })
       user.profile_picture = `/uploads/profiles/${fileName}`
     } else if (profilePicture && !profilePicture.isValid) {
-      // CORRECTION : media.errors est un tableau, on prend le premier message
       const errorMessage =
         profilePicture.errors && profilePicture.errors[0]
           ? profilePicture.errors[0].message
@@ -115,7 +109,6 @@ export default class ProfileController {
       return response.redirect().back()
     }
 
-    // Gérer l'upload de la photo de couverture
     if (bannerPicture && bannerPicture.isValid) {
       const fileName = `${randomUUID()}.${bannerPicture.extname}`
       await bannerPicture.move(path.join(process.cwd(), 'public/uploads/banners'), {
@@ -123,7 +116,6 @@ export default class ProfileController {
       })
       user.banner_picture = `/uploads/banners/${fileName}`
     } else if (bannerPicture && !bannerPicture.isValid) {
-      // CORRECTION : media.errors est un tableau, on prend le premier message
       const errorMessage =
         bannerPicture.errors && bannerPicture.errors[0]
           ? bannerPicture.errors[0].message
@@ -133,42 +125,83 @@ export default class ProfileController {
     }
 
     await user.save()
-
     session.flash('success', 'Profil mis à jour avec succès !')
     return response.redirect().back()
   }
 
+  /**
+   * FOLLOWERS - Les personnes qui suivent l'utilisateur (ses abonnés)
+   */
   async followers({ params, view, auth }: HttpContext) {
     const currentUser = await auth.use('web').user
     const username = params.username
+
     const profileUser = await User.findByOrFail('username', username)
+
+    // Récupère les personnes qui suivent profileUser
     const followers = await Follow.query()
-      .where('followingId', profileUser.id)
+      .where('followingId', profileUser.id) // Ceux qui suivent profileUser
       .preload('follower')
       .orderBy('createdAt', 'desc')
       .limit(50)
 
+    const followersList = followers.map((f) => f.follower)
+
+    // Pour savoir si l'utilisateur connecté suit déjà ces personnes
+    const following = await Follow.query()
+      .where('followerId', currentUser?.id || 0)
+      .select('followingId')
+    const followingIdSet = new Set(following.map((f) => f.followingId))
+
+    const suggestions = await User.query()
+      .whereNot('id', currentUser?.id || 0)
+      .limit(5)
+
     return view.render('pages/followers', {
       profileUser,
       currentUser,
-      followers: followers.map((f) => f.follower),
+      followersList,
+      followingIdSet,
+      suggestions,
     })
   }
 
+  /**
+   * FOLLOWING - Les personnes que l'utilisateur suit (ses abonnements)
+   * C'est ICI que tu vois les gens que tu as suivis !
+   */
   async following({ params, view, auth }: HttpContext) {
     const currentUser = await auth.use('web').user
     const username = params.username
+
     const profileUser = await User.findByOrFail('username', username)
+
+    // Récupère les personnes que profileUser suit
     const following = await Follow.query()
-      .where('followerId', profileUser.id)
+      .where('followerId', profileUser.id) // Ceux que profileUser suit
       .preload('following')
       .orderBy('createdAt', 'desc')
       .limit(50)
 
+    const followingList = following.map((f) => f.following)
+
+    // Pour savoir si l'utilisateur connecté suit déjà ces personnes
+    const userFollows = await Follow.query()
+      .where('followerId', currentUser?.id || 0)
+      .select('followingId')
+    const followingIdSet = new Set(userFollows.map((f) => f.followingId))
+
+    const suggestions = await User.query()
+      .whereNot('id', currentUser?.id || 0)
+      .limit(5)
+
+    // Rend la vue following.edge (pas followers.edge)
     return view.render('pages/following', {
       profileUser,
       currentUser,
-      following: following.map((f) => f.following),
+      followingList,
+      followingIdSet,
+      suggestions,
     })
   }
 }
