@@ -5,6 +5,7 @@
 
 export const controllers = {
   Auth: () => import('#controllers/auth_controller'),
+  Communities: () => import('#controllers/communities_controller'),
   Follows: () => import('#controllers/follows_controller'),
   Hashtags: () => import('#controllers/hashtags_controller'),
   NewAccount: () => import('#controllers/new_account_controller'),
@@ -13,5 +14,4 @@ export const controllers = {
   Session: () => import('#controllers/session_controller'),
   Timeline: () => import('#controllers/timeline_controller'),
   Tweets: () => import('#controllers/tweets_controller'),
-  Communities: () => import('#controllers/communities_controller'),
 }
