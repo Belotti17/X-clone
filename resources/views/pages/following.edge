@@ -76,13 +76,22 @@
         <main class="main">
             <div id="centerContainer">
                 <div class="following-header">
-                    <h1>Abonnements</h1>
-                    <p>Liste des personnes que vous suivez</p>
+                    <div class="back-button">
+                        <a href="/profile/{{ profileUser.username }}" class="back-link">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M15 18l-6-6 6-6"/>
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="header-info">
+                        <h1>Abonnements</h1>
+                        <p>{{ profileUser.username }}</p>
+                    </div>
                 </div>
 
                 <div class="following-list">
-                    @if(followingUsers && followingUsers.length > 0)
-                        @each(followed in followingUsers)
+                    @if(followingList && followingList.length > 0)
+                        @each(followed in followingList)
                             <div class="following-item">
                                 <a href="/profile/{{ followed.username }}" class="following-link">
                                     <div class="following-avatar">
@@ -96,23 +105,31 @@
                                     </div>
                                     <div class="following-info">
                                         <strong>{{ followed.name || followed.username }}</strong>
-                                        <span class="username">@{{ followed.username }}</span>
+                                        <span class="username">{{ followed.username }}</span>
                                         <p class="bio">{{ followed.bio ? followed.bio : 'Aucune bio' }}</p>
                                     </div>
                                 </a>
                                 <div class="following-action">
-                                    <form method="POST" action="/follow/{{ followed.id }}">
-                                        {{ csrfField() }}
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <button type="submit" class="unfollow-btn">Ne plus suivre</button>
-                                    </form>
+                                    @if(currentUser && currentUser.id !== followed.id)
+                                        @if(followingIdSet && followingIdSet.has(followed.id))
+                                            <form method="POST" action="/follow/{{ followed.id }}">
+                                                {{ csrfField() }}
+                                                <input type="hidden" name="_method" value="DELETE">
+                                                <button type="submit" class="unfollow-btn">Ne plus suivre</button>
+                                            </form>
+                                        @else
+                                            <form method="POST" action="/follow/{{ followed.id }}">
+                                                {{ csrfField() }}
+                                                <button type="submit" class="follow-btn">Suivre</button>
+                                            </form>
+                                        @endif
+                                    @endif
                                 </div>
                             </div>
                         @end
                     @else
                         <div class="empty-feed">
-                            <p>Vous ne suivez personne pour le moment.</p>
-                            <a href="/communities" class="btn--secondary">Découvrir des comptes</a>
+                            <p>Cet utilisateur ne suit personne pour le moment.</p>
                         </div>
                     @endif
                 </div>
@@ -167,21 +184,41 @@
 
 <style>
     .following-header {
-        padding: 20px 16px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 16px;
         border-bottom: 1px solid #e5e7eb;
         background: white;
         position: sticky;
         top: 0;
         z-index: 10;
     }
-    .following-header h1 {
-        font-size: 24px;
-        font-weight: 700;
-        margin-bottom: 8px;
+    .back-button {
+        flex-shrink: 0;
     }
-    .following-header p {
+    .back-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        transition: background 0.2s;
+    }
+    .back-link:hover {
+        background: #f3f4f6;
+    }
+    .header-info h1 {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+        color: black;
+    }
+    .header-info p {
         color: #6b7280;
-        font-size: 14px;
+        font-size: 13px;
+        margin: 2px 0 0;
     }
     .following-list {
         padding: 0;
@@ -210,6 +247,7 @@
         height: 50px;
         border-radius: 50%;
         overflow: hidden;
+        flex-shrink: 0;
     }
     .following-avatar img {
         width: 100%;
@@ -222,6 +260,7 @@
     .following-info strong {
         font-size: 16px;
         display: block;
+        color: black;
     }
     .following-info .username {
         color: #6b7280;
@@ -231,6 +270,20 @@
         color: #4b5563;
         font-size: 13px;
         margin-top: 4px;
+    }
+    .follow-btn {
+        background: black;
+        color: white;
+        border: none;
+        padding: 6px 16px;
+        border-radius: 9999px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .follow-btn:hover {
+        background: #1d9bf0;
     }
     .unfollow-btn {
         background: transparent;
