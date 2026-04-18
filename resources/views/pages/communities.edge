@@ -5,7 +5,7 @@
             <div class="nav__logo">
                 <a href="/timeline"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/X_logo_2023.svg/330px-X_logo_2023.svg.png" alt="logo X" /></a>
             </div>
-
+            
             <nav class="nav">
                 <ul class="nav__list">
                     <li>
@@ -35,7 +35,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/profile/{{ currentUser?.username }}" class="nav__link">
+                        <a href="/profile/{{ user?.username }}" class="nav__link">
                             <img class="nav__icon" src="https://www.svgrepo.com/show/512729/profile-round-1342.svg" />Profile
                         </a>
                     </li>
@@ -49,26 +49,26 @@
                 <div style="margin-top: 20px">
                     <button class="btn--primary" id="openTweetModal">Post</button>
                 </div>
-               <div class="user-line" id="userMenu">
-    @if(currentUser?.profile_picture)
-        <img src="{{ currentUser.profile_picture }}" class="avatar-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px;">
-    @else
-        <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px; margin-right: 12px;">
-            {{ currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : currentUser?.username?.charAt(0).toUpperCase() || 'U' }}
-        </div>
-    @endif
-    <div class="user-info">
-        <div class="user-name">{{ currentUser?.name || currentUser?.username }}</div>
-        <div class="user-handle">{{ currentUser?.username }}</div>
-    </div>
-    <button class="user-menu" aria-label="Menu utilisateur">⋯</button>
-    <div class="popup-menu" hidden>
-        <form method="POST" action="/logout">
-            {{ csrfField() }}
-            <button type="submit" class="logout">Déconnexion</button>
-        </form>
-    </div>
-</div>
+                <div class="user-line" id="userMenu">
+                    @if(user?.profile_picture)
+                        <img src="{{ user.profile_picture }}" class="avatar-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px;">
+                    @else
+                        <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px; margin-right: 12px;">
+                            {{ user?.name ? user.name.charAt(0).toUpperCase() : user?.username?.charAt(0).toUpperCase() || 'U' }}
+                        </div>
+                    @endif
+                    <div class="user-info">
+                        <div class="user-name">{{ user?.name || user?.username }}</div>
+                        <div class="user-handle"> {{ user?.username }}</div>
+                    </div>
+                    <button class="user-menu" aria-label="Menu utilisateur">⋯</button>
+                    <div class="popup-menu" hidden>
+                        <form method="POST" action="/logout">
+                            {{ csrfField() }}
+                            <button type="submit" class="logout">Déconnexion</button>
+                        </form>
+                    </div>
+                </div>
             </nav>
         </header>
 
