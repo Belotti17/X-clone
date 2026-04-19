@@ -1,5 +1,3 @@
-// database/migrations/xxxx_create_messages_table.ts
-
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
