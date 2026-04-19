@@ -10,6 +10,7 @@ import ProfileController from '#controllers/profile_controller'
 import FollowController from '#controllers/follows_controller'
 import SearchController from '#controllers/searches_controller'
 import CommunitiesController from '#controllers/communities_controller'
+import MessagesController from '#controllers/messages_controller'
 
 /*
   ACCUEIL
@@ -65,6 +66,13 @@ router
     router.post('/tweets/:id/retweet', [TweetsController, 'retweet']).as('tweets.retweet')
     router.post('/tweets/:id/reply', [TweetsController, 'reply']).as('tweets.reply')
     router.get('/tweets/:id/replies', [TweetsController, 'getReplies']).as('tweets.replies')
+
+    // MESSAGES
+    router.get('/messages', [MessagesController, 'index']).as('messages.index')
+    router.get('/messages/:id', [MessagesController, 'show']).as('messages.show')
+    router.post('/messages', [MessagesController, 'store']).as('messages.store')
+    router.get('/messages/new', [MessagesController, 'getNewMessages']).as('messages.new')
+    router.put('/messages/:id/read', [MessagesController, 'markAsRead']).as('messages.read')
 
     // PROFIL
     router.get('/profile/:username?', [ProfileController, 'show']).as('profile.show')
