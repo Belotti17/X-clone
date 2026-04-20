@@ -3,7 +3,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Message from '#models/message'
 import User from '#models/user'
-import { DateTime } from 'luxon' // ✅ Importation de DateTime depuis luxon
+import { DateTime } from 'luxon'
 
 export default class MessagesController {
   /**
@@ -66,7 +66,7 @@ export default class MessagesController {
       .where('isRead', false)
       .update({
         isRead: true,
-        readAt: DateTime.now(), // ✅ Utilisation de DateTime.now() au lieu de new Date()
+        readAt: DateTime.now(), // Utilisation de DateTime.now() au lieu de new Date()
       })
 
     return view.render('pages/messages/index', {
@@ -135,7 +135,7 @@ export default class MessagesController {
     }
 
     message.isRead = true
-    message.readAt = DateTime.now() // ✅ Utilisation de DateTime.now()
+    message.readAt = DateTime.now() // Utilisation de DateTime.now()
     await message.save()
 
     return response.json({ success: true })
