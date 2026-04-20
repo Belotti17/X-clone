@@ -54,6 +54,27 @@ export class LikeSchema extends BaseModel {
   declare userId: number | null
 }
 
+export class MessageSchema extends BaseModel {
+  static $columns = ['content', 'createdAt', 'id', 'isRead', 'readAt', 'receiverId', 'senderId', 'updatedAt'] as const
+  $columns = MessageSchema.$columns
+  @column()
+  declare content: string
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare isRead: boolean | null
+  @column.dateTime()
+  declare readAt: DateTime | null
+  @column()
+  declare receiverId: number | null
+  @column()
+  declare senderId: number | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
 export class PasswordResetTokenSchema extends BaseModel {
   static $columns = ['createdAt', 'expiresAt', 'id', 'token', 'updatedAt', 'userId'] as const
   $columns = PasswordResetTokenSchema.$columns
