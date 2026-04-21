@@ -162,6 +162,21 @@
                                                     @endif
                                                 </div>
                                             </div>
+                                            <!-- Boutons d'action pour les messages envoyés par l'utilisateur -->
+                                            @if(message.senderId === currentUser?.id)
+                                                <div class="message-actions">
+                                                    <button class="message-action-btn edit-message-btn" data-message-id="{{ message.id }}" data-message-content="{{ message.content }}">
+                                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                                        </svg>
+                                                    </button>
+                                                    <button class="message-action-btn delete-message-btn" data-message-id="{{ message.id }}">
+                                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            @endif
                                         </div>
                                     @end
                                 @else
@@ -202,6 +217,21 @@
                 </div>
             </div>
         </main>
+
+        <!-- MODALE MODIFIER MESSAGE -->
+        <div id="editMessageModal" class="modal" style="display:none">
+            <div class="modal-content">
+                <button class="close-modal" onclick="closeModal('editMessageModal')">&times;</button>
+                <h3>Modifier le message</h3>
+                <form id="editMessageForm">
+                    <textarea id="editMessageContent" placeholder="Modifier votre message..." rows="3" style="width:100%; padding:12px; border:1px solid #e5e7eb; border-radius:12px; font-family:inherit; resize:none;"></textarea>
+                    <div style="display:flex; gap:12px; margin-top:16px;">
+                        <button type="button" class="cancel-edit-btn" onclick="closeModal('editMessageModal')" style="flex:1; padding:10px; border-radius:9999px; border:1px solid #e5e7eb; background:white; cursor:pointer;">Annuler</button>
+                        <button type="submit" class="save-edit-btn" style="flex:1; padding:10px; border-radius:9999px; background:black; color:white; border:none; cursor:pointer;">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <!-- MODALE NOUVEAU MESSAGE -->
         <div id="newMessageModal" class="modal" style="display:none">
@@ -446,7 +476,10 @@
 
 .message-item {
     display: flex;
+    align-items: flex-end;
+    gap: 8px;
     width: 100%;
+    position: relative;
 }
 
 .message-sent {
@@ -492,6 +525,44 @@
 
 .message-read {
     color: #ffffff;
+}
+
+/* Boutons d'action sur les messages */
+.message-actions {
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.message-item:hover .message-actions {
+    opacity: 1;
+}
+
+.message-action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 9999px;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.message-action-btn:hover {
+    background: rgba(29, 155, 240, 0.1);
+    color: #1d9bf0;
+}
+
+.delete-message-btn:hover {
+    color: #f4212e;
+}
+
+.delete-message-btn:hover {
+    background: rgba(244, 33, 46, 0.1);
 }
 
 .newMsg-btn{
@@ -904,6 +975,14 @@
         font-size: 18px;
     }
 }
+
+.cancel-edit-btn:hover {
+    background: #f3f4f6;
+}
+
+.save-edit-btn:hover {
+    background: #1d9bf0;
+}
 </style>
 
 <script>
@@ -912,6 +991,7 @@
     let lastMessageId = 0;
     let pollingInterval = null;
     let isSending = false;
+    let currentEditMessageId = null;
 
     document.addEventListener('DOMContentLoaded', function() {
         const messageInput = document.getElementById('messageInput');
@@ -957,25 +1037,21 @@
         const mobileBackHeaderBtn = document.getElementById('mobileBackHeaderBtn');
         const messagesLayout = document.querySelector('.messages-layout-full');
         
-        // Bouton retour vers la liste des conversations
         if (mobileBackHeaderBtn) {
             mobileBackHeaderBtn.addEventListener('click', function() {
                 messagesLayout.classList.remove('has-active-conversation');
-                // Optionnel: revenir a l'URL sans la conversation
                 if (window.history && window.history.pushState) {
                     window.history.pushState({}, '', '/messages');
                 }
             });
         }
 
-        // Gestion de l'affichage mobile
         if (window.innerWidth <= 768) {
             if (currentConversationId) {
                 messagesLayout.classList.add('has-active-conversation');
             }
         }
 
-        // Gestion du clic sur une conversation
         document.querySelectorAll('.conversation-item').forEach(item => {
             item.addEventListener('click', function(e) {
                 if (window.innerWidth <= 768) {
@@ -986,11 +1062,117 @@
             });
         });
 
+        // Gestion des boutons modifier et supprimer
+        setupMessageActionButtons();
+
         if (currentConversationId) {
             startPolling();
             scrollToBottom();
         }
     });
+
+    // Configuration des boutons d'action sur les messages
+    function setupMessageActionButtons() {
+        // Boutons modifier
+        document.querySelectorAll('.edit-message-btn').forEach(btn => {
+            btn.removeEventListener('click', handleEditClick);
+            btn.addEventListener('click', handleEditClick);
+        });
+
+        // Boutons supprimer
+        document.querySelectorAll('.delete-message-btn').forEach(btn => {
+            btn.removeEventListener('click', handleDeleteClick);
+            btn.addEventListener('click', handleDeleteClick);
+        });
+    }
+
+    // Gestion du clic sur modifier
+    function handleEditClick(e) {
+        e.stopPropagation();
+        const messageId = this.dataset.messageId;
+        const messageContent = this.dataset.messageContent;
+        currentEditMessageId = messageId;
+        const textarea = document.getElementById('editMessageContent');
+        if (textarea) {
+            textarea.value = messageContent;
+        }
+        openModal('editMessageModal');
+    }
+
+    // Gestion du clic sur supprimer
+    async function handleDeleteClick(e) {
+        e.stopPropagation();
+        const messageId = this.dataset.messageId;
+        if (confirm('Supprimer ce message ?')) {
+            try {
+                const csrfToken = document.querySelector('input[name="_csrf"]')?.value;
+                const response = await fetch(`/messages/${messageId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken || '',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (response.ok) {
+                    const messageElement = document.querySelector(`.message-item[data-message-id="${messageId}"]`);
+                    if (messageElement) {
+                        messageElement.remove();
+                    }
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Erreur lors de la suppression');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Erreur lors de la suppression');
+            }
+        }
+    }
+
+    // Formulaire de modification
+    const editForm = document.getElementById('editMessageForm');
+    if (editForm) {
+        editForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const newContent = document.getElementById('editMessageContent').value.trim();
+            if (!newContent) {
+                alert('Le message ne peut pas être vide');
+                return;
+            }
+            try {
+                const csrfToken = document.querySelector('input[name="_csrf"]')?.value;
+                const response = await fetch(`/messages/${currentEditMessageId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken || '',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content: newContent })
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    const messageElement = document.querySelector(`.message-item[data-message-id="${currentEditMessageId}"]`);
+                    if (messageElement) {
+                        const contentDiv = messageElement.querySelector('.message-content');
+                        if (contentDiv) {
+                            contentDiv.textContent = newContent;
+                        }
+                        const editBtn = messageElement.querySelector('.edit-message-btn');
+                        if (editBtn) {
+                            editBtn.dataset.messageContent = newContent;
+                        }
+                    }
+                    closeModal('editMessageModal');
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Erreur lors de la modification');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Erreur lors de la modification');
+            }
+        });
+    }
 
     async function sendMessage() {
         if (isSending) return;
@@ -1044,6 +1226,24 @@
         const time = new Date(message.createdAt);
         const timeStr = time.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
         
+        let actionsHtml = '';
+        if (isOwnMessage) {
+            actionsHtml = `
+                <div class="message-actions">
+                    <button class="message-action-btn edit-message-btn" data-message-id="${message.id}" data-message-content="${escapeHtml(message.content)}">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                        </svg>
+                    </button>
+                    <button class="message-action-btn delete-message-btn" data-message-id="${message.id}">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+        }
+        
         messageDiv.innerHTML = `
             <div class="message-bubble">
                 <div class="message-content">${escapeHtml(message.content)}</div>
@@ -1052,9 +1252,21 @@
                     ${isOwnMessage ? '<span class="message-sent-status">✓</span>' : ''}
                 </div>
             </div>
+            ${actionsHtml}
         `;
         
         messagesList.appendChild(messageDiv);
+        
+        if (isOwnMessage) {
+            const newEditBtn = messageDiv.querySelector('.edit-message-btn');
+            const newDeleteBtn = messageDiv.querySelector('.delete-message-btn');
+            if (newEditBtn) {
+                newEditBtn.addEventListener('click', handleEditClick);
+            }
+            if (newDeleteBtn) {
+                newDeleteBtn.addEventListener('click', handleDeleteClick);
+            }
+        }
     }
 
     function startPolling() {
