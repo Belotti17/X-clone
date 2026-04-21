@@ -1,6 +1,5 @@
 @component('layouts/base', { title: 'Messages' })
     @slot('main')
-        <!-- SIDEBAR GAUCHE -->
         <header>
             <div class="nav__logo">
                 <a href="/timeline"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/X_logo_2023.svg/330px-X_logo_2023.svg.png" alt="logo X" /></a>
@@ -36,7 +35,7 @@
                     <div class="popup-menu" hidden>
                         <form method="POST" action="/logout">
                             {{ csrfField() }}
-                            <button type="submit" class="logout">Déconnexion</button>
+                            <button type="submit" class="logout">Deconnexion</button>
                         </form>
                     </div>
                 </div>
@@ -47,7 +46,7 @@
             <div id="centerContainer" class="messages-container">
                 <div class="messages-layout">
                     <!-- COLONNE GAUCHE : LISTE DES CONVERSATIONS -->
-                    <div class="conversations-sidebar">
+                    <div class="conversations-sidebar" id="conversationsSidebar">
                         <div class="conversations-header">
                             <h2>Messages</h2>
                             <button class="new-message-btn" id="newMessageBtn">
@@ -56,6 +55,14 @@
                                 </svg>
                             </button>
                         </div>
+                        
+                        <!-- Bouton de retour pour mobile -->
+                        <button class="mobile-back-btn" id="mobileBackBtn" style="display:none;">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                <path d="M15 18l-6-6 6-6"/>
+                            </svg>
+                            Retour
+                        </button>
                         
                         <div class="conversations-list" id="conversationsList">
                             @if(conversations && conversations.length > 0)
@@ -79,7 +86,7 @@
                                                 {{ conv.lastMessage.content.substring(0, 50) }}{{ conv.lastMessage.content.length > 50 ? '...' : '' }}
                                             </div>
                                             <div class="conv-time">
-                                                {{ conv.lastMessage.createdAt.toFormat ? conv.lastMessage.createdAt.toFormat('dd/MM HH:mm') : '' }}
+                                                {{ conv.lastMessage.createdAt?.toFormat ? conv.lastMessage.createdAt.toFormat('dd/MM HH:mm') : '' }}
                                             </div>
                                         </div>
                                     </a>
@@ -87,16 +94,21 @@
                             @else
                                 <div class="empty-conversations">
                                     <p>Aucune conversation</p>
-                                    <p class="empty-sub">Envoyez un message à quelqu'un pour commencer</p>
+                                    <p class="empty-sub">Envoyez un message a quelqu'un pour commencer</p>
                                 </div>
                             @endif
                         </div>
                     </div>
 
                     <!-- COLONNE DROITE : ZONE DE CHAT -->
-                    <div class="chat-area">
+                    <div class="chat-area" id="chatArea">
                         @if(activeConversation)
                             <div class="chat-header">
+                                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                        <path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z"/>
+                                    </svg>
+                                </button>
                                 <a href="/profile/{{ activeConversation.username }}" class="chat-user-info">
                                     @if(activeConversation.profile_picture)
                                         <img src="{{ activeConversation.profile_picture }}" class="chat-avatar" alt="Avatar">
@@ -132,7 +144,7 @@
                                 @else
                                     <div class="empty-messages">
                                         <p>Aucun message</p>
-                                        <p>Envoyez un premier message à {{ activeConversation.name || activeConversation.username }}</p>
+                                        <p>Envoyez un premier message a {{ activeConversation.name || activeConversation.username }}</p>
                                     </div>
                                 @endif
                             </div>
@@ -145,7 +157,7 @@
                                             <path d="M5.058 2.28l5.56 5.56c.215.215.215.564 0 .779L2.28 16.718c-1.021 1.021-1.021 2.677 0 3.698s2.677 1.021 3.698 0l9.56-9.56c1.021-1.021 1.021-2.677 0-3.698s-2.677-1.021-3.698 0l-9.56 9.56"/>
                                         </svg>
                                     </button>
-                                    <textarea id="messageInput" class="chat-input" placeholder="Écrire un message..." rows="1"></textarea>
+                                    <textarea id="messageInput" class="chat-input" placeholder="Ecrire un message..." rows="1"></textarea>
                                     <button class="chat-send-btn" id="sendMessageBtn">
                                         <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
                                             <path d="M2.504 21.866l.526-2.108C3.04 19.719 4 15.823 4 12s-.96-7.719-1.47-9.758L2.504.134 20.975 12 2.504 21.866z"/>
@@ -158,7 +170,7 @@
                                 <svg viewBox="0 0 24 24" width="64" height="64" fill="currentColor">
                                     <path d="M1.751 10c0-4.42 3.584-8 8.005-8h4.366c4.49 0 8.129 3.64 8.129 8.13 0 2.96-1.607 5.68-4.196 7.11l-8.054 4.46v-3.69h-.067c-4.49.1-8.183-3.51-8.183-8.01z"/>
                                 </svg>
-                                <h3>Sélectionnez une conversation</h3>
+                                <h3>Selectionnez une conversation</h3>
                                 <p>Choisissez une conversation existante ou commencez-en une nouvelle</p>
                                 <button class="btn--primary" id="startNewChatBtn">Nouveau message</button>
                             </div>
@@ -183,14 +195,14 @@
 @end
 
 <style>
-/* ========== STYLES MESSAGES ========== */
+/* ========== STYLES MESSAGES RESPONSIVE ========== */
 
 .messages-main {
     padding: 0 !important;
 }
 
 .messages-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     height: calc(100vh - 60px);
     display: flex;
@@ -206,13 +218,14 @@
     border: 1px solid #e5e7eb;
 }
 
-/* Colonne gauche - Conversations */
+/* ========== COLONNE GAUCHE ========== */
 .conversations-sidebar {
     width: 350px;
     border-right: 1px solid #e5e7eb;
     display: flex;
     flex-direction: column;
     background: #fafafa;
+    transition: transform 0.3s ease;
 }
 
 .conversations-header {
@@ -241,6 +254,38 @@
 }
 
 .new-message-btn:hover {
+    background: rgba(29, 155, 240, 0.1);
+}
+
+.mobile-back-btn {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: white;
+    border: none;
+    border-bottom: 1px solid #e5e7eb;
+    cursor: pointer;
+    font-weight: 600;
+    color: #1d9bf0;
+}
+
+.mobile-back-btn:hover {
+    background: #f3f4f6;
+}
+
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 9999px;
+    color: #1d9bf0;
+    margin-right: 8px;
+}
+
+.mobile-menu-toggle:hover {
     background: rgba(29, 155, 240, 0.1);
 }
 
@@ -273,7 +318,7 @@
     flex-shrink: 0;
 }
 
-.conv-avatar img, .avatar-circle-small {
+.conv-avatar img {
     width: 48px;
     height: 48px;
     border-radius: 50%;
@@ -281,6 +326,9 @@
 }
 
 .avatar-circle-small {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
     background: #1d9bf0;
     display: flex;
     align-items: center;
@@ -328,7 +376,7 @@
     margin-top: 2px;
 }
 
-/* Zone de chat */
+/* ========== ZONE DE CHAT ========== */
 .chat-area {
     flex: 1;
     display: flex;
@@ -442,10 +490,6 @@
     color: #00ba7c;
 }
 
-.message-sent-status {
-    opacity: 0.7;
-}
-
 /* Zone de saisie */
 .chat-input-area {
     padding: 16px;
@@ -530,7 +574,7 @@
     margin: 0;
 }
 
-/* États vides */
+/* Etats vides */
 .empty-conversations {
     text-align: center;
     padding: 48px 24px;
@@ -592,12 +636,6 @@
     gap: 12px;
 }
 
-.search-user-result .user-info img,
-.search-user-result .user-info .avatar-circle-small {
-    width: 40px;
-    height: 40px;
-}
-
 .start-chat-btn {
     background: #1d9bf0;
     color: white;
@@ -611,6 +649,227 @@
 .start-chat-btn:hover {
     background: #1a8cd8;
 }
+
+/* ========== MEDIA QUERIES RESPONSIVE ========== */
+
+/* Tablettes (768px - 1024px) */
+@media (max-width: 1024px) {
+    .conversations-sidebar {
+        width: 300px;
+    }
+    
+    .message-bubble {
+        max-width: 75%;
+    }
+}
+
+/* Mobiles (moins de 768px) */
+@media (max-width: 768px) {
+    .messages-layout {
+        border-radius: 0;
+    }
+    
+    .conversations-sidebar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 85%;
+        max-width: 320px;
+        height: 100%;
+        z-index: 100;
+        transform: translateX(-100%);
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .conversations-sidebar.open {
+        transform: translateX(0);
+    }
+    
+    .mobile-back-btn {
+        display: flex;
+    }
+    
+    .mobile-menu-toggle {
+        display: flex;
+    }
+    
+    .chat-area {
+        width: 100%;
+    }
+    
+    .chat-header {
+        padding: 12px;
+    }
+    
+    .chat-user-info {
+        flex: 1;
+    }
+    
+    .chat-avatar, .avatar-circle-medium {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+    
+    .chat-user-name {
+        font-size: 15px;
+    }
+    
+    .chat-user-username {
+        font-size: 12px;
+    }
+    
+    .messages-list {
+        padding: 12px;
+    }
+    
+    .message-bubble {
+        max-width: 85%;
+        padding: 8px 12px;
+    }
+    
+    .message-content {
+        font-size: 13px;
+    }
+    
+    .chat-input-area {
+        padding: 12px;
+    }
+    
+    .chat-input-wrapper {
+        padding: 6px 12px;
+    }
+    
+    .chat-attach-btn, .chat-send-btn {
+        padding: 4px;
+    }
+    
+    .chat-attach-btn svg, .chat-send-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .chat-input {
+        font-size: 13px;
+    }
+    
+    .conv-avatar img, .avatar-circle-small {
+        width: 44px;
+        height: 44px;
+        font-size: 16px;
+    }
+    
+    .conv-name {
+        font-size: 14px;
+    }
+    
+    .conv-last-message {
+        font-size: 12px;
+    }
+    
+    .empty-messages, .empty-conversations {
+        padding: 32px 20px;
+    }
+    
+    .chat-placeholder h3 {
+        font-size: 18px;
+    }
+    
+    .chat-placeholder p {
+        font-size: 14px;
+    }
+    
+    .chat-placeholder svg {
+        width: 48px;
+        height: 48px;
+    }
+}
+
+/* Tres petits mobiles (moins de 480px) */
+@media (max-width: 480px) {
+    .conversations-sidebar {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .conversations-header h2 {
+        font-size: 18px;
+    }
+    
+    .chat-user-name {
+        font-size: 14px;
+    }
+    
+    .message-bubble {
+        max-width: 90%;
+    }
+    
+    .message-content {
+        font-size: 12px;
+    }
+    
+    .conv-avatar img, .avatar-circle-small {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+    
+    .conv-info {
+        max-width: calc(100% - 52px);
+    }
+    
+    .conv-last-message {
+        font-size: 11px;
+    }
+    
+    .conv-time {
+        font-size: 10px;
+    }
+}
+
+/* Modales */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+}
+
+.close-modal {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        padding: 20px;
+        width: 95%;
+    }
+    
+    .modal-content h3 {
+        font-size: 18px;
+    }
+}
 </style>
 
 <script>
@@ -620,7 +879,6 @@
     let pollingInterval = null;
     let isSending = false;
 
-    // Initialisation
     document.addEventListener('DOMContentLoaded', function() {
         // Auto-resize textarea
         const messageInput = document.getElementById('messageInput');
@@ -631,7 +889,7 @@
             });
         }
 
-        // Envoyer un message
+        // Envoi de message
         const sendBtn = document.getElementById('sendMessageBtn');
         if (sendBtn) {
             sendBtn.addEventListener('click', sendMessage);
@@ -661,13 +919,41 @@
             searchInput.addEventListener('input', debounce(searchUsers, 300));
         }
 
-        // Démarrer le polling pour les nouveaux messages
+        // Mobile : menu toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const conversationsSidebar = document.getElementById('conversationsSidebar');
+        const mobileBackBtn = document.getElementById('mobileBackBtn');
+        
+        if (mobileMenuToggle) {
+            mobileMenuToggle.addEventListener('click', function() {
+                conversationsSidebar.classList.add('open');
+            });
+        }
+        
+        if (mobileBackBtn) {
+            mobileBackBtn.addEventListener('click', function() {
+                conversationsSidebar.classList.remove('open');
+            });
+        }
+
+        // Fermer le menu mobile quand on clique sur une conversation
+        document.querySelectorAll('.conversation-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768) {
+                    setTimeout(() => {
+                        conversationsSidebar.classList.remove('open');
+                    }, 150);
+                }
+            });
+        });
+
+        // Demarrer le polling si une conversation est active
         if (currentConversationId) {
             startPolling();
+            scrollToBottom();
         }
     });
 
-    // Envoyer un message
     async function sendMessage() {
         if (isSending) return;
         
@@ -706,7 +992,6 @@
         }
     }
 
-    // Ajouter un message au chat
     function appendMessageToChat(message, isOwnMessage) {
         const messagesList = document.getElementById('messagesList');
         if (!messagesList) return;
@@ -734,7 +1019,6 @@
         messagesList.appendChild(messageDiv);
     }
 
-    // Polling pour les nouveaux messages
     function startPolling() {
         if (pollingInterval) clearInterval(pollingInterval);
         
@@ -760,10 +1044,9 @@
             } catch (error) {
                 console.error('Polling error:', error);
             }
-        }, 2000); // Vérifie toutes les 2 secondes
+        }, 2000);
     }
 
-    // Recherche d'utilisateurs
     async function searchUsers() {
         const query = document.getElementById('searchUsersInput')?.value.trim();
         const resultsDiv = document.getElementById('searchUsersResults');
@@ -807,7 +1090,6 @@
                     }
                 });
                 
-                // Ajouter les écouteurs pour les boutons
                 document.querySelectorAll('.start-chat-btn').forEach(btn => {
                     btn.addEventListener('click', async (e) => {
                         e.stopPropagation();
@@ -821,7 +1103,6 @@
         }
     }
 
-    // Fonctions utilitaires
     function scrollToBottom() {
         const messagesList = document.getElementById('messagesList');
         if (messagesList) {
@@ -855,12 +1136,10 @@
         document.getElementById(modalId).style.display = 'none';
     }
 
-    // Nettoyer le polling lors de la navigation
     window.addEventListener('beforeunload', () => {
         if (pollingInterval) clearInterval(pollingInterval);
     });
 
-    // Menu utilisateur
     const menuBtn = document.querySelector('.user-menu');
     const popupMenu = document.querySelector('.popup-menu');
     if (menuBtn && popupMenu) {

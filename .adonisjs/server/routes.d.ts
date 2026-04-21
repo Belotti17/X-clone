@@ -20,6 +20,11 @@ export type ScannedRoutes = {
     'tweets.retweet': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tweets.reply': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tweets.replies': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'messages.index': { paramsTuple?: []; params?: {} }
+    'messages.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'messages.store': { paramsTuple?: []; params?: {} }
+    'messages.new': { paramsTuple?: []; params?: {} }
+    'messages.read': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'profile.show': { paramsTuple?: [ParamValue?]; params?: {'username'?: ParamValue} }
     'profile.update': { paramsTuple?: []; params?: {} }
     'profile.update.post': { paramsTuple?: []; params?: {} }
@@ -39,6 +44,9 @@ export type ScannedRoutes = {
     'timeline.following': { paramsTuple?: []; params?: {} }
     'communities': { paramsTuple?: []; params?: {} }
     'tweets.replies': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'messages.index': { paramsTuple?: []; params?: {} }
+    'messages.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'messages.new': { paramsTuple?: []; params?: {} }
     'profile.show': { paramsTuple?: [ParamValue?]; params?: {'username'?: ParamValue} }
     'profile.followers': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
     'profile.following': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
@@ -53,6 +61,9 @@ export type ScannedRoutes = {
     'timeline.following': { paramsTuple?: []; params?: {} }
     'communities': { paramsTuple?: []; params?: {} }
     'tweets.replies': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'messages.index': { paramsTuple?: []; params?: {} }
+    'messages.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'messages.new': { paramsTuple?: []; params?: {} }
     'profile.show': { paramsTuple?: [ParamValue?]; params?: {'username'?: ParamValue} }
     'profile.followers': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
     'profile.following': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
@@ -69,11 +80,13 @@ export type ScannedRoutes = {
     'tweets.like': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tweets.retweet': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tweets.reply': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'messages.store': { paramsTuple?: []; params?: {} }
     'profile.update.post': { paramsTuple?: []; params?: {} }
     'follow.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'session.destroy': { paramsTuple?: []; params?: {} }
   }
   PUT: {
+    'messages.read': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'profile.update': { paramsTuple?: []; params?: {} }
   }
   DELETE: {

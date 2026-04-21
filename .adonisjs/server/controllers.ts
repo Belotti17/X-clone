@@ -8,6 +8,7 @@ export const controllers = {
   Communities: () => import('#controllers/communities_controller'),
   Follows: () => import('#controllers/follows_controller'),
   Hashtags: () => import('#controllers/hashtags_controller'),
+  Messages: () => import('#controllers/messages_controller'),
   NewAccount: () => import('#controllers/new_account_controller'),
   Profile: () => import('#controllers/profile_controller'),
   Searches: () => import('#controllers/searches_controller'),
