@@ -1,3 +1,5 @@
+// app/controllers/messages_controller.ts
+
 import type { HttpContext } from '@adonisjs/core/http'
 import Message from '#models/message'
 import User from '#models/user'
@@ -6,7 +8,8 @@ import { DateTime } from 'luxon'
 export default class MessagesController {
   /**
    * Page principale des messages
-   * Affiche la liste des conversations
+   * Affiche la liste des conversations (boite de reception)
+   * Pas de redirection automatique vers une conversation
    */
   async index({ view, auth }: HttpContext) {
     // Recuperation de l'utilisateur connecte
@@ -20,7 +23,8 @@ export default class MessagesController {
     // Recuperation de toutes les conversations de l'utilisateur
     const conversations = await this.getConversations(currentUser.id)
 
-    // Rendu de la vue avec les conversations
+    // Rendu de la vue avec la liste des conversations uniquement
+    // Pas de conversation active, pas de messages affiches
     return view.render('pages/messages', {
       currentUser: currentUser,
       conversations: conversations,
@@ -31,6 +35,7 @@ export default class MessagesController {
 
   /**
    * Affiche une conversation specifique
+   * Cette methode est appelee quand on clique sur une conversation
    */
   async show({ params, view, auth }: HttpContext) {
     // Recuperation de l'utilisateur connecte
