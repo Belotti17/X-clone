@@ -1,5 +1,6 @@
 @component('layouts/base', { title: 'Messages' })
     @slot('main')
+        <!-- SIDEBAR GAUCHE -->
         <header>
             <div class="nav__logo">
                 <a href="/timeline"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/X_logo_2023.svg/330px-X_logo_2023.svg.png" alt="logo X" /></a>
@@ -7,44 +8,73 @@
 
             <nav class="nav">
                 <ul class="nav__list">
-                    <li><a href="/timeline" class="nav__link"><img class="nav__icon" src="https://www.svgrepo.com/show/535437/home.svg" />Home</a></li>
-                    <li><a href="/explore" class="nav__link"><img class="nav__icon" src="https://www.svgrepo.com/show/486828/search.svg" />Explore</a></li>
-                    <li><a href="#" class="nav__link"><img class="nav__icon" src="https://www.svgrepo.com/show/512576/notification-bell-1398.svg" />Notifications</a></li>
-                    <li><a href="/messages" class="nav__link active"><img class="nav__icon" src="https://www.svgrepo.com/show/522169/mail.svg" />Messages</a></li>
-                    <li><a href="/communities" class="nav__link"><img class="nav__icon" src="https://www.svgrepo.com/show/158210/community.svg" />Communities</a></li>
-                    <li><a href="/profile/{{ currentUser?.username }}" class="nav__link"><img class="nav__icon" src="https://www.svgrepo.com/show/512729/profile-round-1342.svg" />Profile</a></li>
-                    <li><a href="#" class="nav__link"><img class="nav__icon" src="https://www.svgrepo.com/show/521184/more-horizontal.svg" />More</a></li>
+                    <li>
+                        <a href="/timeline" class="nav__link">
+                            <img class="nav__icon" src="https://www.svgrepo.com/show/535437/home.svg" />Home
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/search" class="nav__link">
+                            <img class="nav__icon" src="https://www.svgrepo.com/show/486828/search.svg" />Explore
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav__link">
+                            <img class="nav__icon" src="https://www.svgrepo.com/show/512576/notification-bell-1398.svg" />Notifications
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/messages" class="nav__link">
+                            <img class="nav__icon" src="https://www.svgrepo.com/show/522169/mail.svg" />Messages
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/communities" class="nav__link">
+                            <img class="nav__icon" src="https://www.svgrepo.com/show/158210/community.svg" />Communities
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/profile/{{ currentUser?.username }}" class="nav__link">
+                            <img class="nav__icon" src="https://www.svgrepo.com/show/512729/profile-round-1342.svg" />Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav__link">
+                            <img class="nav__icon" src="https://www.svgrepo.com/show/521184/more-horizontal.svg" />More
+                        </a>
+                    </li>
                 </ul>
 
                 <div style="margin-top: 20px">
                     <button class="btn--primary" id="openTweetModal">Post</button>
                 </div>
-                <div class="user-line" id="userMenu">
-                    @if(currentUser?.profile_picture)
-                        <img src="{{ currentUser.profile_picture }}" class="avatar-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px;">
-                    @else
-                        <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px; margin-right: 12px;">
-                            {{ currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : currentUser?.username?.charAt(0).toUpperCase() || 'U' }}
-                        </div>
-                    @endif
-                    <div class="user-info">
-                        <div class="user-name">{{ currentUser?.name || currentUser?.username }}</div>
-                        <div class="user-handle">{{ currentUser?.username }}</div>
-                    </div>
-                    <button class="user-menu" aria-label="Menu utilisateur">⋯</button>
-                    <div class="popup-menu" hidden>
-                        <form method="POST" action="/logout">
-                            {{ csrfField() }}
-                            <button type="submit" class="logout">Deconnexion</button>
-                        </form>
-                    </div>
-                </div>
+               <div class="user-line" id="userMenu">
+    @if(currentUser?.profile_picture)
+        <img src="{{ currentUser.profile_picture }}" class="avatar-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px;">
+    @else
+        <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px; margin-right: 12px;">
+            {{ currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : currentUser?.username?.charAt(0).toUpperCase() || 'U' }}
+        </div>
+    @endif
+    <div class="user-info">
+        <div class="user-name">{{ currentUser?.name || currentUser?.username }}</div>
+        <div class="user-handle">{{ currentUser?.username }}</div>
+    </div>
+    <button class="user-menu" aria-label="Menu utilisateur">⋯</button>
+    <div class="popup-menu" hidden>
+        <form method="POST" action="/logout">
+            {{ csrfField() }}
+            <button type="submit" class="logout">Déconnexion</button>
+        </form>
+    </div>
+</div>
             </nav>
         </header>
 
         <main class="main messages-main">
-            <div id="centerContainer" class="messages-container">
-                <div class="messages-layout">
+            <div id="centerContainerFull" class="messages-container-full">
+                <div class="messages-layout-full">
                     <!-- COLONNE GAUCHE : LISTE DES CONVERSATIONS -->
                     <div class="conversations-sidebar" id="conversationsSidebar">
                         <div class="conversations-header">
@@ -55,14 +85,6 @@
                                 </svg>
                             </button>
                         </div>
-                        
-                        <!-- Bouton de retour pour mobile -->
-                        <button class="mobile-back-btn" id="mobileBackBtn" style="display:none;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                                <path d="M15 18l-6-6 6-6"/>
-                            </svg>
-                            Retour
-                        </button>
                         
                         <div class="conversations-list" id="conversationsList">
                             @if(conversations && conversations.length > 0)
@@ -92,9 +114,10 @@
                                     </a>
                                 @end
                             @else
-                                <div class="empty-conversations">
+                                <div class="empty-conversations" id="emptyConversations">
                                     <p>Aucune conversation</p>
                                     <p class="empty-sub">Envoyez un message a quelqu'un pour commencer</p>
+                                    <button class="newMsg-btn new-chat-btn" id="emptyStateNewChatBtn">Nouveau message</button>
                                 </div>
                             @endif
                         </div>
@@ -104,9 +127,9 @@
                     <div class="chat-area" id="chatArea">
                         @if(activeConversation)
                             <div class="chat-header">
-                                <button class="mobile-menu-toggle" id="mobileMenuToggle">
-                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                                        <path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z"/>
+                                <button class="mobile-back-btn-header" id="mobileBackHeaderBtn">
+                                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                                        <path d="M15 18l-6-6 6-6"/>
                                     </svg>
                                 </button>
                                 <a href="/profile/{{ activeConversation.username }}" class="chat-user-info">
@@ -166,13 +189,13 @@
                                 </div>
                             </div>
                         @else
-                            <div class="chat-placeholder">
+                            <div class="chat-placeholder" id="chatPlaceholder">
                                 <svg viewBox="0 0 24 24" width="64" height="64" fill="currentColor">
                                     <path d="M1.751 10c0-4.42 3.584-8 8.005-8h4.366c4.49 0 8.129 3.64 8.129 8.13 0 2.96-1.607 5.68-4.196 7.11l-8.054 4.46v-3.69h-.067c-4.49.1-8.183-3.51-8.183-8.01z"/>
                                 </svg>
                                 <h3>Selectionnez une conversation</h3>
                                 <p>Choisissez une conversation existante ou commencez-en une nouvelle</p>
-                                <button class="btn--primary" id="startNewChatBtn">Nouveau message</button>
+                                <button class="newMsg-btn" id="startNewChatBtn">Nouveau message</button>
                             </div>
                         @endif
                     </div>
@@ -195,32 +218,27 @@
 @end
 
 <style>
-/* ========== STYLES MESSAGES RESPONSIVE ========== */
+/* ========== STYLES MESSAGES PLEINE LARGEUR ========== */
 
-.messages-main {
-    padding: 0 !important;
-}
-
-.messages-container {
-    max-width: 1400px;
-    margin: 0 auto;
+.messages-container-full {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
     height: calc(100vh - 60px);
     display: flex;
     flex-direction: column;
 }
 
-.messages-layout {
+.messages-layout-full {
     display: flex;
     height: 100%;
     background: white;
-    border-radius: 16px;
     overflow: hidden;
-    border: 1px solid #e5e7eb;
 }
 
 /* ========== COLONNE GAUCHE ========== */
 .conversations-sidebar {
-    width: 350px;
+    width: 380px;
     border-right: 1px solid #e5e7eb;
     display: flex;
     flex-direction: column;
@@ -235,6 +253,7 @@
     justify-content: space-between;
     align-items: center;
     background: white;
+    border-left: 1px solid #e5e7eb;
 }
 
 .conversations-header h2 {
@@ -257,24 +276,7 @@
     background: rgba(29, 155, 240, 0.1);
 }
 
-.mobile-back-btn {
-    display: none;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 16px;
-    background: white;
-    border: none;
-    border-bottom: 1px solid #e5e7eb;
-    cursor: pointer;
-    font-weight: 600;
-    color: #1d9bf0;
-}
-
-.mobile-back-btn:hover {
-    background: #f3f4f6;
-}
-
-.mobile-menu-toggle {
+.mobile-back-btn-header {
     display: none;
     background: none;
     border: none;
@@ -282,16 +284,18 @@
     padding: 8px;
     border-radius: 9999px;
     color: #1d9bf0;
-    margin-right: 8px;
+    align-items: center;
+    justify-content: center;
 }
 
-.mobile-menu-toggle:hover {
+.mobile-back-btn-header:hover {
     background: rgba(29, 155, 240, 0.1);
 }
 
 .conversations-list {
     flex: 1;
     overflow-y: auto;
+    border-left: 1px solid #e5e7eb;
 }
 
 .conversation-item {
@@ -490,6 +494,15 @@
     color: #00ba7c;
 }
 
+.newMsg-btn{
+    background: black;
+    color: #fff;
+    font-weight: 700;
+    padding: 12px 20px;
+    border-radius: 20px;
+    border: none;
+}
+
 /* Zone de saisie */
 .chat-input-area {
     padding: 16px;
@@ -574,6 +587,10 @@
     margin: 0;
 }
 
+.chat-placeholder p {
+    font-size: 14px;
+}
+
 /* Etats vides */
 .empty-conversations {
     text-align: center;
@@ -584,6 +601,11 @@
 .empty-conversations .empty-sub {
     font-size: 13px;
     margin-top: 8px;
+    margin-bottom: 20px;
+}
+
+.new-chat-btn {
+    margin-top: 16px;
 }
 
 .empty-messages {
@@ -655,7 +677,7 @@
 /* Tablettes (768px - 1024px) */
 @media (max-width: 1024px) {
     .conversations-sidebar {
-        width: 300px;
+        width: 320px;
     }
     
     .message-bubble {
@@ -665,40 +687,47 @@
 
 /* Mobiles (moins de 768px) */
 @media (max-width: 768px) {
-    .messages-layout {
-        border-radius: 0;
+    .messages-layout-full {
+        position: relative;
     }
     
     .conversations-sidebar {
-        position: absolute;
+        position: relative;
         left: 0;
         top: 0;
-        width: 85%;
-        max-width: 320px;
+        width: 100%;
+        max-width: 100%;
         height: 100%;
-        z-index: 100;
-        transform: translateX(-100%);
-        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-    }
-    
-    .conversations-sidebar.open {
+        z-index: 10;
         transform: translateX(0);
+        box-shadow: none;
     }
     
-    .mobile-back-btn {
-        display: flex;
+    .messages-layout-full.has-active-conversation .conversations-sidebar {
+        display: none;
     }
     
-    .mobile-menu-toggle {
+    .messages-layout-full.has-active-conversation .chat-area {
         display: flex;
+        width: 100%;
     }
     
     .chat-area {
-        width: 100%;
+        display: none;
+    }
+    
+    .messages-layout-full.has-active-conversation .chat-area {
+        display: flex;
+    }
+    
+    /* Afficher le bouton retour dans l'en-tete du chat */
+    .mobile-back-btn-header {
+        display: flex;
     }
     
     .chat-header {
         padding: 12px;
+        border-left: 1px solid #e5e7eb;
     }
     
     .chat-user-info {
@@ -721,6 +750,7 @@
     
     .messages-list {
         padding: 12px;
+        border-left: 1px solid #e5e7eb;
     }
     
     .message-bubble {
@@ -785,8 +815,12 @@
     }
 }
 
-/* Tres petits mobiles (moins de 480px) */
-@media (max-width: 480px) {
+/* Tres petits mobiles (moins de 425px) - CACHER LE PLACEHOLDER */
+@media (max-width: 425px) {
+    .chat-placeholder {
+        display: none !important;
+    }
+    
     .conversations-sidebar {
         width: 100%;
         max-width: 100%;
@@ -880,7 +914,6 @@
     let isSending = false;
 
     document.addEventListener('DOMContentLoaded', function() {
-        // Auto-resize textarea
         const messageInput = document.getElementById('messageInput');
         if (messageInput) {
             messageInput.addEventListener('input', function() {
@@ -889,7 +922,6 @@
             });
         }
 
-        // Envoi de message
         const sendBtn = document.getElementById('sendMessageBtn');
         if (sendBtn) {
             sendBtn.addEventListener('click', sendMessage);
@@ -903,51 +935,57 @@
             });
         }
 
-        // Nouveau message
         const newMessageBtn = document.getElementById('newMessageBtn');
         const startNewChatBtn = document.getElementById('startNewChatBtn');
+        const emptyStateNewChatBtn = document.getElementById('emptyStateNewChatBtn');
+        
         if (newMessageBtn) {
             newMessageBtn.addEventListener('click', () => openModal('newMessageModal'));
         }
         if (startNewChatBtn) {
             startNewChatBtn.addEventListener('click', () => openModal('newMessageModal'));
         }
+        if (emptyStateNewChatBtn) {
+            emptyStateNewChatBtn.addEventListener('click', () => openModal('newMessageModal'));
+        }
 
-        // Recherche d'utilisateurs
         const searchInput = document.getElementById('searchUsersInput');
         if (searchInput) {
             searchInput.addEventListener('input', debounce(searchUsers, 300));
         }
 
-        // Mobile : menu toggle
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const conversationsSidebar = document.getElementById('conversationsSidebar');
-        const mobileBackBtn = document.getElementById('mobileBackBtn');
+        const mobileBackHeaderBtn = document.getElementById('mobileBackHeaderBtn');
+        const messagesLayout = document.querySelector('.messages-layout-full');
         
-        if (mobileMenuToggle) {
-            mobileMenuToggle.addEventListener('click', function() {
-                conversationsSidebar.classList.add('open');
-            });
-        }
-        
-        if (mobileBackBtn) {
-            mobileBackBtn.addEventListener('click', function() {
-                conversationsSidebar.classList.remove('open');
+        // Bouton retour vers la liste des conversations
+        if (mobileBackHeaderBtn) {
+            mobileBackHeaderBtn.addEventListener('click', function() {
+                messagesLayout.classList.remove('has-active-conversation');
+                // Optionnel: revenir a l'URL sans la conversation
+                if (window.history && window.history.pushState) {
+                    window.history.pushState({}, '', '/messages');
+                }
             });
         }
 
-        // Fermer le menu mobile quand on clique sur une conversation
+        // Gestion de l'affichage mobile
+        if (window.innerWidth <= 768) {
+            if (currentConversationId) {
+                messagesLayout.classList.add('has-active-conversation');
+            }
+        }
+
+        // Gestion du clic sur une conversation
         document.querySelectorAll('.conversation-item').forEach(item => {
             item.addEventListener('click', function(e) {
                 if (window.innerWidth <= 768) {
                     setTimeout(() => {
-                        conversationsSidebar.classList.remove('open');
+                        messagesLayout.classList.add('has-active-conversation');
                     }, 150);
                 }
             });
         });
 
-        // Demarrer le polling si une conversation est active
         if (currentConversationId) {
             startPolling();
             scrollToBottom();
