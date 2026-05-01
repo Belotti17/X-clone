@@ -986,25 +986,27 @@
     background: #1d9bf0;
 }
 </style>
-
 <script>
-    let currentUserId = {{ currentUser?.id }};
-    let currentConversationId = {{ activeConversation?.id || 'null' }};
+    // Initialisation des variables avec gestion des valeurs null/undefined
+    let currentUserId = null;
+    let currentConversationId = null;
     let lastMessageId = 0;
     let pollingInterval = null;
     let isSending = false;
     let currentEditMessageId = null;
 
-    if (currentConversationId === 'null' || currentConversationId === null || isNaN(parseInt(currentConversationId))) {
-        currentConversationId = null;
-    } else {
-        currentConversationId = parseInt(currentConversationId);
+    // Récupération des valeurs depuis le backend
+    const rawUserId = {{ currentUser?.id || 'null' }};
+    const rawConversationId = {{ activeConversation?.id || 'null' }};
+
+    // Conversion sécurisée de l'ID utilisateur
+    if (rawUserId && rawUserId !== 'null' && !isNaN(parseInt(rawUserId))) {
+        currentUserId = parseInt(rawUserId);
     }
 
-    if (currentUserId === 'null' || currentUserId === null || isNaN(parseInt(currentUserId))) {
-        currentUserId = null;
-    } else {
-        currentUserId = parseInt(currentUserId);
+    // Conversion sécurisée de l'ID de la conversation
+    if (rawConversationId && rawConversationId !== 'null' && !isNaN(parseInt(rawConversationId))) {
+        currentConversationId = parseInt(rawConversationId);
     }
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -1182,12 +1184,17 @@
     }
 
     async function sendMessage() {
+        // Vérifier que la conversation est valide avant d'envoyer
         if (isSending) return;
+        if (!currentConversationId || isNaN(currentConversationId)) {
+            console.error('ID de conversation invalide');
+            return;
+        }
         
         const input = document.getElementById('messageInput');
         const content = input.value.trim();
         
-        if (!content || !currentConversationId) return;
+        if (!content) return;
         
         isSending = true;
         
@@ -1280,7 +1287,8 @@
         if (pollingInterval) clearInterval(pollingInterval);
         
         pollingInterval = setInterval(async () => {
-            if (!currentConversationId) return;
+            // Vérifier que la conversation est valide
+            if (!currentConversationId || isNaN(currentConversationId)) return;
             
             try {
                 const response = await fetch(`/messages/new?conversation_id=${currentConversationId}&last_message_id=${lastMessageId}`);
