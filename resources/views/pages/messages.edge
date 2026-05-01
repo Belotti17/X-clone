@@ -89,29 +89,31 @@
                         <div class="conversations-list" id="conversationsList">
                             @if(conversations && conversations.length > 0)
                                 @each(conv in conversations)
-                                    <a href="/messages/{{ conv.user.id }}" class="conversation-item {{ activeConversation?.id === conv.user.id ? 'active' : '' }}" data-user-id="{{ conv.user.id }}">
-                                        <div class="conv-avatar">
-                                            @if(conv.user.profile_picture)
-                                                <img src="{{ conv.user.profile_picture }}" alt="Avatar">
-                                            @else
-                                                <div class="avatar-circle-small">
-                                                    {{ conv.user.name ? conv.user.name.charAt(0).toUpperCase() : conv.user.username.charAt(0).toUpperCase() }}
+                                    @if(conv.user && conv.user.id)
+                                        <a href="/messages/{{ conv.user.id }}" class="conversation-item {{ activeConversation?.id === conv.user.id ? 'active' : '' }}" data-user-id="{{ conv.user.id }}">
+                                            <div class="conv-avatar">
+                                                @if(conv.user.profile_picture)
+                                                    <img src="{{ conv.user.profile_picture }}" alt="Avatar">
+                                                @else
+                                                    <div class="avatar-circle-small">
+                                                        {{ conv.user.name ? conv.user.name.charAt(0).toUpperCase() : conv.user.username.charAt(0).toUpperCase() }}
+                                                    </div>
+                                                @endif
+                                                @if(conv.unreadCount > 0)
+                                                    <span class="unread-badge">{{ conv.unreadCount }}</span>
+                                                @endif
+                                            </div>
+                                            <div class="conv-info">
+                                                <div class="conv-name">{{ conv.user.name || conv.user.username }}</div>
+                                                <div class="conv-last-message">
+                                                    {{ conv.lastMessage.content.substring(0, 50) }}{{ conv.lastMessage.content.length > 50 ? '...' : '' }}
                                                 </div>
-                                            @endif
-                                            @if(conv.unreadCount > 0)
-                                                <span class="unread-badge">{{ conv.unreadCount }}</span>
-                                            @endif
-                                        </div>
-                                        <div class="conv-info">
-                                            <div class="conv-name">{{ conv.user.name || conv.user.username }}</div>
-                                            <div class="conv-last-message">
-                                                {{ conv.lastMessage.content.substring(0, 50) }}{{ conv.lastMessage.content.length > 50 ? '...' : '' }}
+                                                <div class="conv-time">
+                                                    {{ conv.lastMessage.createdAt?.toFormat ? conv.lastMessage.createdAt.toFormat('dd/MM HH:mm') : '' }}
+                                                </div>
                                             </div>
-                                            <div class="conv-time">
-                                                {{ conv.lastMessage.createdAt?.toFormat ? conv.lastMessage.createdAt.toFormat('dd/MM HH:mm') : '' }}
-                                            </div>
-                                        </div>
-                                    </a>
+                                        </a>
+                                    @endif
                                 @end
                             @else
                                 <div class="empty-conversations" id="emptyConversations">
@@ -557,13 +559,10 @@
 
 .delete-message-btn:hover {
     color: #f4212e;
-}
-
-.delete-message-btn:hover {
     background: rgba(244, 33, 46, 0.1);
 }
 
-.newMsg-btn{
+.newMsg-btn {
     background: black;
     color: #fff;
     font-weight: 700;
@@ -986,8 +985,8 @@
     background: #1d9bf0;
 }
 </style>
+
 <script>
-    // Initialisation des variables avec gestion des valeurs null/undefined
     let currentUserId = null;
     let currentConversationId = null;
     let lastMessageId = 0;
@@ -995,16 +994,13 @@
     let isSending = false;
     let currentEditMessageId = null;
 
-    // Récupération des valeurs depuis le backend
-    const rawUserId = {{ currentUser?.id || 'null' }};
-    const rawConversationId = {{ activeConversation?.id || 'null' }};
+    const rawUserId = {{ currentUser?.id ?? 'null' }};
+    const rawConversationId = {{ activeConversation?.id ?? 'null' }};
 
-    // Conversion sécurisée de l'ID utilisateur
     if (rawUserId && rawUserId !== 'null' && !isNaN(parseInt(rawUserId))) {
         currentUserId = parseInt(rawUserId);
     }
 
-    // Conversion sécurisée de l'ID de la conversation
     if (rawConversationId && rawConversationId !== 'null' && !isNaN(parseInt(rawConversationId))) {
         currentConversationId = parseInt(rawConversationId);
     }
@@ -1184,7 +1180,6 @@
     }
 
     async function sendMessage() {
-        // Vérifier que la conversation est valide avant d'envoyer
         if (isSending) return;
         if (!currentConversationId || isNaN(currentConversationId)) {
             console.error('ID de conversation invalide');
@@ -1287,7 +1282,6 @@
         if (pollingInterval) clearInterval(pollingInterval);
         
         pollingInterval = setInterval(async () => {
-            // Vérifier que la conversation est valide
             if (!currentConversationId || isNaN(currentConversationId)) return;
             
             try {
