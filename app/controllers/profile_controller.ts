@@ -1,3 +1,5 @@
+// app/controllers/profile_controller.ts
+
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import Tweet from '#models/tweet'
@@ -6,16 +8,38 @@ import { randomUUID } from 'node:crypto'
 import path from 'node:path'
 
 export default class ProfileController {
-  async show({ params, view, auth }: HttpContext) {
+  /**
+   * Affiche le profil d'un utilisateur
+   */
+  async show({ params, view, auth, response }: HttpContext) {
     const currentUser = await auth.use('web').user
-    const username = params.username || currentUser?.username
+    let username = params.username
 
-    if (!username) {
+    // ✅ CORRECTION : Vérifier si username est invalide (undefined, null, 'null', 'undefined', 'NaN', '')
+    const invalidUsernames = [undefined, null, 'null', 'undefined', 'NaN', '']
+
+    if (invalidUsernames.includes(username)) {
+      // Si l'utilisateur est connecté, rediriger vers son propre profil
+      if (currentUser) {
+        return response.redirect().toPath(`/profile/${currentUser.username}`)
+      }
+      // Sinon, rediriger vers la page de connexion/inscription
       return view.render('pages/auth/signup')
     }
 
-    const profileUser = await User.findByOrFail('username', username)
+    // Récupération de l'utilisateur demandé
+    const profileUser = await User.findBy('username', username)
 
+    // Si l'utilisateur n'existe pas
+    if (!profileUser) {
+      // Rediriger vers le profil de l'utilisateur connecté ou vers l'accueil
+      if (currentUser) {
+        return response.redirect().toPath(`/profile/${currentUser.username}`)
+      }
+      return view.render('pages/auth/signup')
+    }
+
+    // Vérifier si l'utilisateur connecté suit le profil consulté
     let isFollowing = false
     if (currentUser && currentUser.id !== profileUser.id) {
       const follow = await Follow.query()
@@ -25,6 +49,7 @@ export default class ProfileController {
       isFollowing = !!follow
     }
 
+    // Récupération des tweets du profil
     const tweets = await Tweet.query()
       .where('userId', profileUser.id)
       .where('isReply', false)
@@ -34,9 +59,11 @@ export default class ProfileController {
       .orderBy('createdAt', 'desc')
       .limit(50)
 
+    // Ajout des métadonnées aux tweets
     for (const tweet of tweets) {
       tweet.$extras.likesCount = tweet.likes.length
       tweet.$extras.retweetsCount = tweet.retweets.length
+
       const repliesCount = await Tweet.query()
         .where('parentTweetId', tweet.id)
         .where('isReply', true)
@@ -44,11 +71,12 @@ export default class ProfileController {
       tweet.$extras.repliesCount = Number(repliesCount[0].$extras.total)
 
       if (currentUser) {
-        const hasLiked = tweet.likes.some((like) => like.userId === currentUser.id)
+        const hasLiked = tweet.likes.some((like: any) => like.userId === currentUser.id)
         tweet.$extras.userLiked = hasLiked
       }
     }
 
+    // Compteurs d'abonnés et abonnements
     const followersCount = await Follow.query()
       .where('followingId', profileUser.id)
       .count('* as total')
@@ -56,10 +84,14 @@ export default class ProfileController {
       .where('followerId', profileUser.id)
       .count('* as total')
 
-    const suggestions = await User.query()
-      .whereNot('id', currentUser?.id || 0)
-      .whereNotIn('id', [profileUser.id])
-      .limit(5)
+    // Suggestions d'utilisateurs
+    let suggestions: any[] = []
+    if (currentUser) {
+      suggestions = await User.query()
+        .whereNot('id', currentUser.id)
+        .whereNot('id', profileUser.id)
+        .limit(5)
+    }
 
     return view.render('pages/profile', {
       profileUser,
@@ -72,6 +104,9 @@ export default class ProfileController {
     })
   }
 
+  /**
+   * Mise à jour du profil
+   */
   async update({ request, response, auth, session }: HttpContext) {
     const user = auth.use('web').user!
     const name = request.input('name')
@@ -132,22 +167,37 @@ export default class ProfileController {
   /**
    * FOLLOWERS - Les personnes qui suivent l'utilisateur (ses abonnés)
    */
-  async followers({ params, view, auth }: HttpContext) {
+  async followers({ params, view, auth, response }: HttpContext) {
     const currentUser = await auth.use('web').user
-    const username = params.username
+    let username = params.username
 
-    const profileUser = await User.findByOrFail('username', username)
+    // ✅ CORRECTION : Vérifier si username est invalide
+    const invalidUsernames = [undefined, null, 'null', 'undefined', 'NaN', '']
 
-    // Récupère les personnes qui suivent profileUser
+    if (invalidUsernames.includes(username)) {
+      if (currentUser) {
+        return response.redirect().toPath(`/profile/${currentUser.username}/followers`)
+      }
+      return view.render('pages/auth/signup')
+    }
+
+    const profileUser = await User.findBy('username', username)
+
+    if (!profileUser) {
+      if (currentUser) {
+        return response.redirect().toPath(`/profile/${currentUser.username}/followers`)
+      }
+      return view.render('pages/auth/signup')
+    }
+
     const followers = await Follow.query()
-      .where('followingId', profileUser.id) // Ceux qui suivent profileUser
+      .where('followingId', profileUser.id)
       .preload('follower')
       .orderBy('createdAt', 'desc')
       .limit(50)
 
     const followersList = followers.map((f) => f.follower)
 
-    // Pour savoir si l'utilisateur connecté suit déjà ces personnes
     const following = await Follow.query()
       .where('followerId', currentUser?.id || 0)
       .select('followingId')
@@ -168,24 +218,38 @@ export default class ProfileController {
 
   /**
    * FOLLOWING - Les personnes que l'utilisateur suit (ses abonnements)
-   * C'est ICI que tu vois les gens que tu as suivis !
    */
-  async following({ params, view, auth }: HttpContext) {
+  async following({ params, view, auth, response }: HttpContext) {
     const currentUser = await auth.use('web').user
-    const username = params.username
+    let username = params.username
 
-    const profileUser = await User.findByOrFail('username', username)
+    // ✅ CORRECTION : Vérifier si username est invalide
+    const invalidUsernames = [undefined, null, 'null', 'undefined', 'NaN', '']
 
-    // Récupère les personnes que profileUser suit
+    if (invalidUsernames.includes(username)) {
+      if (currentUser) {
+        return response.redirect().toPath(`/profile/${currentUser.username}/following`)
+      }
+      return view.render('pages/auth/signup')
+    }
+
+    const profileUser = await User.findBy('username', username)
+
+    if (!profileUser) {
+      if (currentUser) {
+        return response.redirect().toPath(`/profile/${currentUser.username}/following`)
+      }
+      return view.render('pages/auth/signup')
+    }
+
     const following = await Follow.query()
-      .where('followerId', profileUser.id) // Ceux que profileUser suit
+      .where('followerId', profileUser.id)
       .preload('following')
       .orderBy('createdAt', 'desc')
       .limit(50)
 
     const followingList = following.map((f) => f.following)
 
-    // Pour savoir si l'utilisateur connecté suit déjà ces personnes
     const userFollows = await Follow.query()
       .where('followerId', currentUser?.id || 0)
       .select('followingId')
@@ -195,7 +259,6 @@ export default class ProfileController {
       .whereNot('id', currentUser?.id || 0)
       .limit(5)
 
-    // Rend la vue following.edge (pas followers.edge)
     return view.render('pages/following', {
       profileUser,
       currentUser,
