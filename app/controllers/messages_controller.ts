@@ -134,6 +134,77 @@ export default class MessagesController {
   }
 
   /**
+   * Modification d'un message (API)
+   */
+  async update({ params, request, response, auth }: HttpContext) {
+    // Recuperation de l'utilisateur connecte
+    const currentUser = await auth.use('web').user
+    // Recuperation de l'ID du message
+    const messageId = params.id
+
+    // Erreur si non authentifie
+    if (!currentUser) {
+      return response.status(401).json({ error: 'Non authentifie' })
+    }
+
+    // Recherche du message
+    const message = await Message.findOrFail(messageId)
+
+    // Verification que l'utilisateur est bien l'expediteur du message
+    if (message.senderId !== currentUser.id) {
+      return response.status(403).json({ error: 'Non autorise' })
+    }
+
+    // Recuperation du nouveau contenu
+    const newContent = request.input('content', '').trim()
+
+    // Validation du contenu
+    if (!newContent) {
+      return response.status(400).json({ error: 'Le message ne peut pas etre vide' })
+    }
+
+    // Mise a jour du message
+    message.content = newContent
+    await message.save()
+
+    return response.json({
+      success: true,
+      message: message,
+    })
+  }
+
+  /**
+   * Suppression d'un message (API)
+   */
+  async destroy({ params, response, auth }: HttpContext) {
+    // Recuperation de l'utilisateur connecte
+    const currentUser = await auth.use('web').user
+    // Recuperation de l'ID du message
+    const messageId = params.id
+
+    // Erreur si non authentifie
+    if (!currentUser) {
+      return response.status(401).json({ error: 'Non authentifie' })
+    }
+
+    // Recherche du message
+    const message = await Message.findOrFail(messageId)
+
+    // Verification que l'utilisateur est bien l'expediteur du message
+    if (message.senderId !== currentUser.id) {
+      return response.status(403).json({ error: 'Non autorise' })
+    }
+
+    // Suppression du message
+    await message.delete()
+
+    return response.json({
+      success: true,
+      message: 'Message supprime avec succes',
+    })
+  }
+
+  /**
    * Marquage d'un message comme lu (API)
    */
   async markAsRead({ params, response, auth }: HttpContext) {
