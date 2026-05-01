@@ -162,7 +162,6 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                            <!-- Boutons d'action pour les messages envoyés par l'utilisateur -->
                                             @if(message.senderId === currentUser?.id)
                                                 <div class="message-actions">
                                                     <button class="message-action-btn edit-message-btn" data-message-id="{{ message.id }}" data-message-content="{{ message.content }}">
@@ -527,7 +526,6 @@
     color: #ffffff;
 }
 
-/* Boutons d'action sur les messages */
 .message-actions {
     display: flex;
     gap: 4px;
@@ -572,6 +570,11 @@
     padding: 12px 20px;
     border-radius: 20px;
     border: none;
+    cursor: pointer;
+}
+
+.newMsg-btn:hover {
+    background: #1d9bf0;
 }
 
 /* Zone de saisie */
@@ -791,7 +794,6 @@
         display: flex;
     }
     
-    /* Afficher le bouton retour dans l'en-tete du chat */
     .mobile-back-btn-header {
         display: flex;
     }
@@ -993,6 +995,18 @@
     let isSending = false;
     let currentEditMessageId = null;
 
+    if (currentConversationId === 'null' || currentConversationId === null || isNaN(parseInt(currentConversationId))) {
+        currentConversationId = null;
+    } else {
+        currentConversationId = parseInt(currentConversationId);
+    }
+
+    if (currentUserId === 'null' || currentUserId === null || isNaN(parseInt(currentUserId))) {
+        currentUserId = null;
+    } else {
+        currentUserId = parseInt(currentUserId);
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const messageInput = document.getElementById('messageInput');
         if (messageInput) {
@@ -1062,7 +1076,6 @@
             });
         });
 
-        // Gestion des boutons modifier et supprimer
         setupMessageActionButtons();
 
         if (currentConversationId) {
@@ -1071,22 +1084,18 @@
         }
     });
 
-    // Configuration des boutons d'action sur les messages
     function setupMessageActionButtons() {
-        // Boutons modifier
         document.querySelectorAll('.edit-message-btn').forEach(btn => {
             btn.removeEventListener('click', handleEditClick);
             btn.addEventListener('click', handleEditClick);
         });
 
-        // Boutons supprimer
         document.querySelectorAll('.delete-message-btn').forEach(btn => {
             btn.removeEventListener('click', handleDeleteClick);
             btn.addEventListener('click', handleDeleteClick);
         });
     }
 
-    // Gestion du clic sur modifier
     function handleEditClick(e) {
         e.stopPropagation();
         const messageId = this.dataset.messageId;
@@ -1099,7 +1108,6 @@
         openModal('editMessageModal');
     }
 
-    // Gestion du clic sur supprimer
     async function handleDeleteClick(e) {
         e.stopPropagation();
         const messageId = this.dataset.messageId;
@@ -1129,14 +1137,13 @@
         }
     }
 
-    // Formulaire de modification
     const editForm = document.getElementById('editMessageForm');
     if (editForm) {
         editForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const newContent = document.getElementById('editMessageContent').value.trim();
             if (!newContent) {
-                alert('Le message ne peut pas être vide');
+                alert('Le message ne peut pas etre vide');
                 return;
             }
             try {
