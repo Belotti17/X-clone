@@ -1,0 +1,112 @@
+@component('layouts/base', { title: 'Notifications' })
+  @slot('main')
+    <header>
+      <div class="nav__logo">
+        <a href="/timeline">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/X_logo_2023.svg/330px-X_logo_2023.svg.png" alt="logo X" />
+        </a>
+      </div>
+      <nav class="nav">
+        <ul class="nav__list">
+          <li><a href="/timeline" class="nav__link"><i class="nav__icon fa-solid fa-house" aria-hidden="true"></i>Home</a></li>
+          <li><a href="/search" class="nav__link"><i class="nav__icon fa-solid fa-magnifying-glass" aria-hidden="true"></i>Explore</a></li>
+          <li><a href="/notifications" class="nav__link notifications-nav-link {{ request.url().startsWith('/notifications') ? 'active' : '' }}"><i class="nav__icon fa-solid fa-bell" aria-hidden="true"></i>Notifications</a></li>
+          <li><a href="/messages" class="nav__link"><i class="nav__icon fa-solid fa-envelope" aria-hidden="true"></i>Messages</a></li>
+          <li><a href="/communities" class="nav__link"><i class="nav__icon fa-solid fa-people-group" aria-hidden="true"></i>Communities</a></li>
+          <li><a href="/profile/{{ user.username }}" class="nav__link"><i class="nav__icon fa-solid fa-user" aria-hidden="true"></i>Profile</a></li>
+          <li><a href="/trending" class="nav__link"><i class="nav__icon fa-solid fa-ellipsis" aria-hidden="true"></i>More</a></li>
+        </ul>
+        <a href="/timeline" class="btn--primary notifications-post-link">Post</a>
+        <div class="user-line" id="userMenu">
+          @if(user.profile_picture)
+            <img src="{{ user.profile_picture }}" class="avatar-img" alt="" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px;">
+          @else
+            <div class="avatar-circle" style="width: 40px; height: 40px; margin-right: 12px;">{{ user.initials }}</div>
+          @endif
+          <div class="user-info">
+            <div class="user-name">{{ user.name || user.username }}</div>
+            <div class="user-handle">{{ user.username }}</div>
+          </div>
+          <button type="button" class="user-menu" aria-label="Menu utilisateur" aria-expanded="false">⋯</button>
+          <div class="popup-menu" hidden>
+            <form method="POST" action="/logout">
+              {{ csrfField() }}
+              <button type="submit" class="logout">Déconnexion</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="main">
+      <section id="centerContainer" class="notifications-page">
+        <div class="notifications-heading">
+          <h1>Notifications</h1>
+          <p>Les dernières interactions avec tes publications et ton compte.</p>
+        </div>
+
+        <div class="notifications-list">
+          @if(notifications.length === 0)
+            <div class="notifications-empty">
+              <h2>Rien de nouveau pour le moment</h2>
+              <p>Les nouveaux abonnés, likes, réponses et reposts apparaîtront ici.</p>
+            </div>
+          @else
+            @each(notification in notifications)
+              <article class="notification-item">
+                <div class="notification-icon" aria-hidden="true">
+                  @if(notification.type === 'like')
+                    <i class="notification-like fa-solid fa-heart" aria-hidden="true"></i>
+                  @elseif(notification.type === 'follow')
+                    <i class="notification-follow fa-solid fa-user-plus" aria-hidden="true"></i>
+                  @elseif(notification.type === 'reply')
+                    <i class="notification-reply fa-solid fa-reply" aria-hidden="true"></i>
+                  @else
+                    <i class="notification-retweet fa-solid fa-retweet" aria-hidden="true"></i>
+                  @endif
+                </div>
+                <a class="notification-avatar" href="/profile/{{ notification.actor.username }}">
+                  @if(notification.actor.profile_picture)
+                    <img src="{{ notification.actor.profile_picture }}" alt="">
+                  @else
+                    <span>{{ notification.actor.initials }}</span>
+                  @endif
+                </a>
+                <div class="notification-content">
+                  <p>
+                    <a href="/profile/{{ notification.actor.username }}"><strong>{{ notification.actor.name || notification.actor.username }}</strong></a>
+                    @if(notification.type === 'like')
+                      a aimé ta publication
+                    @elseif(notification.type === 'follow')
+                      a commencé à te suivre
+                    @elseif(notification.type === 'reply')
+                      a répondu à ta publication
+                    @else
+                      a reposté ta publication
+                    @endif
+                    <span class="notification-time">· {{ notification.createdAt?.toFormat('dd/MM/yyyy HH:mm') || '' }}</span>
+                  </p>
+                  @if(notification.tweet?.content)
+                    <a class="notification-preview" href="/profile/{{ notification.actor.username }}">
+                      {{ notification.tweet.content }}
+                    </a>
+                  @endif
+                </div>
+              </article>
+            @end
+          @endif
+        </div>
+      </section>
+      <aside id="rightContainer">
+        <form id="searchWrap" action="/search" method="GET">
+          <input class="search__input" name="q" placeholder="Search" aria-label="Rechercher">
+        </form>
+        <section id="subscribe">
+          <span class="subscribe__title">Subscribe to Premium</span>
+          <p class="subscribe__desc">Subscribe to unlock new features and if eligible, receive a share of revenue.</p>
+          <button class="btn--secondary" type="button">Subscribe</button>
+        </section>
+      </aside>
+    </main>
+  @end
+@end
