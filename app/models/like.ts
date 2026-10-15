@@ -15,7 +15,7 @@ export default class Like extends LikeSchema {
    * L'utilisateur qui a liké le tweet
    */
   @belongsTo(() => User, {
-    foreignKey: 'user_id',
+    foreignKey: 'userId',
   })
   declare user: BelongsTo<typeof User>
 
@@ -23,7 +23,7 @@ export default class Like extends LikeSchema {
    * Le tweet qui a été liké
    */
   @belongsTo(() => Tweet, {
-    foreignKey: 'tweet_id',
+    foreignKey: 'tweetId',
   })
   declare tweet: BelongsTo<typeof Tweet>
 }
