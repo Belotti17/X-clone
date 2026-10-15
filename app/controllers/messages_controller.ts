@@ -37,22 +37,21 @@ export default class MessagesController {
    * Affiche une conversation specifique
    * Cette methode est appelee quand on clique sur une conversation
    */
-  async show({ params, view, auth }: HttpContext) {
+  async show({ params, view, auth, response }: HttpContext) {
     // Recuperation de l'utilisateur connecte
     const currentUser = await auth.use('web').user
-    // Recuperation de l'ID de la conversation depuis l'URL
-    const conversationId = parseInt(params.id)
-
-    // Redirection vers login si non authentifie
     if (!currentUser) {
-      return view.render('pages/auth/login')
+      return response.unauthorized()
+    }
+    // Recuperation de l'ID de la conversation depuis l'URL
+    const conversationId = Number(params.id)
+
+    if (!Number.isSafeInteger(conversationId) || conversationId < 1) {
+      return response.notFound()
     }
 
     // Recuperation de l'utilisateur avec qui on parle
     const otherUser = await User.findOrFail(conversationId)
-
-    // Recuperation de toutes les conversations
-    const conversations = await this.getConversations(currentUser.id)
 
     // Recuperation des messages entre les deux utilisateurs
     const messages = await Message.query()
@@ -60,13 +59,16 @@ export default class MessagesController {
         query
           .where('senderId', currentUser.id)
           .where('receiverId', conversationId)
-          .orWhere('senderId', conversationId)
-          .where('receiverId', currentUser.id)
+          .orWhere((incomingQuery) => {
+            incomingQuery.where('senderId', conversationId).where('receiverId', currentUser.id)
+          })
       })
       .preload('sender')
       .preload('receiver')
-      .orderBy('createdAt', 'asc')
+      .orderBy('createdAt', 'desc')
       .limit(100)
+
+    messages.reverse()
 
     // Marquage des messages non lus comme lus
     await Message.query()
@@ -77,6 +79,9 @@ export default class MessagesController {
         isRead: true,
         readAt: DateTime.now(),
       })
+
+    // Recuperation de toutes les conversations après actualisation des badges non lus
+    const conversations = await this.getConversations(currentUser.id)
 
     // Rendu de la vue avec la conversation active
     return view.render('pages/messages', {
@@ -100,13 +105,18 @@ export default class MessagesController {
     }
 
     // Recuperation des donnees du formulaire
-    const receiverId = request.input('receiver_id')
-    const content = request.input('content', '').trim()
+    const receiverId = Number(request.input('receiver_id'))
+    const rawContent = request.input('content', '')
 
     // Validation du contenu du message
-    if (!content) {
+    if (!Number.isSafeInteger(receiverId) || receiverId < 1) {
+      return response.status(400).json({ error: 'Destinataire invalide' })
+    }
+
+    if (typeof rawContent !== 'string' || !rawContent.trim()) {
       return response.status(400).json({ error: 'Le message ne peut pas etre vide' })
     }
+    const content = rawContent.trim()
 
     // Verification que le destinataire existe
     const receiver = await User.find(receiverId)
@@ -156,12 +166,13 @@ export default class MessagesController {
     }
 
     // Recuperation du nouveau contenu
-    const newContent = request.input('content', '').trim()
+    const rawContent = request.input('content', '')
 
     // Validation du contenu
-    if (!newContent) {
+    if (typeof rawContent !== 'string' || !rawContent.trim()) {
       return response.status(400).json({ error: 'Le message ne peut pas etre vide' })
     }
+    const newContent = rawContent.trim()
 
     // Mise a jour du message
     message.content = newContent
@@ -241,7 +252,7 @@ export default class MessagesController {
     // Recuperation de l'utilisateur connecte
     const currentUser = await auth.use('web').user
     // Recuperation du dernier ID de message connu
-    const lastMessageId = request.input('last_message_id', 0)
+    const lastMessageId = Number(request.input('last_message_id', 0))
     // Recuperation de l'ID de la conversation
     const conversationId = request.input('conversation_id')
 
@@ -250,12 +261,23 @@ export default class MessagesController {
       return response.status(401).json({ error: 'Non authentifie' })
     }
 
+    if (!Number.isSafeInteger(lastMessageId) || lastMessageId < 0) {
+      return response.status(400).json({ error: 'Identifiant de message invalide' })
+    }
+
+    if (
+      conversationId !== undefined &&
+      (!Number.isSafeInteger(Number(conversationId)) || Number(conversationId) < 1)
+    ) {
+      return response.status(400).json({ error: 'Identifiant de conversation invalide' })
+    }
+
     // Construction de la requete pour les nouveaux messages
     let query = Message.query().where('receiverId', currentUser.id).where('id', '>', lastMessageId)
 
     // Filtrage par conversation si specifie
     if (conversationId) {
-      query = query.where('senderId', conversationId)
+      query = query.where('senderId', Number(conversationId))
     }
 
     // Execution de la requete avec chargement des relations
@@ -263,6 +285,7 @@ export default class MessagesController {
       .preload('sender')
       .preload('receiver')
       .orderBy('createdAt', 'asc')
+      .limit(100)
 
     // Marquage automatique des nouveaux messages comme lus
     for (const message of newMessages) {
@@ -283,47 +306,59 @@ export default class MessagesController {
    * Recuperation de la liste des conversations avec le dernier message
    */
   private async getConversations(userId: number) {
-    // Recuperation de tous les messages de l'utilisateur
     const messages = await Message.query()
-      .where('senderId', userId)
-      .orWhere('receiverId', userId)
-      .preload('sender')
-      .preload('receiver')
+      .where((query) => {
+        query.where('senderId', userId).orWhere('receiverId', userId)
+      })
+      .select('id', 'senderId', 'receiverId', 'content', 'createdAt')
       .orderBy('createdAt', 'desc')
 
-    // Map pour stocker les conversations uniques
-    const conversationsMap = new Map()
-
-    // Parcours des messages pour construire les conversations
+    const latestMessages = new Map<number, Message>()
     for (const message of messages) {
-      // Determination de l'autre utilisateur
       const otherUserId = message.senderId === userId ? message.receiverId : message.senderId
-      const otherUser = message.senderId === userId ? message.receiver : message.sender
-
-      // Ajout de la conversation si elle n'existe pas encore
-      if (!conversationsMap.has(otherUserId)) {
-        // Comptage des messages non lus pour cette conversation
-        const unreadCount = await Message.query()
-          .where('senderId', otherUserId)
-          .where('receiverId', userId)
-          .where('isRead', false)
-          .count('* as total')
-
-        // Stockage des informations de la conversation
-        conversationsMap.set(otherUserId, {
-          user: otherUser,
-          lastMessage: message,
-          unreadCount: Number(unreadCount[0].$extras.total),
-          lastMessageAt: message.createdAt,
-        })
+      if (!latestMessages.has(otherUserId)) {
+        latestMessages.set(otherUserId, message)
       }
     }
 
-    // Conversion du Map en tableau et tri par date du dernier message
-    const conversations = Array.from(conversationsMap.values()).sort(
-      (a, b) => b.lastMessageAt.toMillis() - a.lastMessageAt.toMillis()
+    const otherUserIds = Array.from(latestMessages.keys())
+    if (otherUserIds.length === 0) {
+      return []
+    }
+
+    const [users, unreadCounts] = await Promise.all([
+      User.query().whereIn('id', otherUserIds),
+      Message.query()
+        .where('receiverId', userId)
+        .where('isRead', false)
+        .whereIn('senderId', otherUserIds)
+        .select('senderId')
+        .count('* as total')
+        .groupBy('senderId'),
+    ])
+
+    const usersById = new Map(users.map((user) => [user.id, user]))
+    const unreadByUserId = new Map(
+      unreadCounts.map((row) => [Number(row.senderId), Number(row.$extras.total)])
     )
 
-    return conversations
+    return otherUserIds
+      .flatMap((otherUserId) => {
+        const user = usersById.get(otherUserId)
+        const lastMessage = latestMessages.get(otherUserId)
+        if (!user || !lastMessage) {
+          return []
+        }
+
+        return [
+          {
+            user,
+            lastMessage,
+            unreadCount: unreadByUserId.get(otherUserId) ?? 0,
+            lastMessageAt: lastMessage.createdAt,
+          },
+        ]
+      })
+      .sort((a, b) => b.lastMessageAt.toMillis() - a.lastMessageAt.toMillis())
   }
 }
