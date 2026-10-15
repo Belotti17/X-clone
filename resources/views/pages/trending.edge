@@ -1,0 +1,113 @@
+@component('layouts/base', { title: 'Tendances' })
+  @slot('main')
+    <header>
+      <div class="nav__logo">
+        <a href="/timeline">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/X_logo_2023.svg/330px-X_logo_2023.svg.png" alt="logo X" />
+        </a>
+      </div>
+      <nav class="nav">
+        <ul class="nav__list">
+          <li><a href="/timeline" class="nav__link"><i class="nav__icon fa-solid fa-house" aria-hidden="true"></i>Home</a></li>
+          <li><a href="/search" class="nav__link"><i class="nav__icon fa-solid fa-magnifying-glass" aria-hidden="true"></i>Explore</a></li>
+          <li><a href="/notifications" class="nav__link"><i class="nav__icon fa-solid fa-bell" aria-hidden="true"></i>Notifications</a></li>
+          <li><a href="/messages" class="nav__link"><i class="nav__icon fa-solid fa-envelope" aria-hidden="true"></i>Messages</a></li>
+          <li><a href="/communities" class="nav__link"><i class="nav__icon fa-solid fa-people-group" aria-hidden="true"></i>Communities</a></li>
+          <li><a href="/profile/{{ user.username }}" class="nav__link"><i class="nav__icon fa-solid fa-user" aria-hidden="true"></i>Profile</a></li>
+          <li><a href="/trending" class="nav__link active" aria-current="page">Tendances</a></li>
+        </ul>
+        <a href="/timeline" class="btn--primary">Post</a>
+        <div class="user-line">
+          @if(user.profile_picture)
+            <img src="{{ user.profile_picture }}" class="avatar-img" alt="" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px;">
+          @else
+            <div class="avatar-circle" style="width: 40px; height: 40px; margin-right: 12px;">{{ user.initials }}</div>
+          @endif
+          <div class="user-info">
+            <div class="user-name">{{ user.name || user.username }}</div>
+            <div class="user-handle">{{ '@' + user.username }}</div>
+          </div>
+          <form method="POST" action="/logout">
+            {{ csrfField() }}
+            <button type="submit" class="logout">Déconnexion</button>
+          </form>
+        </div>
+      </nav>
+    </header>
+
+    <main class="main">
+      <section id="centerContainer" class="trending-page">
+        <div class="trending-heading">
+          <h1>Tendances</h1>
+          <p>Les hashtags les plus utilisés dans les 500 publications récentes.</p>
+        </div>
+        @if(trending.length)
+          <ol class="trending-list">
+            @each(item in trending)
+              <li>
+                <a href="/search/hashtag/{{ encodeURIComponent(item.tag.slice(1)) }}">
+                  <strong>{{ item.tag }}</strong>
+                  <span>{{ item.count }} publication{{ item.count === 1 ? '' : 's' }}</span>
+                </a>
+              </li>
+            @end
+          </ol>
+        @else
+          <div class="empty-feed">
+            <h2>Pas encore de tendances</h2>
+            <p>Les hashtags apparaîtront ici quand des publications les mentionneront.</p>
+          </div>
+        @endif
+      </section>
+      <aside id="rightContainer">
+        <form id="searchWrap" action="/search" method="GET">
+          <input class="search__input" name="q" placeholder="Rechercher" aria-label="Rechercher">
+        </form>
+      </aside>
+    </main>
+  @end
+@end
+
+<style>
+  .trending-page {
+    min-width: 0;
+  }
+
+  .trending-heading {
+    padding: 20px 16px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .trending-heading h1,
+  .trending-heading p {
+    margin: 0;
+  }
+
+  .trending-heading p {
+    margin-top: 8px;
+    color: #6b7280;
+  }
+
+  .trending-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .trending-list a {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .trending-list a:hover {
+    background: #f8fafc;
+  }
+
+  .trending-list span {
+    color: #6b7280;
+    font-size: 14px;
+  }
+</style>
