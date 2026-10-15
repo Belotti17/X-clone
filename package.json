@@ -68,12 +68,13 @@
     "@adonisjs/shield": "^9.0.0",
     "@adonisjs/static": "^2.0.0",
     "@adonisjs/vite": "^5.1.0",
+    "@fortawesome/fontawesome-free": "^7.3.1",
     "@vinejs/vine": "^4.3.0",
     "better-sqlite3": "^12.6.2",
     "dotenv": "^17.3.1",
     "edge.js": "^6.5.0",
     "luxon": "^3.7.2",
-    "pg": "^8.20.0",
+    "pg": "^8.23.1",
     "reflect-metadata": "^0.2.2"
   },
   "hotHook": {
