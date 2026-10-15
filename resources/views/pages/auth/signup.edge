@@ -87,13 +87,16 @@
         </div>
       </div>
 
-      <div id="popup-x" class="overlay-x">
+      <div id="popup-x" class="overlay-x @if(flashMessages.has('loginError')) active @end">
         <div class="popup-content-x">
           <button class="close-x" type="button" onclick="closeLogin()">X</button>
           <div class="logo-x"><img src="https://mail.google.com/mail/u/0?ui=2&ik=a85cfa118b&attid=0.1&permmsgid=msg-a:r-4042161132938590700&th=19d3b4f931037916&view=fimg&fur=ip&permmsgid=msg-a:r-4042161132938590700&sz=s0-l75-ft&attbid=ANGjdJ-oQSRNXAvgSxSLgJHUmsD0EUzUYXUXsEkN1eN0fnRps2iop-4uVdIAxQBuVpvdRHmJaHLSEI_4uCYJ4n0TxMBmZ0Cke5L8WVlOb7aZEKeTJ2bUfcwboLtcgMA&disp=emb&realattid=ii_mnc7ybur0&zw" /></div>
           <h2 class="title-x">Connectez-vous à X</h2>
+          @if (flashMessages.has('loginError'))
+            <p role="alert" style="color: #ff4444;">{{ flashMessages.get('loginError') }}</p>
+          @endif
           @form({ route: 'session.store', method: 'POST' })
-            <input class="input-x" name="email" placeholder="Email" required />
+            <input class="input-x" type="email" name="email" placeholder="Email" required />
             <input class="input-x" type="password" name="password" placeholder="Mot de passe" required />
             <button class="btn-black-x" type="submit">Se connecter</button>
           @end
