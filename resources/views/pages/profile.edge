@@ -10,38 +10,38 @@
                 <ul class="nav__list">
                     <li>
                         <a href="/timeline" class="nav__link">
-                            <img class="nav__icon" src="https://www.svgrepo.com/show/535437/home.svg" />Home
+                            <i class="nav__icon fa-solid fa-house" aria-hidden="true"></i>Home
                         </a>
                     </li>
                     <li>
                         <a href="/search" class="nav__link">
-                            <img class="nav__icon" src="https://www.svgrepo.com/show/486828/search.svg" />Explore
+                            <i class="nav__icon fa-solid fa-magnifying-glass" aria-hidden="true"></i>Explore
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav__link">
-                            <img class="nav__icon" src="https://www.svgrepo.com/show/512576/notification-bell-1398.svg" />Notifications
+                        <a href="/notifications" class="nav__link {{ request.url().startsWith('/notifications') ? 'active' : '' }}">
+                            <i class="nav__icon fa-solid fa-bell" aria-hidden="true"></i>Notifications
                         </a>
                     </li>
                     <li>
                         <a href="/messages" class="nav__link">
-                            <img class="nav__icon" src="https://www.svgrepo.com/show/522169/mail.svg" />Messages
+                            <i class="nav__icon fa-solid fa-envelope" aria-hidden="true"></i>Messages
                         </a>
                     </li>
                     
                     <li>
                         <a href="/communities" class="nav__link">
-                            <img class="nav__icon" src="https://www.svgrepo.com/show/158210/community.svg" />Communities
+                            <i class="nav__icon fa-solid fa-people-group" aria-hidden="true"></i>Communities
                         </a>
                     </li>
                     <li>
                         <a href="/profile/{{ currentUser?.username }}" class="nav__link">
-                            <img class="nav__icon" src="https://www.svgrepo.com/show/512729/profile-round-1342.svg" />Profile
+                            <i class="nav__icon fa-solid fa-user" aria-hidden="true"></i>Profile
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav__link">
-                            <img class="nav__icon" src="https://www.svgrepo.com/show/521184/more-horizontal.svg" />More
+                        <a href="/trending" class="nav__link">
+                            <i class="nav__icon fa-solid fa-ellipsis" aria-hidden="true"></i>More
                         </a>
                     </li>
                 </ul>
@@ -80,13 +80,13 @@
                 <div class="profile-header-sticky">
                     <div class="profile-header-inner">
                         <a href="/timeline" class="profile-back-btn">
-                            <button class="icon-btn">
-    <img src="https://www.svgrepo.com/show/391676/return-key.svg" alt="Ajouter">
-</button>
+                            <button class="icon-btn" type="button" aria-label="Retour">
+                                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                            </button>
                         </a>
                         <div>
                             <h1 class="profile-header-name">{{ profileUser.name || profileUser.username }}</h1>
-                            <p class="profile-header-tweets">{{ tweets.length }} posts</p>
+                            <p class="profile-header-tweets">{{ tweets.length }} {{ profileTab === 'replies' ? 'réponses' : profileTab === 'media' ? 'médias' : profileTab === 'likes' ? 'J’aime' : 'posts' }}</p>
                         </div>
                     </div>
                 </div>
@@ -156,10 +156,10 @@
                 <!-- Onglets -->
                 <div class="profile-tabs-container">
                     <div class="profile-tabs-scroll">
-                        <a href="/profile/{{ profileUser.username }}" class="profile-tab active">Posts</a>
-                        <a href="#" class="profile-tab">Réponses</a>
-                        <a href="#" class="profile-tab">Médias</a>
-                        <a href="#" class="profile-tab">J'aime</a>
+                        <a href="/profile/{{ profileUser.username }}?tab=posts" class="profile-tab {{ profileTab === 'posts' ? 'active' : '' }}" aria-current="{{ profileTab === 'posts' ? 'page' : 'false' }}">Posts</a>
+                        <a href="/profile/{{ profileUser.username }}?tab=replies" class="profile-tab {{ profileTab === 'replies' ? 'active' : '' }}" aria-current="{{ profileTab === 'replies' ? 'page' : 'false' }}">Réponses</a>
+                        <a href="/profile/{{ profileUser.username }}?tab=media" class="profile-tab {{ profileTab === 'media' ? 'active' : '' }}" aria-current="{{ profileTab === 'media' ? 'page' : 'false' }}">Médias</a>
+                        <a href="/profile/{{ profileUser.username }}?tab=likes" class="profile-tab {{ profileTab === 'likes' ? 'active' : '' }}" aria-current="{{ profileTab === 'likes' ? 'page' : 'false' }}">J'aime</a>
                     </div>
                 </div>
 
@@ -970,6 +970,9 @@
 
     // Gestion des likes en AJAX
     document.querySelectorAll('.like-form').forEach(form => {
+        if (form.dataset.likeHandlerBound) return;
+        form.dataset.likeHandlerBound = 'true';
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(form);
@@ -1053,16 +1056,6 @@
     });
 
     // Menu utilisateur
-    const menuBtn = document.querySelector('.user-menu');
-    const popupMenu = document.querySelector('.popup-menu');
-    if (menuBtn && popupMenu) {
-        menuBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            popupMenu.classList.toggle('hidden');
-        });
-        document.addEventListener('click', () => popupMenu.classList.add('hidden'));
-    }
-
     function showFlashMessage(type, message) {
         const flash = document.createElement('div');
         flash.className = `fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-4 py-2 rounded-full text-white text-sm font-medium ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} shadow-lg`;
