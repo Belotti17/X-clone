@@ -13,17 +13,22 @@ export type ScannedRoutes = {
     'otp.resend': { paramsTuple?: []; params?: {} }
     'timeline': { paramsTuple?: []; params?: {} }
     'timeline.following': { paramsTuple?: []; params?: {} }
+    'notifications': { paramsTuple?: []; params?: {} }
     'communities': { paramsTuple?: []; params?: {} }
+    'trending': { paramsTuple?: []; params?: {} }
     'tweets.store': { paramsTuple?: []; params?: {} }
     'tweets.delete': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tweets.like': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tweets.retweet': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tweets.reply': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'tweets.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tweets.replies': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'messages.index': { paramsTuple?: []; params?: {} }
+    'messages.new': { paramsTuple?: []; params?: {} }
     'messages.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'messages.store': { paramsTuple?: []; params?: {} }
-    'messages.new': { paramsTuple?: []; params?: {} }
+    'messages.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'messages.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'messages.read': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'profile.show': { paramsTuple?: [ParamValue?]; params?: {'username'?: ParamValue} }
     'profile.update': { paramsTuple?: []; params?: {} }
@@ -42,11 +47,14 @@ export type ScannedRoutes = {
     'otp.create': { paramsTuple?: []; params?: {} }
     'timeline': { paramsTuple?: []; params?: {} }
     'timeline.following': { paramsTuple?: []; params?: {} }
+    'notifications': { paramsTuple?: []; params?: {} }
     'communities': { paramsTuple?: []; params?: {} }
+    'trending': { paramsTuple?: []; params?: {} }
+    'tweets.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tweets.replies': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'messages.index': { paramsTuple?: []; params?: {} }
-    'messages.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'messages.new': { paramsTuple?: []; params?: {} }
+    'messages.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'profile.show': { paramsTuple?: [ParamValue?]; params?: {'username'?: ParamValue} }
     'profile.followers': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
     'profile.following': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
@@ -59,11 +67,14 @@ export type ScannedRoutes = {
     'otp.create': { paramsTuple?: []; params?: {} }
     'timeline': { paramsTuple?: []; params?: {} }
     'timeline.following': { paramsTuple?: []; params?: {} }
+    'notifications': { paramsTuple?: []; params?: {} }
     'communities': { paramsTuple?: []; params?: {} }
+    'trending': { paramsTuple?: []; params?: {} }
+    'tweets.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tweets.replies': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'messages.index': { paramsTuple?: []; params?: {} }
-    'messages.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'messages.new': { paramsTuple?: []; params?: {} }
+    'messages.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'profile.show': { paramsTuple?: [ParamValue?]; params?: {'username'?: ParamValue} }
     'profile.followers': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
     'profile.following': { paramsTuple: [ParamValue]; params: {'username': ParamValue} }
@@ -86,10 +97,12 @@ export type ScannedRoutes = {
     'session.destroy': { paramsTuple?: []; params?: {} }
   }
   PUT: {
+    'messages.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'messages.read': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'profile.update': { paramsTuple?: []; params?: {} }
   }
   DELETE: {
+    'messages.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'follow.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
 }
