@@ -1,16 +1,17 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 
-import AuthController from '#controllers/auth_controller'
-import SessionController from '#controllers/session_controller'
-import NewAccountController from '#controllers/new_account_controller'
-import TimelineController from '#controllers/timeline_controller'
-import TweetsController from '#controllers/tweets_controller'
-import ProfileController from '#controllers/profile_controller'
-import FollowController from '#controllers/follows_controller'
-import SearchController from '#controllers/searches_controller'
-import CommunitiesController from '#controllers/communities_controller'
-import MessagesController from '#controllers/messages_controller'
+const AuthController = () => import('#controllers/auth_controller')
+const SessionController = () => import('#controllers/session_controller')
+const NewAccountController = () => import('#controllers/new_account_controller')
+const TimelineController = () => import('#controllers/timeline_controller')
+const TweetsController = () => import('#controllers/tweets_controller')
+const ProfileController = () => import('#controllers/profile_controller')
+const FollowController = () => import('#controllers/follows_controller')
+const SearchController = () => import('#controllers/searches_controller')
+const CommunitiesController = () => import('#controllers/communities_controller')
+const MessagesController = () => import('#controllers/messages_controller')
+const HashtagController = () => import('#controllers/hashtags_controller')
 
 /*
   ACCUEIL
@@ -57,7 +58,9 @@ router
     // TIMELINE
     router.get('/timeline', [TimelineController, 'index']).as('timeline')
     router.get('/following', [TimelineController, 'following']).as('timeline.following')
+    router.get('/notifications', [TimelineController, 'notifications']).as('notifications')
     router.get('/communities', [CommunitiesController, 'index']).as('communities')
+    router.get('/trending', [HashtagController, 'trending']).as('trending')
 
     // TWEETS
     router.post('/tweets', [TweetsController, 'store']).as('tweets.store')
@@ -65,13 +68,16 @@ router
     router.post('/tweets/:id/like', [TweetsController, 'like']).as('tweets.like')
     router.post('/tweets/:id/retweet', [TweetsController, 'retweet']).as('tweets.retweet')
     router.post('/tweets/:id/reply', [TweetsController, 'reply']).as('tweets.reply')
+    router.get('/tweets/:id', [TweetsController, 'show']).as('tweets.show')
     router.get('/tweets/:id/replies', [TweetsController, 'getReplies']).as('tweets.replies')
 
     // MESSAGES
     router.get('/messages', [MessagesController, 'index']).as('messages.index')
+    router.get('/messages/new', [MessagesController, 'getNewMessages']).as('messages.new')
     router.get('/messages/:id', [MessagesController, 'show']).as('messages.show')
     router.post('/messages', [MessagesController, 'store']).as('messages.store')
-    router.get('/messages/new', [MessagesController, 'getNewMessages']).as('messages.new')
+    router.put('/messages/:id', [MessagesController, 'update']).as('messages.update')
+    router.delete('/messages/:id', [MessagesController, 'destroy']).as('messages.destroy')
     router.put('/messages/:id/read', [MessagesController, 'markAsRead']).as('messages.read')
 
     // PROFIL
