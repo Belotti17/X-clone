@@ -1,12 +1,19 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Tweet from '#models/tweet'
+import Like from '#models/like'
+import db from '@adonisjs/lucid/services/db'
 import path from 'node:path'
 import { randomUUID } from 'node:crypto'
 
 export default class TweetsController {
   async store({ request, response, auth, session }: HttpContext) {
     const user = auth.use('web').user!
-    const content = request.input('content')
+    const rawContent = request.input('content', '')
+    if (typeof rawContent !== 'string') {
+      session.flash('error', 'Le contenu de la publication est invalide')
+      return response.redirect().back()
+    }
+    const content = rawContent
     const media = request.file('media', {
       size: '20mb',
       extnames: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'mp4', 'mov', 'avi', 'mkv', 'webm'],
@@ -17,6 +24,11 @@ export default class TweetsController {
 
     if (!hasContent && !hasMedia) {
       session.flash('error', 'Veuillez ajouter du texte ou un média')
+      return response.redirect().back()
+    }
+
+    if (hasContent && content.trim().length > 280) {
+      session.flash('error', 'Une publication ne peut pas dépasser 280 caractères')
       return response.redirect().back()
     }
 
@@ -72,26 +84,51 @@ export default class TweetsController {
 
   async like({ params, response, auth }: HttpContext) {
     const user = auth.use('web').user!
-    const tweet = await Tweet.findOrFail(params.id)
+    const result = await db.transaction(async (trx) => {
+      const tweet = await Tweet.query({ client: trx })
+        .where('id', params.id)
+        .forUpdate()
+        .firstOrFail()
 
-    const existingLike = await tweet.related('likes').query().where('userId', user.id).first()
+      const existingLike = await Like.query({ client: trx })
+        .where('tweetId', tweet.id)
+        .where('userId', user.id)
+        .first()
 
-    if (existingLike) {
-      await existingLike.delete()
-      const likesCount = await tweet.related('likes').query().count('* as total')
-      return response.json({ liked: false, likesCount: Number(likesCount[0].$extras.total) })
-    } else {
-      await tweet.related('likes').create({ userId: user.id })
-      const likesCount = await tweet.related('likes').query().count('* as total')
-      return response.json({ liked: true, likesCount: Number(likesCount[0].$extras.total) })
-    }
+      if (existingLike) {
+        await Like.query({ client: trx }).where('id', existingLike.id).delete()
+      } else {
+        await Like.create({ tweetId: tweet.id, userId: user.id }, { client: trx })
+      }
+
+      const likesCount = await Like.query({ client: trx })
+        .where('tweetId', tweet.id)
+        .count('* as total')
+
+      return {
+        liked: !existingLike,
+        likesCount: Number(likesCount[0].$extras.total),
+      }
+    })
+
+    return response.json(result)
   }
 
   async retweet({ params, request, response, auth, session }: HttpContext) {
     const user = auth.use('web').user!
     const originalTweet = await Tweet.query().where('id', params.id).preload('user').firstOrFail()
 
-    const content = request.input('content')
+    const rawContent = request.input('content', '')
+    if (typeof rawContent !== 'string') {
+      session.flash('error', 'Le contenu du repost est invalide')
+      return response.redirect().back()
+    }
+    const content = rawContent.trim()
+
+    if (content.length > 280) {
+      session.flash('error', 'Un commentaire de repost ne peut pas dépasser 280 caractères')
+      return response.redirect().back()
+    }
 
     const existingRetweet = await Tweet.query()
       .where('userId', user.id)
@@ -105,7 +142,7 @@ export default class TweetsController {
     }
 
     await Tweet.create({
-      content: content && content.trim().length > 0 ? content.trim() : null,
+      content: content || null,
       userId: user.id,
       originalTweetId: originalTweet.id,
       isRetweet: true,
@@ -119,15 +156,25 @@ export default class TweetsController {
   async reply({ params, request, response, auth, session }: HttpContext) {
     const user = auth.use('web').user!
     const originalTweet = await Tweet.findOrFail(params.id)
-    const content = request.input('content')
+    const rawContent = request.input('content', '')
+    if (typeof rawContent !== 'string') {
+      session.flash('error', 'Le contenu de la réponse est invalide')
+      return response.redirect().back()
+    }
+    const content = rawContent.trim()
 
-    if (!content || content.trim().length === 0) {
+    if (!content) {
       session.flash('error', 'La réponse ne peut pas être vide')
       return response.redirect().back()
     }
 
+    if (content.length > 280) {
+      session.flash('error', 'Une réponse ne peut pas dépasser 280 caractères')
+      return response.redirect().back()
+    }
+
     await Tweet.create({
-      content: content.trim(),
+      content,
       userId: user.id,
       parentTweetId: originalTweet.id,
       isReply: true,
@@ -139,18 +186,14 @@ export default class TweetsController {
   }
 
   async getReplies({ params, response }: HttpContext) {
-    try {
-      const tweet = await Tweet.query()
-        .where('id', params.id)
-        .preload('replies', (query) => {
-          query.preload('user').orderBy('createdAt', 'asc')
-        })
-        .firstOrFail()
+    const tweet = await Tweet.query()
+      .where('id', params.id)
+      .preload('replies', (query) => {
+        query.preload('user').orderBy('createdAt', 'asc')
+      })
+      .firstOrFail()
 
-      return response.json({ replies: tweet.replies })
-    } catch (error) {
-      return response.json({ replies: [] })
-    }
+    return response.json({ replies: tweet.replies })
   }
 
   async show({ params, view, auth }: HttpContext) {
@@ -158,14 +201,45 @@ export default class TweetsController {
     const tweet = await Tweet.query()
       .where('id', params.id)
       .preload('user')
+      .preload('likes')
+      .preload('retweets')
       .preload('replies', (query) => {
-        query.preload('user').orderBy('createdAt', 'asc')
+        query.preload('user').preload('likes').preload('retweets').orderBy('createdAt', 'asc')
       })
       .preload('originalTweet', (query) => {
-        query.preload('user')
+        query
+          .preload('user')
+          .preload('likes')
+          .preload('retweets')
+          .preload('replies', (replyQuery) => {
+            replyQuery.preload('user').orderBy('createdAt', 'asc')
+          })
       })
       .firstOrFail()
 
-    return view.render('pages/tweet', { user, tweet })
+    tweet.$extras.likesCount = tweet.likes.length
+    tweet.$extras.retweetsCount = tweet.retweets.length
+    tweet.$extras.userLiked = tweet.likes.some((like) => like.userId === user.id)
+    const replyCount = await Tweet.query()
+      .where('parentTweetId', tweet.id)
+      .where('isReply', true)
+      .count('* as total')
+    tweet.$extras.repliesCount = Number(replyCount[0].$extras.total)
+
+    if (tweet.originalTweet) {
+      tweet.originalTweet.$extras.likesCount = tweet.originalTweet.likes.length
+      tweet.originalTweet.$extras.retweetsCount = tweet.originalTweet.retweets.length
+      tweet.originalTweet.$extras.userLiked = tweet.originalTweet.likes.some(
+        (like) => like.userId === user.id
+      )
+      const originalReplyCount = await Tweet.query()
+        .where('parentTweetId', tweet.originalTweet.id)
+        .where('isReply', true)
+        .count('* as total')
+      tweet.originalTweet.$extras.repliesCount = Number(originalReplyCount[0].$extras.total)
+    }
+
+    const displayTweet = tweet.isRetweet && tweet.originalTweet ? tweet.originalTweet : tweet
+    return view.render('pages/tweet', { user, tweet, displayTweet })
   }
 }
