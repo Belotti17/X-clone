@@ -25,16 +25,26 @@ document.addEventListener('DOMContentLoaded', function () {
         const reader = new FileReader()
 
         reader.onload = function (e) {
-          if (currentMediaType.startsWith('image/')) {
-            previewImg.style.display = 'block'
-            previewVideo.style.display = 'none'
-            previewImg.src = e.target.result
-          } else if (currentMediaType.startsWith('video/')) {
-            previewImg.style.display = 'none'
-            previewVideo.style.display = 'block'
-            previewVideo.src = e.target.result
+          if (currentMediaType && currentMediaType.startsWith('image/')) {
+            if (previewImg && previewVideo) {
+              previewImg.style.display = 'block'
+              previewVideo.style.display = 'none'
+              previewImg.src = e.target.result
+            }
+          } else if (currentMediaType && currentMediaType.startsWith('video/')) {
+            if (previewImg && previewVideo) {
+              previewImg.style.display = 'none'
+              previewVideo.style.display = 'block'
+              previewVideo.src = e.target.result
+            }
+          } else {
+            showFlashMessage('error', 'Ce type de média ne peut pas être prévisualisé')
+            mediaInput.value = ''
+            currentMediaFile = null
+            currentMediaType = null
+            return
           }
-          mediaPreview.style.display = 'block'
+          if (mediaPreview) mediaPreview.style.display = 'block'
         }
         reader.readAsDataURL(this.files[0])
       }
@@ -128,26 +138,105 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // ==================== MENU UTILISATEUR ====================
-  const menuBtn = document.getElementById('userMenu')
-  const popupMenu = document.querySelector('.popup-menu')
-
-  if (menuBtn && popupMenu) {
-    menuBtn.addEventListener('click', function (e) {
-      e.stopPropagation()
-      const isHidden = popupMenu.getAttribute('hidden') !== null
-      if (isHidden) {
-        popupMenu.removeAttribute('hidden')
-      } else {
-        popupMenu.setAttribute('hidden', '')
-      }
-    })
-
-    document.addEventListener('click', function (e) {
-      if (!menuBtn.contains(e.target) && !popupMenu.contains(e.target)) {
-        popupMenu.setAttribute('hidden', '')
-      }
-    })
+  // ==================== MENUS DE DÉCONNEXION ====================
+  const setEllipsisIcon = (button) => {
+    const icon = document.createElement('i')
+    icon.className = 'fa-solid fa-ellipsis'
+    icon.setAttribute('aria-hidden', 'true')
+    button.replaceChildren(icon)
   }
+
+  const userLine = document.querySelector('header .user-line')
+  const navigationList = document.querySelector('header .nav__list')
+
+  if (userLine) {
+    const logoutForm = userLine.querySelector('form[action="/logout"]')
+    if (logoutForm && !userLine.querySelector('.user-menu')) {
+      const menuButton = document.createElement('button')
+      menuButton.type = 'button'
+      menuButton.className = 'user-menu'
+      menuButton.setAttribute('aria-label', 'Menu utilisateur')
+      menuButton.setAttribute('aria-expanded', 'false')
+      setEllipsisIcon(menuButton)
+
+      const popup = document.createElement('div')
+      popup.className = 'popup-menu'
+      popup.hidden = true
+      popup.append(logoutForm)
+      userLine.append(menuButton, popup)
+    }
+  }
+
+  if (navigationList) {
+    const logoutForm = userLine?.querySelector('.popup-menu form[action="/logout"]')
+    if (logoutForm && !navigationList.querySelector('.mobile-more-item')) {
+      const trendingLink = navigationList.querySelector('a[href="/trending"]')
+      if (trendingLink) {
+        trendingLink.closest('li')?.classList.add('mobile-trending-item')
+      }
+
+      const item = document.createElement('li')
+      item.className = 'mobile-more-item'
+
+      const menuButton = document.createElement('button')
+      menuButton.type = 'button'
+      menuButton.className = 'mobile-more-toggle'
+      menuButton.setAttribute('aria-label', 'Plus d’options')
+      menuButton.setAttribute('aria-expanded', 'false')
+      setEllipsisIcon(menuButton)
+
+      const popup = document.createElement('div')
+      popup.className = 'mobile-more-menu'
+      popup.hidden = true
+      if (trendingLink) {
+        const mobileTrendingLink = document.createElement('a')
+        mobileTrendingLink.className = 'mobile-trending-link'
+        mobileTrendingLink.href = trendingLink.href
+        mobileTrendingLink.textContent = 'Tendances'
+        popup.append(mobileTrendingLink)
+      }
+      popup.append(logoutForm.cloneNode(true))
+      item.append(menuButton, popup)
+      navigationList.append(item)
+    }
+  }
+
+  const menuButtons = document.querySelectorAll('.user-menu, .mobile-more-toggle')
+  menuButtons.forEach((menuButton) => {
+    if (menuButton.textContent.trim() === '⋯') setEllipsisIcon(menuButton)
+    const popup = menuButton.parentElement.querySelector('.popup-menu, .mobile-more-menu')
+    if (!popup) return
+
+    menuButton.setAttribute('aria-expanded', 'false')
+    menuButton.addEventListener('click', (event) => {
+      event.stopPropagation()
+      const isOpen = !popup.hidden
+      document.querySelectorAll('.popup-menu, .mobile-more-menu').forEach((menu) => {
+        menu.hidden = true
+      })
+      document.querySelectorAll('.user-menu, .mobile-more-toggle').forEach((button) => {
+        button.setAttribute('aria-expanded', 'false')
+      })
+      popup.hidden = isOpen
+      menuButton.setAttribute('aria-expanded', String(!isOpen))
+    })
+  })
+
+  document.addEventListener('click', (event) => {
+    if (event.target.closest('.popup-menu, .mobile-more-menu')) return
+    document.querySelectorAll('.popup-menu, .mobile-more-menu').forEach((menu) => {
+      menu.hidden = true
+    })
+    menuButtons.forEach((button) => button.setAttribute('aria-expanded', 'false'))
+  })
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return
+    document.querySelectorAll('.popup-menu, .mobile-more-menu').forEach((menu) => {
+      menu.hidden = true
+    })
+    menuButtons.forEach((button) => button.setAttribute('aria-expanded', 'false'))
+  })
 
   // ==================== FONCTIONS POUR LES MODALES ====================
   window.openRetweetModal = function (tweetId) {
@@ -242,6 +331,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // ==================== GESTION DES LIKES ====================
   document.querySelectorAll('.like-form').forEach((form) => {
+    if (form.dataset.likeHandlerBound) return
+    form.dataset.likeHandlerBound = 'true'
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault()
       const formData = new FormData(form)
@@ -294,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     flash.innerHTML = `
             <div class="tweet-flash-icon">${iconSvg}</div>
-            <div class="tweet-flash-content"><p>${message}</p></div>
+            <div class="tweet-flash-content"><p>${escapeHtml(message)}</p></div>
             <button class="tweet-flash-close">×</button>
         `
 
@@ -436,19 +528,33 @@ function displayOriginalTweetFromDOM(content, userName, username, avatar, image,
   container.innerHTML = `
         <div style="display: flex; gap: 12px;">
             <div class="avatar-circle" style="width: 48px; height: 48px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px;">
-                ${avatar}
+                ${escapeHtml(avatar)}
             </div>
             <div style="flex: 1;">
                 <div>
-                    <strong>${userName}</strong>
-                    <span class="username">${username}</span>
+                    <strong>${escapeHtml(userName)}</strong>
+                    <span class="username">${escapeHtml(username)}</span>
                 </div>
-                <p style="margin: 8px 0 0 0;">${content || ''}</p>
-                ${image ? `<img src="${image}" style="max-width: 100%; border-radius: 16px; margin-top: 8px;" />` : ''}
-                ${video ? `<video src="${video}" controls style="max-width: 100%; border-radius: 16px; margin-top: 8px;"></video>` : ''}
+                <p style="margin: 8px 0 0 0;">${escapeHtml(content)}</p>
+                ${image ? `<img src="${escapeHtml(image)}" style="max-width: 100%; border-radius: 16px; margin-top: 8px;" />` : ''}
+                ${video ? `<video src="${escapeHtml(video)}" controls style="max-width: 100%; border-radius: 16px; margin-top: 8px;"></video>` : ''}
             </div>
         </div>
     `
+}
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (character) => {
+    const entities = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+    }
+
+    return entities[character]
+  })
 }
 
 function displayReplies(replies) {
@@ -463,23 +569,23 @@ function displayReplies(replies) {
   container.innerHTML = replies
     .map(
       (reply) => `
-        <div class="reply-item-modal" data-reply-id="${reply.id}">
+        <div class="reply-item-modal" data-reply-id="${escapeHtml(reply.id)}">
             <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
-                ${reply.user.name ? reply.user.name.charAt(0).toUpperCase() : reply.user.username.charAt(0).toUpperCase()}
+                ${escapeHtml(reply.user.name ? reply.user.name.charAt(0).toUpperCase() : reply.user.username.charAt(0).toUpperCase())}
             </div>
             <div class="reply-content-modal">
                 <div>
-                    <strong>${reply.user.name || reply.user.username}</strong>
-                    <span class="username">@${reply.user.username}</span>
+                    <strong>${escapeHtml(reply.user.name || reply.user.username)}</strong>
+                    <span class="username">@${escapeHtml(reply.user.username)}</span>
                     <span class="time">· ${new Date(reply.createdAt).toLocaleString('fr-FR')}</span>
                 </div>
-                <p>${reply.content}</p>
+                <p>${escapeHtml(reply.content)}</p>
             </div>
             ${
               reply.userId === window.userId
                 ? `
-                <button class="delete-reply-modal" onclick="deleteReply(${reply.id})" title="Supprimer">
-                    <img src="https://www.svgrepo.com/show/511788/delete-1487.svg" alt="Supprimer" />
+                <button class="delete-reply-modal" onclick="deleteReply(${escapeHtml(reply.id)})" title="Supprimer">
+                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
                 </button>
             `
                 : ''
@@ -658,6 +764,9 @@ document.querySelectorAll('.modal').forEach((modal) => {
 
 // Gestion des likes en AJAX
 document.querySelectorAll('.like-form').forEach((form) => {
+  if (form.dataset.likeHandlerBound) return
+  form.dataset.likeHandlerBound = 'true'
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault()
     const formData = new FormData(form)
@@ -684,14 +793,3 @@ document.querySelectorAll('.like-form').forEach((form) => {
     }
   })
 })
-
-// Menu utilisateur
-const menuBtn = document.querySelector('.user-menu')
-const popupMenu = document.querySelector('.popup-menu')
-if (menuBtn && popupMenu) {
-  menuBtn.addEventListener('click', (e) => {
-    e.stopPropagation()
-    popupMenu.classList.toggle('hidden')
-  })
-  document.addEventListener('click', () => popupMenu.classList.add('hidden'))
-}
