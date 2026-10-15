@@ -1,0 +1,207 @@
+@component('layouts/base', { title: 'Publication' })
+  @slot('main')
+    <header>
+      <div class="nav__logo">
+        <a href="/timeline">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/X_logo_2023.svg/330px-X_logo_2023.svg.png" alt="logo X" />
+        </a>
+      </div>
+      <nav class="nav">
+        <ul class="nav__list">
+          <li><a href="/timeline" class="nav__link"><i class="nav__icon fa-solid fa-house" aria-hidden="true"></i>Home</a></li>
+          <li><a href="/search" class="nav__link"><i class="nav__icon fa-solid fa-magnifying-glass" aria-hidden="true"></i>Explore</a></li>
+          <li><a href="/notifications" class="nav__link"><i class="nav__icon fa-solid fa-bell" aria-hidden="true"></i>Notifications</a></li>
+          <li><a href="/messages" class="nav__link"><i class="nav__icon fa-solid fa-envelope" aria-hidden="true"></i>Messages</a></li>
+          <li><a href="/communities" class="nav__link"><i class="nav__icon fa-solid fa-people-group" aria-hidden="true"></i>Communities</a></li>
+          <li><a href="/profile/{{ user.username }}" class="nav__link"><i class="nav__icon fa-solid fa-user" aria-hidden="true"></i>Profile</a></li>
+          <li><a href="/trending" class="nav__link">Tendances</a></li>
+        </ul>
+        <a href="/timeline" class="btn--primary">Post</a>
+        <div class="user-line">
+          @if(user.profile_picture)
+            <img src="{{ user.profile_picture }}" class="avatar-img" alt="" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px;">
+          @else
+            <div class="avatar-circle" style="width: 40px; height: 40px; margin-right: 12px;">{{ user.initials }}</div>
+          @endif
+          <div class="user-info">
+            <div class="user-name">{{ user.name || user.username }}</div>
+            <div class="user-handle">{{ '@' + user.username }}</div>
+          </div>
+          <form method="POST" action="/logout">
+            {{ csrfField() }}
+            <button type="submit" class="logout">Déconnexion</button>
+          </form>
+        </div>
+      </nav>
+    </header>
+
+    <main class="main">
+      <section id="centerContainer" class="tweet-detail">
+        <div class="tweet-detail-heading">
+          <a href="/timeline" aria-label="Retour à l’accueil">←</a>
+          <h1>Publication</h1>
+        </div>
+
+        @if(tweet.isRetweet && tweet.originalTweet)
+          <p class="tweet-detail-repost">{{ tweet.user.name || tweet.user.username }} a reposté</p>
+          <article class="tweet-detail-card">
+            <a href="/profile/{{ tweet.originalTweet.user.username }}" class="tweet-detail-author">
+              <strong>{{ tweet.originalTweet.user.name || tweet.originalTweet.user.username }}</strong>
+              <span>@{{ tweet.originalTweet.user.username }}</span>
+            </a>
+            <p>{{ tweet.originalTweet.content }}</p>
+            @if(tweet.originalTweet.image)
+              <img src="{{ tweet.originalTweet.image }}" alt="Média de la publication">
+            @endif
+            @if(tweet.originalTweet.video)
+              <video src="{{ tweet.originalTweet.video }}" controls></video>
+            @endif
+            <time>{{ tweet.originalTweet.createdAt.toFormat('dd/MM/yyyy HH:mm') }}</time>
+          </article>
+        @else
+          <article class="tweet-detail-card">
+            <a href="/profile/{{ tweet.user.username }}" class="tweet-detail-author">
+              <strong>{{ tweet.user.name || tweet.user.username }}</strong>
+              <span>@{{ tweet.user.username }}</span>
+            </a>
+            <p>{{ tweet.content }}</p>
+            @if(tweet.image)
+              <img src="{{ tweet.image }}" alt="Média de la publication">
+            @endif
+            @if(tweet.video)
+              <video src="{{ tweet.video }}" controls></video>
+            @endif
+            <time>{{ tweet.createdAt.toFormat('dd/MM/yyyy HH:mm') }}</time>
+            <div class="tweet-detail-actions">
+              <span>{{ tweet.$extras.repliesCount }} réponses</span>
+              <span>{{ tweet.$extras.retweetsCount }} reposts</span>
+              <form method="POST" action="/tweets/{{ tweet.id }}/like" class="like-form">
+                {{ csrfField() }}
+                <button type="submit" class="interaction-btn {{ tweet.$extras.userLiked ? 'liked' : '' }}" aria-label="J’aime">
+                  <i class="fa-solid fa-heart" aria-hidden="true"></i><span class="interaction-count">{{ tweet.$extras.likesCount }}</span>
+                </button>
+              </form>
+            </div>
+          </article>
+        @endif
+
+        <form method="POST" action="/tweets/{{ displayTweet.id }}/reply" class="tweet-detail-reply">
+          {{ csrfField() }}
+          <label for="reply-content">Répondre à la publication</label>
+          <textarea id="reply-content" name="content" maxlength="280" required placeholder="Écrivez votre réponse"></textarea>
+          <button type="submit" class="btn--primary">Répondre</button>
+        </form>
+
+        <div class="tweet-detail-replies">
+          @if(displayTweet.replies.length)
+            @each(reply in displayTweet.replies)
+              <article class="tweet-detail-card">
+                <a href="/profile/{{ reply.user.username }}" class="tweet-detail-author">
+                  <strong>{{ reply.user.name || reply.user.username }}</strong>
+                  <span>@{{ reply.user.username }}</span>
+                </a>
+                <p>{{ reply.content }}</p>
+                @if(reply.image)
+                  <img src="{{ reply.image }}" alt="Média de la réponse">
+                @endif
+                @if(reply.video)
+                  <video src="{{ reply.video }}" controls></video>
+                @endif
+                <time>{{ reply.createdAt.toFormat('dd/MM/yyyy HH:mm') }}</time>
+              </article>
+            @end
+          @else
+            <p class="empty-feed">Aucune réponse pour le moment.</p>
+          @endif
+        </div>
+      </section>
+      <aside id="rightContainer">
+        <form id="searchWrap" action="/search" method="GET">
+          <input class="search__input" name="q" placeholder="Rechercher" aria-label="Rechercher">
+        </form>
+      </aside>
+    </main>
+  @end
+@end
+
+<style>
+  .tweet-detail {
+    min-width: 0;
+  }
+
+  .tweet-detail-heading {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .tweet-detail-heading h1 {
+    margin: 0;
+    font-size: 20px;
+  }
+
+  .tweet-detail-card,
+  .tweet-detail-reply {
+    display: grid;
+    gap: 12px;
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .tweet-detail-author {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tweet-detail-author span,
+  .tweet-detail-card time,
+  .tweet-detail-repost {
+    color: #6b7280;
+    font-size: 14px;
+  }
+
+  .tweet-detail-card p {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .tweet-detail-card img,
+  .tweet-detail-card video {
+    display: block;
+    max-width: 100%;
+    max-height: 520px;
+    border-radius: 16px;
+    object-fit: contain;
+  }
+
+  .tweet-detail-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    color: #6b7280;
+    font-size: 14px;
+  }
+
+  .tweet-detail-reply textarea {
+    width: 100%;
+    min-height: 88px;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    resize: vertical;
+    font: inherit;
+  }
+
+  .tweet-detail-reply .btn--primary {
+    width: auto;
+    justify-self: end;
+  }
+
+  .tweet-detail-repost {
+    margin: 16px 16px 0;
+  }
+</style>
