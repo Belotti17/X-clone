@@ -10,38 +10,38 @@
                 <ul class="nav__list">
                     <li>
                         <a href="/timeline" class="nav__link">
-                            <img class="nav__icon" src="https://www.svgrepo.com/show/535437/home.svg" />Home
+                            <i class="nav__icon fa-solid fa-house" aria-hidden="true"></i>Home
                         </a>
                     </li>
                     <li>
                         <a href="/search" class="nav__link">
-                            <img class="nav__icon" src="https://www.svgrepo.com/show/486828/search.svg" />Explore
+                            <i class="nav__icon fa-solid fa-magnifying-glass" aria-hidden="true"></i>Explore
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav__link">
-                            <img class="nav__icon" src="https://www.svgrepo.com/show/512576/notification-bell-1398.svg" />Notifications
+                        <a href="/notifications" class="nav__link {{ request.url().startsWith('/notifications') ? 'active' : '' }}">
+                            <i class="nav__icon fa-solid fa-bell" aria-hidden="true"></i>Notifications
                         </a>
                     </li>
                     <li>
                         <a href="/messages" class="nav__link">
-                            <img class="nav__icon" src="https://www.svgrepo.com/show/522169/mail.svg" />Messages
+                            <i class="nav__icon fa-solid fa-envelope" aria-hidden="true"></i>Messages
                         </a>
                     </li>
                     
                     <li>
                         <a href="/communities" class="nav__link">
-                            <img class="nav__icon" src="https://www.svgrepo.com/show/158210/community.svg" />Communities
+                            <i class="nav__icon fa-solid fa-people-group" aria-hidden="true"></i>Communities
                         </a>
                     </li>
                     <li>
                         <a href="/profile/{{ user?.username }}" class="nav__link">
-                            <img class="nav__icon" src="https://www.svgrepo.com/show/512729/profile-round-1342.svg" />Profile
+                            <i class="nav__icon fa-solid fa-user" aria-hidden="true"></i>Profile
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav__link">
-                            <img class="nav__icon" src="https://www.svgrepo.com/show/521184/more-horizontal.svg" />More
+                        <a href="/trending" class="nav__link">
+                            <i class="nav__icon fa-solid fa-ellipsis" aria-hidden="true"></i>More
                         </a>
                     </li>
                 </ul>
@@ -164,10 +164,56 @@
             </div>
         </main>
 
-        <!-- Modales (inchangées) -->
-        <div id="tweetModal" class="modal" style="display:none">...</div>
-        <div id="repliesModal" class="modal" style="display:none">...</div>
-        <div id="retweetModal" class="modal" style="display:none">...</div>
+        <div id="tweetModal" class="modal" style="display:none">
+            <div class="modal-content">
+                <button class="close-modal" onclick="closeModal('tweetModal')">&times;</button>
+                <h3>Nouveau tweet</h3>
+                <form id="modalTweetForm" method="POST" action="/tweets">
+                    {{ csrfField() }}
+                    <textarea name="content" placeholder="What’s happening?" maxlength="280"></textarea>
+                    <button type="submit">Poster</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="repliesModal" class="modal" style="display:none">
+            <div class="modal-content modal-replies">
+                <button class="close-modal" onclick="closeModal('repliesModal')">&times;</button>
+                <h3>Réponses</h3>
+                <div id="originalTweetPreview" class="original-tweet-preview"></div>
+                <div id="repliesList" class="replies-list-modal"></div>
+                <div class="reply-form-modal">
+                    <div class="reply-input-modal">
+                        <a href="/profile/{{ user.username }}" class="profile-link">
+                            @if(user.profile_picture)
+                                <img src="{{ user.profile_picture }}" class="avatar-img" alt="Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                            @else
+                                <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #1d9bf0; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px;">
+                                    {{ user.name ? user.name.charAt(0).toUpperCase() : user.username.charAt(0).toUpperCase() }}
+                                </div>
+                            @endif
+                        </a>
+                        <textarea id="replyContent" placeholder="Écrire une réponse..." maxlength="280"></textarea>
+                    </div>
+                    <div class="reply-actions-modal">
+                        <button class="cancel-reply-modal" onclick="closeModal('repliesModal')">Annuler</button>
+                        <button class="submit-reply-modal" id="submitReplyBtn">Répondre</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="retweetModal" class="modal" style="display:none">
+            <div class="modal-content">
+                <button class="close-modal" onclick="closeModal('retweetModal')">&times;</button>
+                <h3>Retweeter</h3>
+                <form id="retweetForm" method="POST">
+                    {{ csrfField() }}
+                    <textarea name="content" placeholder="Ajouter un commentaire (optionnel)" maxlength="280"></textarea>
+                    <button type="submit">Retweeter</button>
+                </form>
+            </div>
+        </div>
     @end
 @end
 
