@@ -4,6 +4,8 @@ import mail from '@adonisjs/mail/services/main'
 import type { HttpContext } from '@adonisjs/core/http'
 import { DateTime } from 'luxon'
 import { verifyOtpValidator } from '#validators/auth'
+import { randomInt } from 'node:crypto'
+import logger from '@adonisjs/core/services/logger'
 
 export default class AuthController {
   /**
@@ -17,40 +19,38 @@ export default class AuthController {
       return response.redirect().toRoute('new_account.create')
     }
 
-    try {
-      // Validation via le validator (vérifie que 'token' est présent)
-      const { token } = await request.validateUsing(verifyOtpValidator)
-
-      const user = await User.findByOrFail('email', email)
-
-      // Recherche du jeton valide
-      const otpRecord = await EmailVerificationToken.query()
-        .where('user_id', user.id)
-        .where('token', token)
-        .where('expires_at', '>', DateTime.now().toJSDate())
-        .first()
-
-      if (!otpRecord) {
-        session.flash('errors', ['Code OTP invalide ou expiré.'])
-        return response.redirect().back()
-      }
-
-      // Validation réussie
-      user.isVerified = true
-      await user.save()
-
-      await otpRecord.delete()
-      session.forget('otpEmail')
-
-      // Connexion et redirection
-      await auth.use('web').login(user)
-      await session.commit()
-
-      return response.redirect().toRoute('timeline')
-    } catch (error) {
-      session.flash('errors', ['Une erreur est survenue lors de la vérification.'])
+    const [validationError, payload] = await request.tryValidateUsing(verifyOtpValidator)
+    if (validationError) {
+      session.flash('errors', ['Le code OTP doit contenir exactement 6 chiffres.'])
       return response.redirect().back()
     }
+
+    const user = await User.findByOrFail('email', email)
+
+    // Recherche du jeton valide
+    const otpRecord = await EmailVerificationToken.query()
+      .where('user_id', user.id)
+      .where('token', payload.token)
+      .where('expires_at', '>', DateTime.now().toJSDate())
+      .first()
+
+    if (!otpRecord) {
+      session.flash('errors', ['Code OTP invalide ou expiré.'])
+      return response.redirect().back()
+    }
+
+    // Validation réussie
+    user.isVerified = true
+    await user.save()
+
+    await otpRecord.delete()
+    session.forget('otpEmail')
+
+    // Connexion et redirection
+    await auth.use('web').login(user)
+    await session.commit()
+
+    return response.redirect().toRoute('timeline')
   }
 
   /**
@@ -70,7 +70,7 @@ export default class AuthController {
       // Nettoyage des anciens codes
       await EmailVerificationToken.query().where('user_id', user.id).delete()
 
-      const otp = Math.floor(100000 + Math.random() * 900000).toString()
+      const otp = randomInt(100000, 1000000).toString()
 
       await EmailVerificationToken.create({
         userId: user.id,
@@ -88,6 +88,7 @@ export default class AuthController {
       session.flash('success', 'Un nouveau code a été envoyé !')
       return response.redirect().back()
     } catch (error) {
+      logger.error({ err: error }, 'Unable to resend the account verification OTP')
       session.flash('errors', ['Impossible de renvoyer le code.'])
       return response.redirect().back()
     }
