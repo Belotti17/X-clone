@@ -3,6 +3,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import Tweet from '#models/tweet'
+import Like from '#models/like'
 import Follow from '#models/follow'
 import { randomUUID } from 'node:crypto'
 import path from 'node:path'
@@ -11,7 +12,7 @@ export default class ProfileController {
   /**
    * Affiche le profil d'un utilisateur
    */
-  async show({ params, view, auth, response }: HttpContext) {
+  async show({ params, request, view, auth, response }: HttpContext) {
     const currentUser = await auth.use('web').user
     let username = params.username
 
@@ -49,15 +50,58 @@ export default class ProfileController {
       isFollowing = !!follow
     }
 
-    // Récupération des tweets du profil
-    const tweets = await Tweet.query()
-      .where('userId', profileUser.id)
-      .where('isReply', false)
-      .preload('user')
-      .preload('likes')
-      .preload('retweets')
-      .orderBy('createdAt', 'desc')
-      .limit(50)
+    const requestedTab = request.input('tab', 'posts')
+    const profileTab =
+      typeof requestedTab === 'string' &&
+      ['posts', 'replies', 'media', 'likes'].includes(requestedTab)
+        ? requestedTab
+        : 'posts'
+
+    let tweets: Tweet[]
+    if (profileTab === 'likes') {
+      const likedTweets = await Like.query()
+        .where('userId', profileUser.id)
+        .orderBy('createdAt', 'desc')
+        .limit(50)
+      const likedTweetIds = likedTweets
+        .map((like) => like.tweetId)
+        .filter((id): id is number => id !== null)
+      const foundTweets =
+        likedTweetIds.length > 0
+          ? await Tweet.query()
+              .whereIn('id', likedTweetIds)
+              .preload('user')
+              .preload('originalTweet', (query) => query.preload('user'))
+              .preload('likes')
+              .preload('retweets')
+          : []
+      const tweetsById = new Map(foundTweets.map((tweet) => [tweet.id, tweet]))
+      tweets = likedTweetIds.flatMap((id) => {
+        const tweet = tweetsById.get(id)
+        return tweet ? [tweet] : []
+      })
+    } else {
+      let tweetQuery = Tweet.query().where('userId', profileUser.id)
+      if (profileTab === 'replies') {
+        tweetQuery = tweetQuery.where('isReply', true)
+      } else {
+        tweetQuery = tweetQuery.where('isReply', false)
+      }
+
+      if (profileTab === 'media') {
+        tweetQuery = tweetQuery.where((query) => {
+          query.whereNotNull('image').orWhereNotNull('video')
+        })
+      }
+
+      tweets = await tweetQuery
+        .preload('user')
+        .preload('originalTweet', (query) => query.preload('user'))
+        .preload('likes')
+        .preload('retweets')
+        .orderBy('createdAt', 'desc')
+        .limit(50)
+    }
 
     // Ajout des métadonnées aux tweets
     for (const tweet of tweets) {
@@ -71,7 +115,7 @@ export default class ProfileController {
       tweet.$extras.repliesCount = Number(repliesCount[0].$extras.total)
 
       if (currentUser) {
-        const hasLiked = tweet.likes.some((like: any) => like.userId === currentUser.id)
+        const hasLiked = tweet.likes.some((like) => like.userId === currentUser.id)
         tweet.$extras.userLiked = hasLiked
       }
     }
@@ -97,6 +141,7 @@ export default class ProfileController {
       profileUser,
       currentUser,
       tweets,
+      profileTab,
       isFollowing,
       followersCount: Number(followersCount[0].$extras.total),
       followingCount: Number(followingCount[0].$extras.total),
