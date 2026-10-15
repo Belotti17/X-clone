@@ -4,8 +4,10 @@ import EmailVerificationToken from '#models/email_verification_token' // Import 
 import { signupValidator } from '#validators/user' // Import du validateur qui vérifie les données envoyées lors de l'inscription
 
 import mail from '@adonisjs/mail/services/main' // Import du service mail d'AdonisJS pour envoyer des emails
+import logger from '@adonisjs/core/services/logger'
 
 import { DateTime } from 'luxon' // Import de Luxon pour manipuler les dates et heures
+import { randomInt } from 'node:crypto'
 
 import type { HttpContext } from '@adonisjs/core/http' // Import du type HttpContext qui représente le contexte HTTP d'une requête
 
@@ -35,7 +37,7 @@ export default class NewAccountController {
     })
 
     // Génération d'un code OTP à 6 chiffres
-    const otp = Math.floor(100000 + Math.random() * 900000).toString() // Génère un nombre aléatoire entre 100000 et 999999 et le convertit en chaîne de caractères
+    const otp = randomInt(100000, 1000000).toString()
 
     // Sauvegarde du token OTP dans la base de données
     await EmailVerificationToken.create({
@@ -45,17 +47,21 @@ export default class NewAccountController {
       expiresAt: DateTime.now().plus({ minutes: 10 }), // Définit une date d'expiration du token à 10 minutes après sa création
     })
 
-    // Envoi du code OTP par email
-    await mail.send((message) => {
-      // Utilise le service mail pour envoyer un email
-      message
-        .to(user.email) // Définit l'adresse email du destinataire
-        .subject('Votre code OTP') // Définit le sujet de l'email
-        .text(`Votre code de vérification est : ${otp}`) // Définit le contenu texte de l'email avec le code OTP
-    })
+    session.put('otpEmail', user.email)
 
-    // Sauvegarde de l'email de l'utilisateur dans la session
-    session.put('otpEmail', user.email) // Stocke l'email dans la session pour pouvoir l'utiliser sur la page de vérification OTP
+    try {
+      await mail.send((message) => {
+        message
+          .to(user.email)
+          .subject('Votre code OTP')
+          .text(`Votre code de vérification est : ${otp}`)
+      })
+    } catch (error) {
+      logger.error({ err: error }, 'Unable to send the account verification OTP')
+      session.flash('errors', [
+        'Le code n’a pas pu être envoyé. Utilisez « Renvoyer le code OTP » pour réessayer.',
+      ])
+    }
 
     // Redirection vers la page de vérification OTP
     return response.redirect().toRoute('otp.create') // Redirige l'utilisateur vers la route qui affiche la page de saisie de l'OTP
