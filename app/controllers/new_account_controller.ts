@@ -8,6 +8,7 @@ import logger from '@adonisjs/core/services/logger'
 
 import { DateTime } from 'luxon' // Import de Luxon pour manipuler les dates et heures
 import { randomInt } from 'node:crypto'
+import { getMailErrorMessage } from '#services/mail_error_message'
 
 import type { HttpContext } from '@adonisjs/core/http' // Import du type HttpContext qui représente le contexte HTTP d'une requête
 
@@ -59,7 +60,10 @@ export default class NewAccountController {
     } catch (error) {
       logger.error({ err: error }, 'Unable to send the account verification OTP')
       session.flash('errors', [
-        'Le code n’a pas pu être envoyé. Utilisez « Renvoyer le code OTP » pour réessayer.',
+        getMailErrorMessage(
+          error,
+          'Le code n’a pas pu être envoyé. Utilisez « Renvoyer le code OTP » pour réessayer.'
+        ),
       ])
     }
 
