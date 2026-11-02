@@ -3,7 +3,8 @@ import Tweet from '#models/tweet'
 import User from '#models/user'
 import Follow from '#models/follow'
 import Like from '#models/like'
-import type { DateTime } from 'luxon'
+import Message from '#models/message'
+import { DateTime } from 'luxon'
 
 interface NotificationActor {
   username: string
@@ -153,6 +154,7 @@ export default class TimelineController {
       return view.render('pages/auth/signup')
     }
 
+    const notificationsViewedAt = DateTime.now()
     const ownTweets = await Tweet.query().where('userId', user.id).select('id')
     const tweetIds = ownTweets.map((tweet) => tweet.id)
 
@@ -253,7 +255,70 @@ export default class TimelineController {
       .sort((a, b) => (b.createdAt?.toMillis() ?? 0) - (a.createdAt?.toMillis() ?? 0))
       .slice(0, 50)
 
+    user.lastNotificationsViewedAt = notificationsViewedAt
+    await user.save()
+
     return view.render('pages/notifications', { user, notifications })
+  }
+
+  async menuCounts({ auth, response }: HttpContext) {
+    const user = await auth.use('web').user
+
+    if (!user) {
+      return response.unauthorized()
+    }
+
+    const ownTweets = await Tweet.query().where('userId', user.id).select('id')
+    const tweetIds = ownTweets.map((tweet) => tweet.id)
+    const viewedAt = user.lastNotificationsViewedAt
+    const [unreadMessages, follows, likes, replies, retweets] = await Promise.all([
+      Message.query()
+        .where('receiverId', user.id)
+        .where('isRead', false)
+        .count('* as total')
+        .then((rows) => Number(rows[0].$extras.total)),
+      (async () => {
+        const query = Follow.query().where('followingId', user.id).whereNot('followerId', user.id)
+        if (viewedAt) query.where('createdAt', '>', viewedAt.toJSDate())
+        const rows = await query.count('* as total')
+        return Number(rows[0].$extras.total)
+      })(),
+      tweetIds.length
+        ? (async () => {
+            const query = Like.query().whereIn('tweetId', tweetIds).whereNot('userId', user.id)
+            if (viewedAt) query.where('createdAt', '>', viewedAt.toJSDate())
+            const rows = await query.count('* as total')
+            return Number(rows[0].$extras.total)
+          })()
+        : Promise.resolve(0),
+      tweetIds.length
+        ? (async () => {
+            const query = Tweet.query()
+              .whereIn('parentTweetId', tweetIds)
+              .where('isReply', true)
+              .whereNot('userId', user.id)
+            if (viewedAt) query.where('createdAt', '>', viewedAt.toJSDate())
+            const rows = await query.count('* as total')
+            return Number(rows[0].$extras.total)
+          })()
+        : Promise.resolve(0),
+      tweetIds.length
+        ? (async () => {
+            const query = Tweet.query()
+              .whereIn('originalTweetId', tweetIds)
+              .where('isRetweet', true)
+              .whereNot('userId', user.id)
+            if (viewedAt) query.where('createdAt', '>', viewedAt.toJSDate())
+            const rows = await query.count('* as total')
+            return Number(rows[0].$extras.total)
+          })()
+        : Promise.resolve(0),
+    ])
+
+    return response.json({
+      messages: unreadMessages,
+      notifications: follows + likes + replies + retweets,
+    })
   }
 
   /**
