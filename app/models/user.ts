@@ -18,6 +18,7 @@ import Follow from './follow.ts'
 
 // Import décorateurs Lucid
 import { hasMany, column } from '@adonisjs/lucid/orm'
+import { DateTime } from 'luxon'
 
 // Type relation
 import type { HasMany } from '@adonisjs/lucid/types/relations'
@@ -70,6 +71,9 @@ export default class User extends compose(UserSchema, withAuthFinder(hash)) {
 
   @column()
   declare banner_picture: string | null
+
+  @column.dateTime({ columnName: 'last_notifications_viewed_at' })
+  declare lastNotificationsViewedAt: DateTime | null
 
   // ================= Sécurité =================
 
