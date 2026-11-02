@@ -14,6 +14,7 @@ export type ScannedRoutes = {
     'timeline': { paramsTuple?: []; params?: {} }
     'timeline.following': { paramsTuple?: []; params?: {} }
     'notifications': { paramsTuple?: []; params?: {} }
+    'menu.counts': { paramsTuple?: []; params?: {} }
     'communities': { paramsTuple?: []; params?: {} }
     'trending': { paramsTuple?: []; params?: {} }
     'tweets.store': { paramsTuple?: []; params?: {} }
@@ -48,6 +49,7 @@ export type ScannedRoutes = {
     'timeline': { paramsTuple?: []; params?: {} }
     'timeline.following': { paramsTuple?: []; params?: {} }
     'notifications': { paramsTuple?: []; params?: {} }
+    'menu.counts': { paramsTuple?: []; params?: {} }
     'communities': { paramsTuple?: []; params?: {} }
     'trending': { paramsTuple?: []; params?: {} }
     'tweets.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -68,6 +70,7 @@ export type ScannedRoutes = {
     'timeline': { paramsTuple?: []; params?: {} }
     'timeline.following': { paramsTuple?: []; params?: {} }
     'notifications': { paramsTuple?: []; params?: {} }
+    'menu.counts': { paramsTuple?: []; params?: {} }
     'communities': { paramsTuple?: []; params?: {} }
     'trending': { paramsTuple?: []; params?: {} }
     'tweets.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
