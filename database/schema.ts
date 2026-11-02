@@ -55,16 +55,7 @@ export class LikeSchema extends BaseModel {
 }
 
 export class MessageSchema extends BaseModel {
-  static $columns = [
-    'content',
-    'createdAt',
-    'id',
-    'isRead',
-    'readAt',
-    'receiverId',
-    'senderId',
-    'updatedAt',
-  ] as const
+  static $columns = ['content', 'createdAt', 'id', 'isRead', 'readAt', 'receiverId', 'senderId', 'updatedAt'] as const
   $columns = MessageSchema.$columns
   @column()
   declare content: string
@@ -117,23 +108,7 @@ export class RetweetSchema extends BaseModel {
 }
 
 export class TweetSchema extends BaseModel {
-  static $columns = [
-    'content',
-    'createdAt',
-    'id',
-    'image',
-    'isReply',
-    'isRetweet',
-    'likesCount',
-    'media',
-    'originalTweetId',
-    'parentTweetId',
-    'repliesCount',
-    'retweetsCount',
-    'updatedAt',
-    'userId',
-    'video',
-  ] as const
+  static $columns = ['content', 'createdAt', 'id', 'image', 'isReply', 'isRetweet', 'likesCount', 'media', 'originalTweetId', 'parentTweetId', 'repliesCount', 'retweetsCount', 'updatedAt', 'userId', 'video'] as const
   $columns = TweetSchema.$columns
   @column()
   declare content: string | null
@@ -168,22 +143,7 @@ export class TweetSchema extends BaseModel {
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = [
-    'bannerPicture',
-    'bio',
-    'createdAt',
-    'email',
-    'followers',
-    'following',
-    'id',
-    'isPrivate',
-    'isVerified',
-    'name',
-    'password',
-    'profilePicture',
-    'updatedAt',
-    'username',
-  ] as const
+  static $columns = ['bannerPicture', 'bio', 'createdAt', 'email', 'followers', 'following', 'id', 'isPrivate', 'isVerified', 'name', 'password', 'profilePicture', 'updatedAt', 'username'] as const
   $columns = UserSchema.$columns
   @column()
   declare bannerPicture: string | null
