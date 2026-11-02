@@ -6,6 +6,7 @@ import { DateTime } from 'luxon'
 import { verifyOtpValidator } from '#validators/auth'
 import { randomInt } from 'node:crypto'
 import logger from '@adonisjs/core/services/logger'
+import { getMailErrorMessage } from '#services/mail_error_message'
 
 export default class AuthController {
   /**
@@ -89,7 +90,7 @@ export default class AuthController {
       return response.redirect().back()
     } catch (error) {
       logger.error({ err: error }, 'Unable to resend the account verification OTP')
-      session.flash('errors', ['Impossible de renvoyer le code.'])
+      session.flash('errors', [getMailErrorMessage(error, 'Impossible de renvoyer le code.')])
       return response.redirect().back()
     }
   }
