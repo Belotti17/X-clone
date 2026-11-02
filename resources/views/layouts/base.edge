@@ -14,6 +14,14 @@
 </head>
 <body>
 
+    <div id="page-loader" role="status" aria-label="Chargement de X-clone">
+        <div class="page-loader__brand">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/X_logo_2023.svg/330px-X_logo_2023.svg.png" alt="">
+            <span>X-clone</span>
+        </div>
+        <span class="page-loader__spinner" aria-hidden="true"></span>
+    </div>
+
     {{{ await $slots.main() }}}
 
 
