@@ -1,3 +1,78 @@
+const pageLoader = document.getElementById('page-loader')
+
+if (pageLoader) {
+  const hidePageLoader = () => pageLoader.classList.add('is-hidden')
+  const fallbackTimeout = window.setTimeout(hidePageLoader, 5000)
+  window.addEventListener(
+    'load',
+    () => {
+      window.clearTimeout(fallbackTimeout)
+      hidePageLoader()
+    },
+    { once: true }
+  )
+
+  if (document.readyState === 'complete') {
+    window.clearTimeout(fallbackTimeout)
+    requestAnimationFrame(hidePageLoader)
+  }
+}
+
+const updateNavigationBadges = async () => {
+  const messageLinks = document.querySelectorAll('a.nav__link[href="/messages"]')
+  const notificationLinks = document.querySelectorAll('a.nav__link[href="/notifications"]')
+
+  if (!messageLinks.length && !notificationLinks.length) return
+
+  const response = await fetch('/menu/counts', {
+    headers: { Accept: 'application/json' },
+    credentials: 'same-origin',
+  })
+
+  if (!response.ok) {
+    throw new Error(`Impossible de charger les compteurs du menu (${response.status})`)
+  }
+
+  const counts = await response.json()
+  const updateBadge = (links, count, label, accessibleLabel) => {
+    for (const link of links) {
+      let badge = link.querySelector('.nav-badge')
+
+      if (!count) {
+        badge?.remove()
+        link.removeAttribute('aria-label')
+        continue
+      }
+
+      if (!badge) {
+        badge = document.createElement('span')
+        badge.className = 'nav-badge'
+        badge.setAttribute('aria-hidden', 'true')
+        link.append(badge)
+      }
+
+      badge.textContent = count > 99 ? '99+' : String(count)
+      badge.title = `${count} ${label}`
+      link.setAttribute('aria-label', `${accessibleLabel}: ${count} ${label}`)
+    }
+  }
+
+  updateBadge(messageLinks, Number(counts.messages), 'message(s) non lu(s)', 'Messages')
+  updateBadge(
+    notificationLinks,
+    Number(counts.notifications),
+    'nouvelle(s) notification(s)',
+    'Notifications'
+  )
+}
+
+const refreshNavigationBadges = () => {
+  updateNavigationBadges().catch((error) => console.error(error))
+}
+
+refreshNavigationBadges()
+window.setInterval(refreshNavigationBadges, 30000)
+
 // timeline.js - Script pour la page timeline
 document.addEventListener('DOMContentLoaded', function () {
   // ==================== GESTION DE L'UPLOAD D'IMAGE/VIDÉO ====================
