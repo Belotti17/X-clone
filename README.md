@@ -1,9 +1,5 @@
 # X Clone - AdonisJS
 
-## Accès à l’application
-
-https://capstone-x-clone-adonis-belotti17.onrender.com
-
 ## Description
 
 Ce projet est un clone simplifié de la plateforme **X (anciennement Twitter)**, développé avec **AdonisJS** en architecture MVC et utilisant **PostgreSQL** comme base de données.
@@ -97,10 +93,7 @@ database/
 ### 1. Cloner le projet
 
 ```bash
-git clone https://github.com/kadea-academy-learners/capstone-x-clone-adonis-Belotti17.git
-cd  capstone-x-clone-adonis-Belotti17.git
-```
-
+git clone https://github.com/Belotti17/X-clone
 ---
 
 ### 2. Installer les dépendances
@@ -221,10 +214,7 @@ Le projet suit le pattern **MVC** :
 
 ##  Améliorations possibles
 
-- Notifications en temps réel (WebSocket)
-- Système de hashtags
-- Recherche avancée
-- Messages privés
+- (WebSocket)
 - Upload cloud (Cloudinary / S3)
 - Pagination des tweets
 - Infinite scroll
