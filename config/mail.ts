@@ -1,7 +1,7 @@
 import env from '#start/env'
 import { defineConfig, transports } from '@adonisjs/mail'
 
-const smtpPort = Number(env.get('SMTP_PORT'))
+const smtpPort = env.get('SMTP_PORT')
 
 const mailConfig = defineConfig({
   default: env.get('MAIL_MAILER')!,
