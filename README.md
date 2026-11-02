@@ -115,26 +115,36 @@ npm install
 
 Créer un fichier `.env` :
 
+```env
+TZ=UTC
 PORT=3333
-HOST=0.0.0.0
+HOST=localhost
+NODE_ENV=development
+LOG_LEVEL=info
 
-APP_KEY=your_app_key
+# Application
+APP_KEY=
+APP_URL=http://localhost:3333
 
-DB_CONNECTION=pg
-PG_HOST=localhost
-PG_PORT=5432
-PG_USER=postgres
-PG_PASSWORD=your_password
-PG_DB_NAME=x_clone
-
+# Database
 SESSION_DRIVER=cookie
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_USER=root
+DB_PASSWORD=root
+DB_DATABASE=app
 
-MAIL_HOST=smtp.mailtrap.io
-MAIL_PORT=2525
-MAIL_USERNAME=your_username
-MAIL_PASSWORD=your_password
-MAIL_FROM_ADDRESS=no-reply@xclone.com
-MAIL_FROM_NAME="X Clone"
+# Mail (Brevo SMTP)
+MAIL_MAILER=smtp
+MAIL_FROM_NAME="Clone X"
+MAIL_FROM_ADDRESS=adresse-expediteur-verifiee@example.com
+SMTP_HOST=smtp-relay.brevo.com
+SMTP_PORT=587
+SMTP_USERNAME=votre-identifiant-smtp-brevo
+SMTP_PASSWORD=votre-cle-smtp-brevo
+```
+
+`SMTP_USERNAME` et `SMTP_PASSWORD` sont les identifiants SMTP fournis par Brevo (pas la clé API). L'adresse `MAIL_FROM_ADDRESS` doit être vérifiée chez le fournisseur. Remplacez ces valeurs par celles de votre fournisseur SMTP, puis redémarrez le serveur après toute modification du `.env`.
 
 ---
 
