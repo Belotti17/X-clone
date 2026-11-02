@@ -1,12 +1,15 @@
 @!layout('layouts/main')
 
-<main class="login-container">
+<main class="login-container home-page">
 
-  <div class="content">
+  <div class="content home-layout">
 
     <!-- Logo X -->
     <div class="logo">
-      <img src="/icon/logo X.png" alt="log-X" />
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/X_logo_2023.svg/330px-X_logo_2023.svg.png"
+        alt="Logo X"
+      />
     </div>
 
     <div class="compte">
@@ -41,7 +44,10 @@
           <button class="close" onclick="closeSignup()">✕</button>
 
           <div class="modal-logo">
-            <img src="/icon/logo X.png" alt="logo x" />
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/X_logo_2023.svg/330px-X_logo_2023.svg.png"
+              alt="Logo X"
+            />
           </div>
 
           <!-- FORMULAIRE ADONIS -->
@@ -813,6 +819,245 @@ span {
   }
   .connecter button {
     width: 15rem;
+  }
+}
+
+/* Landing page layout */
+.home-page.login-container {
+  display: grid;
+  min-height: 100vh;
+  min-height: 100svh;
+  width: 100%;
+  place-items: center;
+  overflow-x: hidden;
+  padding: clamp(24px, 5vh, 56px) clamp(20px, 5vw, 72px);
+  background: #000;
+  color: #e7e9ea;
+}
+
+.home-page .home-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr);
+  align-items: center;
+  gap: clamp(36px, 7vw, 112px);
+  width: min(1240px, 100%);
+  min-height: 100%;
+  margin: 0 auto;
+}
+
+.home-page .logo {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  place-items: center;
+}
+
+.home-page .logo img {
+  display: block;
+  width: min(100%, 440px);
+  max-height: 72vh;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.home-page .compte {
+  align-items: flex-start;
+  width: min(100%, 560px);
+  gap: 12px;
+}
+
+.home-page .compte .title {
+  color: #e7e9ea;
+  font-size: clamp(3.2rem, 6.7vw, 5rem);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  line-height: 1.05;
+}
+
+.home-page .compte h2 {
+  padding: 18px 0 22px;
+  color: #e7e9ea;
+  font-size: clamp(1.7rem, 3vw, 2rem);
+  font-weight: 750;
+}
+
+.home-page .btn-login,
+.home-page .btn-icon,
+.home-page .creat,
+.home-page .connecter button {
+  width: min(100%, 320px);
+  min-height: 50px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    transform 150ms ease;
+}
+
+.home-page .btn-login,
+.home-page .btn-icon,
+.home-page .creat {
+  color: #0f1419;
+}
+
+.home-page .btn-login:hover,
+.home-page .btn-icon:hover,
+.home-page .creat:hover {
+  background-color: #e6e6e6;
+}
+
+.home-page .creat {
+  background: #fff;
+}
+
+.home-page .ou-separat {
+  align-self: flex-start;
+  width: min(100%, 320px);
+  color: #e7e9ea;
+  text-align: center;
+}
+
+.home-page .cookies {
+  width: min(100%, 320px);
+  color: #71767b;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.home-page .cookies a {
+  color: #1d9bf0;
+}
+
+.home-page .connecter {
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.home-page .connecter span {
+  color: #e7e9ea;
+  font-size: 1rem;
+}
+
+.home-page .connecter button {
+  color: #1d9bf0;
+  border-color: #536471;
+}
+
+.home-page .connecter button:hover {
+  background: rgb(29 155 240 / 10%);
+  border-color: #1d9bf0;
+}
+
+.home-page :is(button, a, input):focus-visible {
+  outline: 2px solid #1d9bf0;
+  outline-offset: 3px;
+}
+
+.home-page .overlay {
+  z-index: 1000;
+  padding: 16px;
+  background: rgb(0 0 0 / 75%);
+  backdrop-filter: blur(4px);
+}
+
+.home-page .modal {
+  width: min(600px, 100%);
+  max-width: 100%;
+  max-height: min(88vh, 780px);
+  border: 1px solid #2f3336;
+  background: #000;
+  color: #e7e9ea;
+}
+
+.home-page .modal-logo img {
+  filter: brightness(0) invert(1);
+}
+
+.home-page .modal-header h1 {
+  color: #e7e9ea;
+}
+
+.home-page .modal-body {
+  overscroll-behavior: contain;
+}
+
+.home-page .field input {
+  border-color: #536471;
+}
+
+.home-page .field input:focus {
+  border-color: #1d9bf0;
+}
+
+.home-page .primary {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .home-page .home-layout {
+    grid-template-columns: minmax(0, 0.85fr) minmax(320px, 1.15fr);
+    gap: clamp(24px, 5vw, 56px);
+  }
+
+  .home-page .logo img {
+    width: min(100%, 340px);
+  }
+}
+
+@media (max-width: 680px) {
+  .home-page.login-container {
+    padding: 28px 20px;
+  }
+
+  .home-page .home-layout {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 24px;
+    min-height: auto;
+    margin: auto;
+  }
+
+  .home-page .logo img {
+    width: clamp(80px, 22vw, 120px);
+    max-height: 120px;
+  }
+
+  .home-page .compte {
+    align-items: center;
+    text-align: center;
+  }
+
+  .home-page .compte .title {
+    font-size: clamp(2.6rem, 11vw, 3.8rem);
+  }
+
+  .home-page .compte h2 {
+    padding: 10px 0 16px;
+  }
+
+  .home-page .ou-separat {
+    align-self: center;
+  }
+
+  .home-page .cookies,
+  .home-page .connecter {
+    text-align: center;
+  }
+
+  .home-page .connecter {
+    align-items: center;
+  }
+}
+
+@media (max-width: 420px) {
+  .home-page .modal-body {
+    padding: 0 18px 20px;
+  }
+
+  .home-page .actions {
+    padding: 12px 18px 20px;
   }
 }
 
