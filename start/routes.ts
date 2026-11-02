@@ -59,6 +59,7 @@ router
     router.get('/timeline', [TimelineController, 'index']).as('timeline')
     router.get('/following', [TimelineController, 'following']).as('timeline.following')
     router.get('/notifications', [TimelineController, 'notifications']).as('notifications')
+    router.get('/menu/counts', [TimelineController, 'menuCounts']).as('menu.counts')
     router.get('/communities', [CommunitiesController, 'index']).as('communities')
     router.get('/trending', [HashtagController, 'trending']).as('trending')
 
